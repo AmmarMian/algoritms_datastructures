@@ -1,0 +1,401 @@
+<DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>TP3 - Optimisation en colonnes de fourmis</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+    <h1 id="title-h1">TP3 - Optimisation en colonnes de fourmis</h1>
+
+      <section>
+        <h2>Table des matières</h2>
+
+        <nav>
+          <ul>
+            <li><a href="#description-caesar">Description du problème</a>
+            <ul>
+            <li><a href="#donnees">Données du problème</a></li>
+                                <li><a href="#objectif">Objectif</a></li></ul>
+            <li><a href="#data-structure">Partie I - Structure de données</a></li>
+            <li><a href="#file-reading">Partie II - Lecture de fichiers</a></li>
+                <li><a href="#data-structure">Partie III - Implémentation de la colonne de fourmis</a>
+                                                                <ul>
+                                    <li><a href="#fourmis">1. La représentation d'une fourmi</a></li>
+                                    <li><a href="#distances">2. Représentation des distances</a></li>
+                                    <li><a href="#pheromones">3. Représentation des phéromones</a></li>
+                                    <li><a href="#transition">4. Transition entre les villes</a></li>
+                                    <li><a href="#algo">5. Algorithme de colonie de fourmis</a></li>
+                                </ul></li>
+          </ul>
+        </nav>
+
+      </section>
+      
+      <section>
+                <p>Dans ce TP, nous allons nous allons nous intéresser au problème nommé le <b>Travelling Salesman problem</b> qui est un problème classique en optimisation combinatoire et en recherche opérationnelle. Il consiste à trouver le plus court chemin qui passe une et une seule fois par chaque ville d'un ensemble de villes et qui revient à la ville de départ. Nous allons voir comment résoudre ce problème en utilisant un algorithme de recherche locale appelé <b>optimisation en colonie de fourmis</b>.</p>
+      </section>
+
+      <section>
+          <h2 id="description-caesar">Description du problème</h2>
+
+            <figure>
+                    <img src="./assets/tp3/GLPK_solution_of_a_travelling_salesman_problem.png"> 
+                    <figcaption>Exemple de solution pour le problème du voyageur de commerce. By <a href="//commons.wikimedia.org/wiki/User:Xypron" title="User:Xypron">Xypron</a> - Own work, Public Domain, <a href="https://commons.wikimedia.org/w/index.php?curid=10645665">Link</a></figcaption>
+            </figure>
+
+
+                    <p></br></br></br>On veut partir d'une liste de villes dont on connait les coordonées en latitude et longitude, obtenir un chemin qui passe une seule fois par chaque ville et qui revient à la ville de départ. On cherche à minimiser la distance totale parcourue. </p>
+
+        <section>
+            <h3 id = "donnees">Données du problème</h3>
+
+            <p>On part d'un fichier contenant les informations sur les villes (une ville par ligne) avec le format: <code>Nomville latitude longitude</code>. Par exemple:</p>
+        <pre><code>New-York 40.7128 -74.0060
+London 51.5074 -0.1278
+Tokyo 35.6895 139.6917
+...</code></pre>
+
+            <p>On donne à cet effet plusieurs fichiers de tests :</p>
+        <ul>
+            <li><a href="./assets/tp3/example_small.txt" download>example_small.txt</a></li>
+                        <li><a href="./assets/tp3/example_medium.txt" download>example_medium.txt</a></li>
+                        <li><a href="./assets/tp3/all_cities.txt" download>all_cities.txt</a></li>
+                    </ul>
+
+
+          </section>
+
+          <section>
+            <h3 id="objectif">Objectif</h3>
+                    <p>A partir de la lecture d'un de ces fichiers, on veut mettre en mémoire les informations pour toutes les villes avec <b>une représentation adaptée</b> en <code>C</code>. Dans un deuxième temps on veut sortir une liste de ville à visiter et la distandce parcourue. La liste de ville doit idéalement avoir la plus petite distance possible.</p>
+                    <p>Par exemple, sur le fichier <code>example_small.txt</code>, on doit obtenir un résultat comme :</p>
+<pre><code>Best path: 1603.443118
+New-York -> London -> Berlin -> Paris -> Tokyo -> Sydney -> Cape-Town</code></pre>
+
+          </section>
+
+      </section>
+
+    <section>
+
+<section>
+    <h2 id="data-structure">Partie I - Structure de données</h2>
+
+    <p>Dans cette première partie, nous allons concevoir une représentation des données adaptée pour résoudre le problème du voyageur de commerce. Il est important de bien réfléchir aux structures que nous allons utiliser, car cela facilitera grandement l'implémentation de l'algorithme de résolution dans la suite du TP.</p>
+
+    <h3>Étape 1 : Schéma à dessiner</h3>
+    <p>Avant de commencer à coder, il est vivement recommandé de réaliser un schéma pour bien comprendre la structure des données que nous allons manipuler. Ce schéma doit représenter trois éléments clés :</p>
+    <ul>
+        <li>La structure <code>City</code> : un bloc qui contient le nom de la ville, la latitude et la longitude.</li>
+        <li>Une liste chaînée : une série de blocs représentant des villes, reliés entre eux par des flèches bidirectionnelles pour indiquer les liens entre les villes (avec des pointeurs "précédent" et "suivant").</li>
+        <li>Un tableau de pointeurs : un tableau avec des cases, chacune contenant un pointeur vers un élément (un nœud) de la liste chaînée, représentant ainsi l'ordre dans lequel les villes sont visitées.</li>
+    </ul>
+
+    <p>Ce schéma vous aidera à visualiser la structure des données avant de commencer l'implémentation en C. Il est crucial de comprendre les relations entre ces éléments pour garantir une bonne organisation et une bonne gestion des villes dans le programme.</p>
+
+    <h3>Étape 2 : Définir la structure <code>City</code></h3>
+    <p>Pour chaque ville, nous avons besoin de stocker trois informations essentielles : son nom, sa latitude et sa longitude. Ces données sont indispensables, car elles nous permettent d'identifier la ville et, surtout, de calculer les distances entre elles, ce qui est la base du problème à résoudre.</p>
+
+    <p>Stocker le nom nous permet de savoir de quelle ville il s'agit, tandis que les coordonnées géographiques, sous forme de latitude et longitude, sont nécessaires pour les calculs de distances. Ces trois champs (nom, latitude, longitude) composent donc une structure complète et adaptée pour représenter une ville dans notre programme.</p>
+
+                    <p><b>Réaliser une implémentation de cette structure et réaliser des programmes qui la testent</b></p>
+
+    <h3>Étape 3 : Représenter la liste des villes</h3>
+    <p>Une fois les villes définies, il nous faut une structure pour les stocker et les parcourir facilement. Une liste doublement chaînée est un choix judicieux, car elle permet d'accéder à la fois à l'élément précédent et à l'élément suivant. Cela nous offre plus de flexibilité que les tableaux classiques, notamment lors des insertions ou suppressions.</p>
+
+    <p>Chaque nœud de cette liste chaînée contiendra une ville, représentée par un pointeur vers une structure <code>City</code>. Ainsi, nous aurons une liste complète de toutes les villes à visiter, reliées entre elles par des liens "avant" et "arrière".</p>
+
+                    <p><b>Réaliser une implémentation de liste doublement chainée et tester là avec un ou des programmes judicieux</b></p>
+
+    <h3>Étape 4 : Représenter un chemin</h3>
+    <p>Le but du problème est de trouver un chemin qui passe par toutes les villes une seule fois. Ce chemin sera représenté par un tableau de pointeurs vers les nœuds de la liste chaînée, chaque pointeur correspondant à une ville dans l'ordre où elle doit être visitée.</p>
+
+    <p>L'utilisation d'un tableau de pointeurs permet un accès rapide aux villes dans l'ordre du chemin sans dupliquer les informations. Cela facilite également les manipulations, tout en restant efficace en mémoire et en exécution. Il est important de bien comprendre comment ce tableau est lié à la liste chaînée et comment il est utilisé pour représenter le chemin parcouru par le voyageur de commerce.</p>
+                    <p><b>Réaliser une implémentation de cette structure et tester là avec un ou des programmes judicieux</b></p>
+</section>
+
+
+<section>
+    <h2 id="file-reading">Partie II - Lecture de fichiers</h2>
+
+    <p>Dans cette partie, nous allons lire un fichier contenant les informations des villes et les stocker dans une liste chaînée. Chaque ligne du fichier contient le nom d'une ville, sa latitude et sa longitude. Nous utiliserons un pointeur de fichier <code>FILE*</code> et la fonction <code>fscanf</code> pour extraire ces informations.</p>
+
+    <h3>Étape 1 : Lecture d'un fichier ligne par ligne</h3>
+    <p>Le fichier contenant les informations des villes doit être ouvert en mode lecture. Pour cela, nous utiliserons un pointeur <code>FILE*</code>. La fonction <code>fscanf</code> nous permet de lire les données de chaque ligne (le nom, la latitude et la longitude) et de les stocker dans une structure <code>City</code>.</p>
+
+    <p>Le processus consiste à lire le fichier ligne par ligne jusqu'à atteindre la fin du fichier. À chaque lecture, on récupère les informations de la ville et on les stocke dans une structure de type <code>City</code>.</p>
+
+    <p>Assurez-vous de bien vérifier que le fichier est ouvert correctement avant de commencer la lecture. Si le fichier ne peut pas être ouvert, le programme doit afficher un message d'erreur.</p>
+                    <p>On pourra s'inspirer de ce <a href="https://www.tutorialspoint.com/c_standard_library/c_function_fscanf.htm">tutorial</a> pour la lecture de fichier en C.</p>
+
+    <h3>Étape 2 : Création d'une liste de villes</h3>
+    <p>Une fois les informations d'une ville lues à partir du fichier, nous devons les stocker dans une liste chaînée. Cette liste chaînée contiendra toutes les villes du fichier dans l'ordre où elles sont lues.</p>
+
+    <p>Chaque fois que nous lisons une nouvelle ligne du fichier, nous devons créer un nouveau nœud pour la ville correspondante, puis l'ajouter à la fin de la liste chaînée. Comme la liste est doublement chaînée, il est important de bien mettre à jour les pointeurs "précédent" et "suivant" pour chaque nouveau nœud ajouté.</p>
+
+
+    <h3>Étape 3 : Affichage de la liste des villes</h3>
+    <p>Après avoir créé la liste chaînée contenant toutes les villes, nous devons vérifier que les informations sont bien stockées. Pour cela, nous allons écrire une fonction qui permet d'afficher toutes les villes de la liste.</p>
+
+    <p>La fonction doit parcourir la liste du premier au dernier élément et afficher, pour chaque ville, son nom, sa latitude et sa longitude. C'est un bon moyen de s'assurer que la liste est correctement remplie à partir des données du fichier.</p>
+
+    <p>L'affichage doit être clair, par exemple :</p>
+    <pre><code>Ville : New-York, Latitude : 40.7128, Longitude : -74.0060
+Ville : London, Latitude : 51.5074, Longitude : -0.1278
+Ville : Tokyo, Latitude : 35.6895, Longitude : 139.6917
+...</code></pre>
+
+    <p>Cette étape vous permettra de visualiser toutes les villes enregistrées dans la liste et d'éventuellement corriger les erreurs de lecture si nécessaire.</p>
+
+</section>
+
+
+<section>
+    <h2 id="data-structure">Partie III - Implémentation de la colonne de fourmis</h2>
+    
+    <p>On s'intéresse ici une fois les données sur les villes mises en places, à implémenter une solution pour résoudre le problème du voyageur de commerce en utilisant l'algorithme de colonie de fourmis. L'idée est de simuler le comportement des fourmis qui cherchent le chemin le plus court pour visiter toutes les villes.</p>
+
+    <span class="highlight-box"><p>Pour la suite, on répartiera les fonctions demandées dans plusieurs fichiers selon votre convenance. On n'oublirea pas également de tester toutes vos fonctions en faisant des fichiers de tests comme au TP précédent</p></span>
+
+    <section>
+        <h3 id="fourmis">1. La représentation d'une fourmi</h3>
+        <p>Considérons la notion de <b>fourmie virtuelle</b> qui est une contrepartie de la fourmie réelle. Chaque fourmie virtuelle est associée à une ville de départ et parcourt les villes restantes en choisissant le chemin le plus court à chaque étape.</p> 
+
+        <p>Une fourmi virutelle a les propriétés suivantes :</p>
+        <ul>
+            <li><b>Colonie d’individus coopérants.</b> Comme pour les fourmis réelles, une colonie virtuelle est
+un ensemble d’entités non-synchronisés, qui se rassemblent ensemble pour trouver une "bonne" so-
+lution au problème considéré. Chaque groupe d’individus doit pouvoir trouver une solution même
+                                    si elle est mauvaise.</li>
+            <li><b>Pistes de phéromones.</b> Ces entités communiquent par le mécanisme des pistes de phéro-
+mone. Cette forme de communication joue un grand rôle dans le comportement des fourmis : son
+rôle principal est de changer la manière dont l’environnement est perçu par les fourmis, en fonction
+de l’historique laissé par ces phéromones</li>
+            <li><b>Évaporation des phéromones.</b> Les pistes de phéromones s’évaporent avec le temps. Ce permet d’oublier lentement ce qui s’est passé avant. C’est ainsi qu’elle peut diriger sa recherche vers de nouvelles directions, sans être trop contrainte par ses anciennes décisions
+            <li><b>Recherche du plus petit chemin.</b> Les fourmis réelles et virtuelles partagent un but com-
+mun : recherche du plus court chemin reliant un point de départ (le nid) à des sites de destination
+                                    (la nourriture).</li>
+                                <li><b>Deplacement locaux.</b> Les vraies fourmis ne sautent pas des cases, tout comme les fourmis virtuelles. Elles se contentent de se déplacer entre sites adjacents du terrain.</b></li>
+                                <li><b>Choix aléatoire lors des transitions.</b> Lorsqu’elles sont sur un site, les fourmis réelles et
+virtuelles doivent décider sur quel site adjacent se déplacer. Cette prise de décision se fait au
+hasard et dépend de l’information locale déposée sur le site courant. Elle doit tenir compte des
+pistes de phéromones, mais aussi du contexte de départ (ce qui revient à prendre en considération
+les données du problème d’optimisation combinatoire pour une fourmi virtuelle).</li>
+        </ul>
+
+                            <p>Nous allons essayer de mettre en place un certain nombre de ces comportements en langage <code>C</code> pour le parcours d'une ville a une autre. <b>Il est conseillé de faire un schéma sur papier des structures de données et leur relations avant de réaliser le code pour les tâches suivantes :</b></p>
+
+
+                            <p><b>Tâche 1:</b> Réaliser une implémentation d'une structure de donnée <code>struct fourmi_s</code> permettant de représenter une fourmi avec les propriétés suivantes :</p>
+        <ul>
+        <li>Une ville de départ : la ville où la fourmi commence son parcours.</li>
+        <li>Un chemin parcouru : la liste des villes visitées dans l'ordre.</li>
+        <li>Une distance parcourue : la somme des distances entre les villes visitées.</li>
+        <li>Une liste des villes restantes : les villes qui n'ont pas encore été visitées.</li>
+        </ul>
+        <p>Créer alors le type <code>fourmi</code> pour ne pas avoir à écrire <code>struct fourmi_s</code> à chaque fois.</p>
+
+                            <p><b>Tâche 2 :</b> Réaliser une fonction <code>fourmi* creer_fourmi()</code> permettant de créer une fourmie virtuelle dont la ville de départ est choisi aléatoirement. Pour cela, on pourra s'aider par exemple de <a href="https://www.geeksforgeeks.org/generating-random-number-range-c/">cette page</a> pour générer des nombres aléatoires en C. La fonction renverra un pointeur vers la structure de données qui contient les informations de la fourmi. Le chemin parcouru sera vide au début mais déjà alloué, la liste de villes restantes correspondera à une liste chainée contenant toutes les villes sauf la ville de départ.</p>
+
+                            <p><b>Tâche 3 : </b>Faire une fonction <code>void free_fourmi(fourmi* f)</code> permettant de libérer tout l'espace alloué pour la fourmi : le chemin parcouru, la liste des villes restantes et la fourmi elle même.</p>
+
+                            <p><b>Tâche 4 : </b>Créer une fonction <code>fourmi** creer_tab_fourmis(int nombre)</code> permettant de créer un tableau de fourmis (exactement un tableaux de pointeurs vers des fourmis) de taille <code>nombre</code>. Chaque fourmi du tableau doit être créée avec la fonction <code>creer_fourmi</code>. La fonction renverra un pointeur vers le tableau de fourmis Créer également sa contrepartie <code>void free_tab_fourmis(fourmi** tab, int nombre)</code> pour libérer tout l'espace alloué pour le tableau de fourmis.</p>
+
+
+    <section>
+        <h3 id="distances">2. Représentation des distances</h3>
+        <p>Afin de pouvoir choisir une ville attractive pour la prochaine destination d'une fourmi donnée, il est nécéssaire de connaitre les distances entre villes. Pour cela, on peut utiliser la formule de Haversine qui permet de calculer la distance entre deux points géographiques (latitude et longitude) : </p>
+      <p>  $$d = 2r \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta\text{lat}}{2}\right) + \cos(\text{lat}_1)\cos(\text{lat}_2)\sin^2\left(\frac{\Delta\text{long}}{2}\right)}\right)$$</p>
+
+    <p>qui peut être implémentée en C comme suit :
+                                </p>
+
+
+                            <pre><code>#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#include &lt;stdlib.h&gt;
+
+#define R 6371
+#define TO_RAD (3.1415926536 / 180)
+double dist(double th1, double ph1, double th2, double ph2)
+{
+	double dx, dy, dz;
+	ph1 -= ph2;
+	ph1 *= TO_RAD, th1 *= TO_RAD, th2 *= TO_RAD;
+
+	dz = sin(th1) - sin(th2);
+	dx = cos(ph1) * cos(th1) - cos(th2);
+	dy = sin(ph1) * cos(th1);
+	return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
+}
+
+int main()
+{
+	double d = dist(36.12, -86.67, 33.94, -118.4);
+	/* Americans don't know kilometers */
+	printf("dist: %.1f km (%.1f mi.)\n", d, d / 1.609344);
+
+	return 0;
+}
+</code></pre>
+
+    <p><b>Tâche 1 :</b> Implémenter une fonction <code>double distance_villes(City* a, City* b)</code> permettant de calculer la distance entre deux villes <code>a</code> et <code>b</code> en utilisant la formule de Haversine. La fonction renverra la distance en kilomètres.</p>
+
+    <p><b>Tâche 2 :</b> Créer une fonction <code>double** creer_tab_distances(List_cities *villes)</code> permettant de créer un tableau de distances entre les villes. Le tableau sera de taille <code>nombre x nombre</code> et contiendra les distances entre chaque paire de villes. La fonction renverra un pointeur vers le tableau de distances. On supposera que chaque ligne, colonne correspondant à la position des villes dans l'ordre de la lecture du fichier. Créer également une fonction <code>void free_tab_distances(double** tab, int nombre)</code> pour libérer tout l'espace alloué pour le tableau de distances.</p>
+    <figure>
+        <img src="assets/tp3/distances.svg">
+        <figcaption>Illustration de la représentation des distances entre les villes dans un tableau.</figcaption>
+    </figure>
+    
+                                <p></br></br><b>Tâche 3 :</b>Faire une fonction <code>void deplacer_fourmi(fourmi* f, City* ville)</code> permettant de déplacer une fourmi vers une ville donnée. La fonction devra mettre à jour la distance parcourue, le chemin parcouru et la liste des villes restantes. On vérifiera que la ville ne fait pas partie des villes déjà visités (dans ce cas on né déplace par la foumi).</p>
+    </section>
+
+    <section>
+        <h3 id="pheromones">3. Représentation des phéromones</h3>
+        <p>Les phéromones sont des substances chimiques que les fourmis réelles déposent sur le sol pour communiquer entre elles. Dans notre cas, les phéromones sont des informations partagées entre les fourmis virtuelles pour indiquer les chemins les plus courts. Dans notre modèle, il s'agit une valeur flottante pour chaque paire de villes, représentant l'intensité des phéromones entre ces villes.</p>
+
+        <p><b>Tâche 1 :</b> Créer une fonction <code>double **creer_tab_pheromones(int nombre)</code> permettant de créer un tableau de phéromones entre les villes. Le tableau sera de taille <code>nombre x nombre</code> et initialisé à zéro. La fonction renverra un pointeur vers le tableau de phéromones. On suppose que chaque ligne, colonne correspondant à la position des villes dans l'ordre de la lecture du fichier. Créer également une fonction <code>void free_tab_pheromones(double** tab, int nombre)</code> pour libérer tout l'espace alloué pour le tableau de phéromones.</p>
+
+        <p><b>Tâche 2 :</b> Afin de pouvoir mettre à jour les phéromones lors du passage des fourmis de ville en ville, on utilise la formule suivante :</p>
+
+                                <p>$$\tau_{ij} = (1 - \rho) \times \tau_{ij} + \sum_{k} \Delta\tau_{ij}^k$$</p>
+            <p>où :</p>
+            <ul>
+                <li>\(\tau_{ij}\) est la quantité de phéromones entre les villes i et j,</li>
+                
+                                    <li>\(\rho\) est le taux d'évaporation des phéromones (entre 0 et 1),</li>
+                                    <li>\(\Delta\tau_{ij}^k\) est la quantité de phéromones déposée par la fourmi k entre les villes i et j. Dans notre modèle, on utilisera la formule suivante: 
+$$
+\Delta\tau_{ij}^k = \left\{\begin{array}{ll}
+                                        \frac{Q}{L_k} & \text{si la fourmi k est passée par la ville i et j,} \\
+                                        0 & \text{sinon.}
+                                        \end{array}\right.$$ 
+                                        où \(Q\) est une constante positive et \(L_k\) est la distance parcourue par la fourmi k.</li>
+                                    </li>
+            </ul>
+
+            <p>En supposant que toutes les fourmis de notre tableau de fourmis ont fini leur trajet, écrire une fonction <code>void mise_a_jour_pheromones(double** pheromones, fourmi** fourmis, int nombre, double rho, double Q, list_c liste_villes)</code>, où <code>list_c</code> est la liste des villes, permettant de mettre à jour les phéromones entre les villes en utilisant la formule ci-dessus. La fonction prendra en paramètre le tableau de phéromones, le tableau de fourmis, le nombre de fourmis et le taux d'évaporation \(\rho\) et la constante \(Q\).</p>
+
+    </section>
+
+    <section>
+        <h3 id="transition">4. Transition entre les villes</h3>
+        <p>Ue fois que nous avons notre tableau de distances et de phéromones, il est possible de considérer le choix aléatoire d'une ville par une fourmi en prenant en compte la distance et la quantité de phéromones.</p>
+                                <p>Supposons qu'une fourmi <code>fourmi* f</code> se situe à une ville \(i\) et que la liste des villes disponibles est stockée dans <code>f->villes_restantes</code>. On peut alors définir la probabilité de choisir la ville \(j\) en utilisant la formule suivante :</p>
+<p>
+                            $$p_{ij} = \frac{\tau_{ij}^\alpha \times \eta_{ij}^\beta}{\sum_{k \in f->villes_restantes} \tau_{ik}^\alpha \times \eta_{ik}^\beta}$$
+                                </p>
+                            <p>où :</p>
+                                <ul>
+                                    <li>\(\tau_{ij}\) est la quantité de phéromones entre les villes i et j,</li>
+                                    <li>\(\eta_{ij} = \frac{1}{d_{ij}}\) est l'heuristique entre les villes i et j (avec \(d_{ij}\) la distance entre les villes i et j),</li>
+                                    <li>\(\alpha\) et \(\beta\) sont des paramètres qui contrôlent l'importance relative des phéromones et de l'heuristique,</li>
+                                    <li>le dénominateur est la somme des probabilités pour toutes les villes restantes.</li>
+                                    </ul>
+
+        <figure>
+            <img width=300 src="./assets/tp3/choix_ville.svg">
+            <figcaption>Illustration du choix de la ville suivante par une fourmi en avec une probabilité donnée.</figcaption>
+        </figure>
+
+                                <p></br></br><b>Tâche 1 :</b> Écrire une fonction <code>double *calcul_proba(double** pheromones, double** distances, fourmi* f, list_c liste_villes, double alpha, double beta)</code> permettant de calculer les probabilités de transition entre les villes pour une fourmi donnée. La fonction renverra un tableau de probabilités de taille égale à la liste des villes restantes de la fourmi.</p>
+
+                                <p><b>Tâche 2 :</b> Écrire une fonction <code>City* choisir_ville(double* proba, list_c liste_villes)</code> permettant de choisir une ville parmi les villes restantes en utilisant les probabilités de transition. Pour ce faire, on pourra utiliser une méthode de roulette pour choisir la ville en fonction des probabilités. On pourra utiliser l'implémentation sur <a href="https://gist.github.com/vitaluha/8188337">cette page</a> pour la roulette.</p>
+
+
+    </section>
+
+    <section>
+        <h3 id="algo">5. Algorithme de colonie de fourmis</h3>
+        <p>Une fois que nous avons toutes les fonctions nécessaires pour représenter les fourmis, les distances, les phéromones et les transitions, nous pouvons écrire l'algorithme de colonie de fourmis pour résoudre le problème du voyageur de commerce. L'algorithme se déroule en plusieurs étapes :</p>
+                                <ol>
+                                    <li>Initialisation : Créer un tableau de fourmis, un tableau de phéromones et un tableau de distances.</li>
+                                    <li>Itération : Pour chaque fourmi, répéter les étapes suivantes :
+                                    <ol>
+                                        <li>Choix de la ville suivante en utilisant les probabilités de transition.</li>
+                                        <li>Déplacement de la fourmi vers la ville choisie.</li>
+                                    </ol>
+                                    </li>
+                                    <li>Mise à jour des phéromones : Mettre à jour les phéromones en utilisant les chemins parcourus par les fourmis. On prends en compte l'évaporation grâce à la formule précédente.</li>
+                                    <li>Meilleur chemin : Trouver le meilleur chemin parmi les fourmis et afficher le résultat. Il faut ainsi parmi tous les chemins parcourus par les fourmis, trouver le chemin le plus court.</li>
+                                    <li>On répète les étapes 2 à 4 un certain nombre de fois, appelé nombre d'itérations.</li>
+                                    </ol>
+
+            <p>Cette suite d'éléments peut être résumée par le schéma suivant :</p>
+            <figure>
+                                    <img src="assets/tp3/algo.svg">
+                                    <figcaption>Illustration de l'algorithme de colonie de fourmis pour le problème du voyageur de commerce.</figcaption>
+                                    </figure>
+
+                                <p></br></br></br><b>Tâche :</b>Dans votre programme principal, implémenter l'algorithme de colonie de fourmis pour résoudre le problème du voyageur de commerce. Vous pourrez choisir les paramètres \(\alpha\), \(\beta\), \(\rho\) et \(Q\) en fonction de vos tests. Vous pourrez aussi choisir le nombre de fourmis et le nombre d'itérations. Vous afficherez le meilleur chemin trouvé à la fin de l'algorithme.</p>
+
+                                <p>Tester d'abord avec les fichiers <code>example_small.txt</code> et <code>example_medium.txt</code> avant de passer à des fichiers plus grands.</p>
+
+
+    </section>
+
+
+    
+</section>
+      <section>
+        <p><a href="./TP2.html">Vers le TP2</a> / <a href="./index.html">Retour à la liste des TPs</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>
+

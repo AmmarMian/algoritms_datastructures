@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>CM5 - Complexité algorithmique et structures de données (1/2)</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+        Chart.defaults.font.family = "ET Book";
+        Chart.defaults.font.size = 16;
+        </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+  table {
+    margin: auto; /* Center the table */
+    border-collapse: collapse; /* Merge the borders */
+  }
+
+  th, td {
+    border: 1px solid black; /* Add borders */
+    padding: 10px;
+    text-align: center; /* Center text inside cells */
+  }
+
+  thead {
+    background-color: rgb(0, 0, 0); /* Black background for table header */
+    color: white; /* White text color for table header */
+  }
+
+
+  /* Dark mode styles */
+  @media (prefers-color-scheme: dark) {
+
+    th, td {
+      border: 1px solid white; /* White borders for dark mode */
+    }
+
+    thead {
+      background-color: rgb(255, 255, 255); /* White background for table header */
+      color: black; /* Black text color for table header */
+    }
+      
+
+  }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="tufte-css">CM5 - Complexité algorithmique et structures de données (1/2)</h1>
+      <span class="highlight-box">
+        <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i>Dans ce CM, nous allons introduire un concept extrêment important en algoritmique: la complexité d'un algorithme. Ce qui nous permettra d'illustrer l'intérêt de différentes structures de données que l'on introduira par la suite en ce qui concerne les opérations de recherche, insertion/suppression, parcours et tri.</p>
+      </span>
+      
+      <h2>Table des matières</h2>
+      <nav>
+        <ol>
+          <li><a href="#algorithme-complexity">Notion de complexité algorithmique</a></li>
+          <li><a href="#BigO">La notation \(O\)</a></li>
+          <li><a href="#examples-complexity">Exemple d'analyse sur des problèmes simples</a></li>
+          <li><a href="#linkedlist">Les listes chaînées</a></li>
+        </ol>
+      </nav>
+
+      <section>
+        <h2 id="algorithme-complexity">Notion de complexité algorithmique</h2>
+        
+        <section>
+          <h3>1. De la nécéssité d'analyser le comportement des algorithmes</h3>
+
+
+          <p>Nous avons considéré jsuque là des algorithmes pour résoudre des problèmes que ce soit sur des chaines de caractères, listes ou d'autres structures de données simple. Dans ce cadre, nous ne sommes pas intérrogé sur la notion d'efficacité de ceux-ci en regard de la tâche voulue. C'est à dire, combien de temps et de ressources (mémoire) un algorithme prend pour résoudre un problème donné. C'est ce que l'on appelle la complexité d'un algorithme.</p> 
+          <p>Afin de pouvoir dans un problèmes comparer plusieurs approches algorithmiques, il est nécéssaire de définir des métriques objectives de mesure.<label for="sn-time-measure"
+       class="margin-toggle sidenote-number">
+              </label>.<input type="checkbox" id="sn-threebody-time-measure" class="margin-toggle"/> <span class="sidenote">En effet, mesurer le temps que mets un programme à s'exécuter sur une machine donnée n'est pas une mesure objective. Cela dépend de la machine, du compilateur, de l'OS, de la charge de la machine, etc.</span></p>
+          <h4>Complexité en temps</h4>
+          <p>Prenons l'exemple suivant où l'on veut calculer la somme des \(n\) premiers entiers :
+            $$
+            S = \sum_{i=1}^{n} i.
+            $$
+            Une première approche pourrait consister en une boucle <code>for</code> permettant de parcourir les entiers et accumuler le résultat dans une variable. Le code en <code>C</code> pourrait ressembler à ceci :</p>
+  <pre><code class="language-c">int sum(int n) {
+  int s = 0;
+  for (int i = 1; i &lt;= n; i++) {
+      s += i;
+  }
+  return s;
+}</code></pre>
+          <p> Une autre solution consiste en l'utilisation de la formule mathématique suivante :
+            $$
+            S = \frac{n(n+1)}{2},
+            $$ ce qui s'exprime en <code>C</code> de la manière suivante :</p>
+          <pre><code class="language-c">int sum(int n) {
+  return n * (n + 1) / 2;
+}</code></pre>
+
+          <p>Comparons les deux approches en terme de complexité. Pour cela, nous allons mesurer le temps que prend chaque algorithme pour calculer la somme des \(n\) premiers entiers pour différentes valeurs de \(n\). Les résultats sont les suivants<label for="sn-timeChart" class="margin-toggle sidenote-number"></label> :<input type="checkbox" id="sn-timeChart" class="margin-toggle"/><span class="sidenote">Temps mesuré sur un Macbook pro Mid-2019 en faisant \(1000\) répétitions et en prenant la moyenne.</span></p>
+
+          <p> <canvas id="timeChart" width="600" height="400"></canvas></p>
+
+    <script>
+        const ctx = document.getElementById('timeChart').getContext('2d');
+
+        const data = {
+            labels: [100, 1000, 10000, 100000, 1000000, 10000000], // n values
+            datasets: [
+                {
+                    label: 'Boucle for',
+                    data: [0.000000198, 0.000002, 0.000021, 0.000198, 0.001948, 0.019495], // time for loop
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 2,
+                },
+                {
+                    label: 'Formule',
+                    data: [0.000000004, 0.000000004, 0.000000004, 0.000000004, 0.000000004, 0.000000004], // time formula
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 2,
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                          tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                  console.log(context);
+                                const label = context.dataset.label || '';
+                                const value = context.raw;
+
+                                // Show the value in scientific notation
+                                const formattedValue = Number(value).toExponential(); // 6 digits precision
+
+                                return `${label}: ${formattedValue} secondes`;
+                            }
+                        }
+            },
+
+                },
+                scales: {
+                    x: {
+                        type: 'logarithmic',
+                        title: {
+                            display: true,
+                            text: 'n'
+                        }
+                    },
+                    y: {
+                      ticks: {
+                          callback: (val) => (val.toExponential())
+                      },
+                        type: 'logarithmic',
+                        title: {
+                            display: true,
+                            text: 'Temps (secondes)'
+                        },
+                        beginAtZero: true,
+                    },
+                },
+            }
+        };
+
+        new Chart(ctx, config);
+    </script>
+
+          <p>On remarque alors la chose suivante : lorsque \(n\) augmente, le temps d'exécution de la solution en boucle for augment alors que pour le cas de la formule, on a toujours le même temps. C'est normal car on fait \(n\) opérations dans le premier cas mais qu'une seule dans le second! Ainsi, la seconde approche est une bien meilleure solution pour ce problème.</p>
+
+          <p>Cette approche de mesure n'est pas pratique et il nous faut alors une façon de rendre compte de cette expansion du temps en regard des données du problème (à savoie \(n\) dans ce cas précis) en analysant les opérations effectuées. C'est ainsi que l'on introduit la notion de complexité algorithmique qui donne une information sur le nombre d'opérations effectués par un algorithme en regard de la taille de l'entrée.</p>
+
+          <h4>Complexité en espace</h4>
+          <p>Prenons un autre exemple où l'on veut afficher la valeur des \(n\) premiers termes de la suite de Fibonacci définie de la facçon suivante:
+            $$
+            u_n = \begin{cases}
+            0 & \text{si } n = 0, \\
+            1 & \text{si } n = 1, \\
+            u_{n-1} + u_{n-2} & \text{sinon},
+            \end{cases}$$
+            où \(u_n\) est le \(n\)-ième terme de la suite. Une solution possible est de faire un tableau pour stocker les valeurs de la suite. Le code en <code>C</code> pourrait ressembler à ceci :</p>
+<pre><code class="language-c">void fibo(int n) {
+  int fib[n];
+  fib[0] = 0;
+  fib[1] = 1;
+  for (int i = 2; i &lt;= n; i++) {
+      fib[i] = fib[i-1] + fib[i-2];
+  }
+  for (int i = 0; i &lt;= n; i++) {
+      printf("%d ", fib[i]);
+  }
+}</code></pre>
+          <p>On a dans cet exemple un stockage de \(n\) valeurs en mémoire même si ce n'est pas utile à la fin de les stocker. Une autre approche sans tableau serait:</p>
+          <pre><code class="language-c">void fibo(int n) {
+  int a = 0, b = 1, c;
+  for (int i = 0; i &lt;= n; i++) {
+      printf("%d ", a);
+      c = a + b;
+      a = b;
+      b = c;
+  }
+}</code></pre>
+          <p>Dans ce cas, on a une complexité en espace constante car on ne stocke que trois valeurs en mémoire quelque soit la taille de l'entrée. C'est une solution bien plus efficace que la précédente !</p>
+
+        </section>
+
+        <section>
+          <h3 id="BigO">2. La notation \(O\)</h3>
+
+          <p>La notation \(O\) est une notation mathématique qui décrit le comportement asymptotique d'une fonction lorsque l'argument tend vers un certain point. En algorithmique, on utilise cette notation pour décrire la complexité d'un algorithme en regard de la taille de l'entrée. Plus précisément, on dit que la complexité d'un algorithme en nombre d'opérations est en \(O(f(n))\) si le nombre d'opérations effectuées par l'algorithme, dénoté \(g(n)\), est borné par une constante fois \(f(n)\)<label for="sn-O-notation" class="margin-toggle sidenote-number"></label> <input type="checkbox" id="sn-O-notation" class="margin-toggle"/><span class="sidenote">C'est à dire qu'il existe un nombre positif réel \(M\) et un nombre \(n_0\) tel que : $$|g(n)|\leq M f(n),\, \forall n>n_0.$$</span>
+            pour une taille d'entrée \(n\) suffisamment grande. De la même façon si \(m(n)\) correspond à la quantité d'espace mémoire occupé par l'algorithme, on dira que la complexité en espace est en \(O(m(n))\).</p>
+
+          <span class="highlight-box">
+          <p>Si \(g(n)=O(f(n))\), on dira alors que la complexité en temps de l'algorithme est de l'ordre de \(f(n)\).</p>
+          <p>Si \(m(n)=O(f(n))\), on dira alors que la complexité en espace de l'algorithme est de l'ordre de \(f(n)\).</p>
+          </span>
+
+          <p>Revenons au cas de la somme des \(n\) premiers entiers. On peut dire que la complexité de la solution en boucle <code>for</code> est en \(O(n)\) car le nombre d'opérations est proportionnel à \(n\). En effet, on effectue une opération par itération de la boucle. Pour la solution en formule, on dira que la complexité est en \(O(1)\) car le nombre d'opérations est constant quelque soit la taille de l'entrée.</p>
+          <p> Si l'on trace ces deux fonctions, on a:
+            <canvas id="functionChart" width="600" height="400"></canvas>
+            <script>
+        const ctx2 = document.getElementById('functionChart').getContext('2d');
+
+        const data2 = {
+            labels: [100, 1000, 10000, 100000, 1000000, 10000000], // n values
+            datasets: [
+                {
+                    label: 'f(n) = n',
+                    data: [100, 1000, 10000, 100000, 1000000, 10000000], // f(n) = n
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 2,
+                },
+                {
+                    label: 'f(n) = 1',
+                    data: [1, 1, 1, 1, 1, 1], // f(n) = 1
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 2,
+                }
+            ]
+        };
+
+        const config2 = {
+            type: 'line',
+            data: data2,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'logarithmic',  // Logarithmic scale for n
+                        title: {
+                            display: true,
+                            text: 'n (log scale)'
+                        }
+                    },
+                    y: {
+                        type: 'logarithmic', // Logarithmic scale for f(n)
+                        title: {
+                            display: true,
+                            text: 'f(n)'
+                        },
+                        beginAtZero: true,
+                    }
+                }
+            }
+        };
+
+        new Chart(ctx2, config2);
+    </script>
+          </p>
+          <p>On retrouve bien une cohérence entre cette analyse et le temps mesuré précédemment ! Ainsi, la complexité est une bonne approximation du temps d'exécution d'un algorithme et nous permet de comparer l'efficacité de plusieurs algorithmes pour un même problème.</p>
+
+        </section>
+
+        <section>
+          <h3 id="examples-complexity">3. Exemple d'analyse sur des problèmes simples</h3>
+          <p>Considérons certains algorithmes que l'on a vu par le passé:</p>
+          <!-- <ul> -->
+          <!--   <li>Le calcul de la fonction sinus par développement limité</li> -->
+          <!--   <li>Le calcul du pgcd de deux entiers</li> -->
+          <!--   <li>Le parcours d'un tableau avec un traitement</li> -->
+          <!-- </ul> -->
+
+          <p><b>i) Calcul de la fonction sinus par développement limité</b></p>
+          <p>Une solution proposée pour ce problème est la suivante :</p>
+          <pre><code>int fact(int n) {
+  if (n == 0) return 1;
+  return n * fact(n-1);
+}
+
+double sin(double x, int n) {
+  double res = 0.0;
+  for (int i = 0; i &lt;= int(n-1/2); i++) {
+    res += pow(-1, i) * pow(x, 2*i+1) / fact(2*i+1);
+  }
+  return res;
+}</code></pre>
+
+          <p>Comptons alors le nombre d'opérations avec l'ordre \(n\) :</p>
+          <ul>
+            <li>Un premier niveau consiste en la boucle <code>for</code> pour lequel on effectue \(\frac{n-1}{2}\) itérations, ce qui dans l'absolu est proche de \(n\)</li>
+            <li>Pour chaque tour de boucle, on effectue \(2i+1\) opérations dû à l'utilisation de la fonction factorielle, ce qui peut être vu comme \(i\) opérations</li>
+            <li>Au final, on fait : \(\sum_{k=1}^{n} k = \frac{n(n+1)}{2}\) opérations</li>
+          </ul>
+          <p>Puisque la constante devant le \(n\) est négligeable, on dira que la complexité de cet algorithme est en \(O(n^2)\).</p>
+
+          <p>Considérons maintenant la version optimisée avec une variable intermédiaire plutôt qu'une fonction pour le calcule de la factorielle :</p>
+          <pre><code>
+double sin(double x, int n) {
+  double res = 0.0;
+  double fact = 1.0;
+  for (int i = 0; i &lt;= int(n-1/2); i++) {
+    res += pow(-1, i) * pow(x, 2*i+1) / fact;
+    fact *= (2*i+1) * (2*i+2);
+  }
+  return res;
+}</code></pre>
+          <p>Refaisons le calcul du nombre d'opérations :</p>
+          <ul>
+            <li>Un premier niveau consiste en la boucle <code>for</code> pour lequel on effectue \(\frac{n-1}{2}\) itérations, ce qui dans l'absolu est proche de \(n\)</li>
+            <li>Pour chaque tour de boucle, on effectue \(2\) opérations</li>
+            <li>Au final, on fait : \(2n\) opérations</li>
+          </ul>
+          <p>Ainsi, la complexité de cette solution est en \(O(n)\). On a donc une solution bien plus efficace que la précédente !</p>
+
+          <p>Si l'on trace la complexité des solutions, on obtient :
+            <canvas id="functionChart2" width="600" height="400"></canvas>
+            <script>
+        const ctx3 = document.getElementById('functionChart2').getContext('2d');
+
+        const data3 = {
+            labels: [100, 1000, 10000, 100000, 1000000, 10000000], // n values
+            datasets: [
+                {
+                    label: 'Avec factorielle',
+                    data: [10000, 1000000, 100000000, 10000000000, 1000000000000, 100000000000000], // f(n) = n^2
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 2,
+                },
+                {
+                    label: 'Sans factorielle',
+                    data: [100, 1000, 10000, 100000, 1000000, 10000000], // f(n) = n
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 2,
+                }
+            ]
+        };
+
+        const config3 = {
+            type: 'line',
+            data: data3,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+                scales: {
+                    x: {
+                        type: 'logarithmic',  // Logarithmic scale for n
+                        title: {
+                            display: true,
+                            text: 'n'
+                        }
+                    },
+                    y: {
+                        type: 'logarithmic', // Logarithmic scale for f(n)
+                        title: {
+                            display: true,
+                            text: 'f(n)'
+                        },
+                        beginAtZero: true,
+                    }
+                }
+            }
+        };
+
+        new Chart(ctx3, config3);
+    </script>
+          </p>
+
+          <p>Concernant la complexité en mémoire, dans les deux cas, le nombre de variables utilisées est constant quelque soit la taille de l'entrée. Ainsi, la complexité en espace est en \(O(1)\).</p>
+
+          <span class="highlight-box"><p><b>En résumé :</b></p>
+            <ul>
+              <li>Pour ce problème, on a vu que la complexité en temps de la solution avec factorielle est en \(O(n^2)\) tandis que celle sans factorielle est en \(O(n)\).</li>
+              <li>La complexité en espace est dans les deux cas en \(O(1)\).</li>
+            </ul>
+          </span>
+
+          <p><b>ii) Calcul du pgcd de deux entiers</b></p>
+
+          <p>Considérons l'algorithme suivant pour calculer le pgcd de deux entiers à travers l'algorithme d'Euclide:</p>
+<pre><code>int pgcd(int a, int b) {
+  int small = a < b ? a : b;
+  int big = a < b ? b : a;
+  while (small != 0) {
+      int r = big % small;
+      big = small;
+      small = r;
+  }
+  return big;
+}</code></pre>
+
+          <span class="highlight-box">
+
+            <p><b>Complexité en mémoire : </b> On a une complexité en espace constante car le nombre de variables utilisées est constant quelque soit la taille de l'entrée.</p>
+            <p><b>Complexité en temps : </b> le problème est assez difficile puisque étant donné \(a\) et \(b\) inconnues, on ne peut estimer le nombre d'opérations nécéssaire jusqu'à ce que \(b=0\) avec le traitement itératif. On peut montrer cela dit<label for="sn-Euclide" class="margin-toggle sidenote-number"></label> <input type="checkbox" id="sn-Euclide" class="margin-toggle"/><span class="sidenote">La preuve peut par exemple être vue <a href="https://www.geeksforgeeks.org/time-complexity-of-euclidean-algorithm/">ici</a>. Mais puisque nous ne sommes pas dans un cours de mathématiques avancé, on ne va pas la détailler.</span> que le nombre d'opérations est en \(O(\log(\min(a,b)))\).</p>
+          </span>  
+
+
+        <p><b>iii) Parcours d'un tableau avec un traitement</b></p>
+
+        <p>Considérons un problème de parcours de tableau pour ne garder que les éléments pairs :</p>
+<pre><code>int* keepEven(int *tab, int n) {
+  // On crée un tableau de taille n pour contenir les éléments pairs
+  int *res = (int *)malloc(n * sizeof(int));
+  int j = 0;
+  for (int i = 0; i &lt; n; i++) {
+    if (tab[i] % 2 == 0) {
+      res[j] = tab[i];
+      j++;
+    }
+  }
+  // j contient le nombre d'éléments pairs donc on peut réallouer la mémoire
+  res = (int *)realloc(res, j * sizeof(int));
+  return res;
+}</code></pre>
+
+      <p>Commençons par la complexité en mémoire : Dans ce cas on ne peut connaitre à l'avance le nombre de nombres pairs mais on sait que dans le pire des cas il sera égal à \(n\). Ainsi, la complexité en espace est en \(O(n)\).</p>
+      <p>En ce qui concerne la complexité en temps, on a un parcours du tableau avec une condition à chaque itération. Ainsi, le nombre d'opérations est proportionnel à la taille de l'entrée. On a donc une complexité en temps en \(O(n)\).</p>
+
+          <span class="highlight-box">
+            <p><b>En résumé :</b></p>
+            <ul>
+              <li>La complexité en temps de cet algorithme est en \(O(n)\).</li>
+              <li>La complexité en espace est en \(O(n)\).</li>
+            </ul>
+          </span>
+        </section>
+
+      </section>
+
+      <section>
+        <h2 id="linkedlist">Les listes chaînées</h2>
+
+        <p>Nous avons vu précédemment comment implémenter un structure de données de type liste chaînée et exploré comment ajouter, supprimer et parcourir les éléments de cette liste. Nous allons maintenant analyser la complexité de ces opérations.</p>
+
+        <p><b>1. Recherche</b></p>
+        <ul>
+          <li>Complexité en temps : Pour rechercher un élément dans une liste chaînée, il faut parcourir la liste jusqu'à trouver l'élément. Ainsi, le nombre d'opérations est proportionnel à la taille de la liste. On a donc une complexité en temps en \(O(n)\).</li>
+          <li>Complexité en espace : La recherche ne nécessite pas de mémoire supplémentaire. Ainsi, la complexité en espace est en \(O(1)\).</li>
+        </ul>
+
+        <p><b>2. Insertion</b></p>
+        <ul>
+          <li>Complexité en temps : Pour insérer un élément dans une liste chaînée, il faut parcourir la liste jusqu'à l'élément précédent l'insertion. Ainsi, le nombre d'opérations est proportionnel à la taille de la liste. On a donc une complexité en temps en \(O(n)\).</li>
+          <li>Complexité en espace : L'insertion nécéssite au plus si on alloue au moment de l'insertion, l'espace mémoire pour le noeud que l'on ajoute. Ainsi, la complexité en espace est en \(O(1)\).</li>
+        </ul>
+
+        <p><b>3. Suppression</b></p>
+          <ul>
+            <li>Complexité en temps : Pour supprimer un élément dans une liste chaînée, il faut parcourir la liste jusqu'à l'élément à supprimer. Ainsi, le nombre d'opérations est proportionnel à la taille de la liste. On a donc une complexité en temps en \(O(n)\).</li>
+            <li>Complexité en espace : La suppression ne nécessite pas de mémoire supplémentaire. Ainsi, la complexité en espace est en \(O(1)\).</li>
+          </ul>
+
+        <p><b>4. Parcours</b></p>
+        <ul>
+          <li>Complexité en temps : Pour parcourir une liste chaînée, il faut parcourir tous les éléments de la liste. Ainsi, le nombre d'opérations est proportionnel à la taille de la liste. On a donc une complexité en temps en \(O(n)\).</li>
+          <li>Complexité en espace : Le parcours ne nécessite pas de mémoire supplémentaire. Ainsi, la complexité en espace est en \(O(1)\).</li>
+        </ul>
+
+        <p>On peut alors résumer la complexité des opérations courantes sur la liste chaînée du tableau suivant :</p>
+        <figure>
+        <table>
+          <thead>
+            <tr>
+              <th>Opération</th>
+              <th>Complexité en temps</th>
+              <th>Complexité en espace</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Recherche</td>
+              <td>\(O(n)\)</td>
+              <td>\(O(1)\)</td>
+            </tr>
+            <tr>
+              <td>Insertion</td>
+              <td>\(O(n)\)</td>
+              <td>\(O(1)\)</td>
+            </tr>
+            <tr>
+              <td>Suppression</td>
+              <td>\(O(n)\)</td>
+              <td>\(O(1)\)</td>
+            </tr>
+            <tr>
+              <td>Parcours</td>
+              <td>\(O(n)\)</td>
+              <td>\(O(1)\)</td>
+            </tr>
+          </tbody>
+        </table>
+        </figure>
+      <p>La liste chainée est une structure de données très flexible et permettant des opérations de recherche, insertion et suppression faciles. Cependant, elle a l'inconvénient d'avoir une complexité en temps linéaire pour ces opérations. Nous allons voir  dans le prochain CM des structures de données permettant des opérations plus efficaces.</p>
+
+
+        </section>
+
+
+
+
+      <section>
+        <p><a href="./CM4.html">Vers le CM4</a>
+ / <a href="./index.html">Retour à la liste des CMs</a> / <a href="./CM6.html">Vers le CM6</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>

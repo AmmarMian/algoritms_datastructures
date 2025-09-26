@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>CM3 - Gestion de la mémoire et pointeurs</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="tufte-css">CM3 - Gestion de la mémoire et des pointeurs</h1>
+      <span class="highlight-box">
+        <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i>Dans ce CM, nous nous intéressons à deux notions primordiales en programmation C vis à vis de la mémoire utilisée par notre programme: les tableaux et les pointeurs. Nous allons essayer de comprendre dans premier temps la notion de stockage dans la mémoire pour un programme C et nous verrons comment intéragir avec des données stockées à l'aide de pointeurs</p>
+      </span>
+
+        <h2>Table des matières</h2>
+        <ul>
+        <li><a href="#memory-layout">Agencement de la mémoire</a></li>
+        <li><a href="#structs">Structures</a></li>
+        <li><a href="#arrays">Tableaux</a></li>
+        <li><a href="#pointers">Pointeurs</a>
+          <ul>
+            <li><a href="#pointeurs-definition">Définition</a></li>
+            <li><a href="#pointeurs-tableaux">Pointeurs et tableaux</a></li>
+            <li><a href="#pointeurs-fonctions">Pointeurs et fonctions</a></li>
+            <li><a href="#pointeurs-void">Pointeurs void</a></li>
+          </ul>
+        <li><a href="#tableau-multiple-dimension">Tableaux multidimensionnels</a></li>
+      </ul>
+
+      <section>
+        <h2 id="memory-layout">Agencement de la mémoire</h2>
+        <!-- <p><b>A VERIFIER!!</b></p> -->
+        <!-- <p>Dans le processus de programmation, il est parfois nécéssaire de stocker des données en mémoire. Ces données peuvent être de différents types et peuvent être stockées à des endroits différents en mémoire. Dans un programme C, la mémoire est divisée en plusieurs parties:</p> -->
+        <!-- <ol> -->
+        <!--   <li>La pile (stack): C'est une zone de mémoire réservée pour les variables locales et les paramètres des fonctions. Les variables locales sont détruites à la fin de la fonction.</li> -->
+        <!--   <li>Le tas (heap): C'est une zone de mémoire réservée pour les variables dynamiques. Les variables dynamiques sont des variables qui sont allouées à l'exécution du programme et qui sont libérées à la fin de leur utilisation.</li> -->
+        <!--   <li>La section des données: C'est une zone de mémoire réservée pour les variables globales et les variables statiques.</li> -->
+        <!--   <li>La section du code: C'est une zone de mémoire réservée pour le code du programme.</li> -->
+        <!--   <li>La section des constantes: C'est une zone de mémoire réservée pour les constantes du programme.</li> -->
+        <!-- </ol> -->
+
+        <!-- <p>Nous n'allons pas nous intéresser au détail de ces parties mais il est nécéssaire de connaître l'existence de deux zones principales: la pile et le tas. Ces deux zones sont très importantes pour la gestion de la mémoire en C, car c'est là que les variables sont stockées.</p> -->
+        <p>La mémoire dans un ordinateur est une succession d’octets (soit 8 bits), organisés les uns à la suite des autres et directement accessibles par une adresse. Lorsque l'on exécute un programme, une portion de la mémoire vive est allouée pour stocker les variables et les données utilisées par le programme. Cette mémoire est divisée en plusieurs parties comme indiqué dans la figure suivante:</p>
+        <figure>
+          <img src="assets/memory_map.png"/>
+          <figcaption>Agencement de la mémoire en C. Source: <a href="https://www.ilay.org/yann/articles/mem/">ici</a>.</figcaption>
+        </figure>
+
+        <p>Les deux parties qui nous intéressent sont le <b>Tas (Heap)</b> et la <b>Pile (Stack)</b>:</p>
+        <ul>
+          <li>La pile est un espace mémoire réservé au stockage des variables désallouées automatiquement. Sa taille est à priori limitée. Elle est construite sur un modèle <b>LIFO</b> (Last In First Out): la dernière variable allouée est la première à être désallouée.</li>
+          <li>Le tas est un espace mémoire réservé au stockage des variables allouées dynamiquement. Sa taille, du point de vue du programme C, est considérée illimitée. On s'intéressera à cette notion d'allocaiton dynamique dans le CM suivant.
+        </ul>
+        <p>Les autres parties servent à stocker des choses essentielles au fonctionnement du programme (code, données statiques, etc.) mais ne sont pas directement manipulables par le programmeur.</p>
+
+      </section>
+
+      <section>
+        <h2 id="structs">Structures</h2>
+        <p>Une première organisation de données en un ensemble cohérent est la structure. Une structure est un ensemble de variables de types différents qui sont regroupées sous un même nom. Voici un exemple de déclaration d'une structure en C:</p>
+                <pre><code>struct Person {
+  char name[50];
+  int age;
+  float height;
+};</code></pre>
+
+          <p>Dans cet exemple, nous avons défini une structure <code>Person</code> qui contient trois variables: un tableau de caractères <code>name</code>, un entier <code>age</code> et un flottant <code>height</code>. Pour déclarer une variable de type <code>Person</code>, il suffit d'écrire:</p>
+          <pre><code>struct Person p;</code></pre>
+        <p>Cela aura pour effet de réserver en mémoire un espace pour les trois variables de la structure <code>Person</code>. Pour accéder aux variables de la structure, il suffit d'utiliser l'opérateur <code>.</code> comme suit
+<label for="sn-struct-mem"
+       class="margin-toggle sidenote-number">
+              </label>:<input type="checkbox" id="sn-struct-mem" class="margin-toggle"/> <span class="sidenote">Dans cette déclaration, les données sont stockées dans la pile car on sait déjà au moment de la compilation combien d'espace mémoire sera nécessaire pour stocker les données.</span>
+
+        </p>
+<pre><code>p.name = "John";
+p.age = 20;
+p.height = 1.80;
+printf("Nom: %s, Age: %d, Taille: %f\n", p.name, p.age, p.height);</code></pre>
+
+
+                <span class="highlight-box">
+          <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i>Les structures sont très utiles pour organiser des données de types différents en un seul ensemble. Elles permettent de définir des types de données personnalisés qui peuvent être utilisés dans le programme.</p>
+                </span>
+
+          <p>Il est possible d'omettre le mot-clé <code>struct</code> en utilisant un alias pour la structure. Par exemple:</p>
+<pre><code>typedef struct {
+  char name[50];
+  int age;
+  float height;
+} Person;</code></pre>
+
+        <p>Lorsque l'on crée un <code>struct</code>, les éléments sont stockés dans l'ordre dans la mémoire en termes d'adresse. Ainsi une structure telle que:</p>
+<pre><code>struct test
+{
+    double height;
+    char   gender;
+    int    age;
+};</code></pre>
+<p>pourrait être stockée de la façon suivante (selon l'architecture de l'ordinateur):</p>
+<pre><code>         +7  +6  +5  +4  +3  +2  +1  +0
+        +---+---+---+---+---+---+---+---+
+0x0000  |            height             |
+        +---+---+---+---+---+---+---+---+
+0x0008  |      age      |        |gender|
+        +---+---+---+---+---+---+---+---+</code></pre>
+        <p>Remarquez ici que <code>gen</code> occupe quand même 4 octets: c'est parce que nous somme sur une architecture 32 bits. Sur une architecture 64 bits, il occuperait 8 octets.</p>
+
+        <span class="highlight-box">
+          <p><i class="fa-solid fa-circle-question fa-lg fa-fw"></i><b>Exercice :</b></br>Déclarer une structure permettant de représenter un point en dimension 3 et écrire deux fonctions <code>afficher_point3D</code> et <code>distance</code> pour afficher les coordonnées du point et calculer la distance entre deux points respectivement.</p>
+        </span>
+
+      </section>
+
+      <section>
+        <h2 id="arrays">Tableaux</h2>
+        <p>Un tableau est une structure de données qui permet de stocker plusieurs éléments de même type sous un même nom. En C, un tableau est déclaré de la façon suivante:</p>
+<pre><code>int tab[5];</code></pre>
+        <p>Cela aura pour effet de réserver un espace en mémoire pour 5 entiers. Pour accéder aux éléments du tableau, il suffit d'utiliser l'indice de l'élément:</p>
+<pre><code>tab[0] = 10;
+tab[1] = 20;
+printf("%d\n", tab[0]); // Affiche 10</code></pre>
+        <p>Il est possible d'initialiser un tableau lors de sa déclaration:</p>
+<pre><code>int tab[5] = {10, 20, 30, 40, 50};</code></pre>
+        <p>Il est possible de déclarer des tableaux de structures:</p>
+<pre><code>struct Person people[5];</code></pre>
+      <p>Pour remplir le tableau, il faut remplir les champs individuellement :</p>
+        <pre><code>people[0].name = "John";
+people[0].age = 20;
+people[0].height = 1.80;</code></pre>
+        <p>Les tableaux sont stockés en mémoire de façon contigue. Ainsi, un tableau de 5 entiers sera stocké de la façon suivante:</p>
+        <pre><code>         +4  +3  +2  +1  +0
+        +---+---+---+---+---+
+0x0000  | 10| 20| 30| 40| 50|
+        +---+---+---+---+---+</code></pre>
+        
+        <span class="highlight-box"><p>L'intérêt des tableaux est de pouvoir stocker plusieurs éléments de même type sous un même nom. Cela permet de manipuler facilement des données de même type. Par exemple, une image peut être stockée sous forme de tableau de pixels.</p></span>
+
+        <section>
+          <h2 id="pointers">Pointeurs</h2>
+          <section>
+            <h3 id="pointeurs-definition">Définition</h3>
+          <p>La notion de pointeur est essentielle en programmation C, et ne peut être introduite séparément des tableaux tant leur connexion est forte. Un pointeur est une variable qui contient l'adresse mémoire d'une autre variable. En C, un pointeur est déclaré de la façon suivante:</p>
+          <pre><code>int entier = 50;
+int *p = &entier;</code></pre>
+          <p>Dans ce code, <code>p</code> est un pointeur sur un entier. Il contient l'adresse de la variable <code>entier</code>. Pour accéder à la valeur de la variable pointée par <code>p</code>, on utilise l'opérateur <code>*</code>:<label for="mn-pointeur" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-pointeur" class="margin-toggle"/><span class="marginnote">La situation peut être résumée comme suit:</br><img src="assets/pointeur_entier.svg"></span></p>
+          <pre><code>printf("%d\n", *p); // Affiche 50</code></pre>
+
+          <p>On se rappelle alors que la syntaxe de la fonction <code>scanf</code> pour lire un entier est:</p>
+          <pre><code>scanf("%d", &entier);</code></pre>
+
+          <p>En effet, <code>scanf</code> attend un pointeur sur un entier pour pouvoir modifier la valeur de la variable <code>entier</code>. On évoquera plus bas cette notion de passage de fonction par pointeur.</p>
+          </section>
+
+          <section>
+            <h3 id="pointeurs-tableaux">Pointeurs et tableaux</h3>
+            <p>Les pointeurs et les tableaux sont intimement liés en C. En effet, un tableau est en fait un pointeur sur la première case du tableau. Ainsi, la déclaration:</p>
+            <pre><code>int tab[5] = {10, 20, 30, 40, 50};</code></pre>
+            <p>Alloue 5 entiers en mémoire de manière contigue et stocke dans la variable <code>tab</code> l'adresse de la première case du tableau. Ainsi, <code>tab</code> est un pointeur sur un entier. Pour accéder aux éléments du tableau, on peut utiliser l'opérateur <code>[]</code> ou l'opérateur <code>*</code>:</p>
+            <pre><code>printf("%d\n", tab[0]); // Affiche 10
+printf("%d\n", *tab); // Affiche 10</code></pre>
+            <p>Il est possible de parcourir un tableau à l'aide de pointeurs:</p>
+            <pre><code>int *p = tab;
+for (int i = 0; i < 5; i++){
+    printf("%d\n", *(p+i));
+}</code></pre>
+          <p>En effet, ajouter un entier à un pointeur revient à décaler le pointeur de la taille d'un entier. Ainsi, <code>p+1</code> pointe sur le deuxième élément du tableau. Cette opération rentre dans le cadre de ce qu'on appelle l'arithmétique des pointeurs. Si le tableau était d'un type différent, le décalage du pointeur prendrait en compte la taille du type.</p>
+          </section>
+
+        <section>
+          <h3 id="pointeurs-fonctions">Pointeurs et fonctions</h3>
+          <p>Il est possible de passer des pointeurs en argument à une fonction. Cela permet de modifier la valeur d'une variable en dehors de la fonction. Par exemple:<label for="mn-pointeur-fonction" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-figure-pointeur-fonction" class="margin-toggle"/><span class="marginnote">Passage par valeur :</br><img src="assets/passage_valeur.svg"/></br>Passage par référence :</br><img src="assets/passe_reference.svg"/></span>
+          </p>
+          <pre><code>void incrementer(int *p){
+  *p = *p + 1;
+}
+int main(){
+  int a = 10;
+  incrementer(&a);
+}</code></pre>
+          <p>Après l'appel à la fonction <code>incrementer</code>, la valeur de <code>a</code> sera égale à 11. En effet, on a passé l'adresse de <code>a</code> à la fonction <code>incrementer</code> qui a modifié la valeur de <code>a</code. Si l'on avait passé <code>a</code> directement, la valeur de <code>a</code> n'aurait pas été modifiée :</p>
+  <pre><code>void incrementer(int p){
+  p = p + 1;
+}
+int main(){
+  int a = 10;
+  incrementer(a);
+}</code></pre>
+        </section>
+
+        <section>
+            <h3 id="pointeurs-void">Pointeurs void</h3>
+            <p>Il est possible de déclarer un pointeur de type <code>void</code>. Un pointeur de type <code>void</code> est un pointeur qui peut pointer sur n'importe quel type de données. Cela peut être utile lorsqu'on ne connaît pas le type de données que l'on va manipuler. Par exemple:</p>
+            <pre><code>void *p;
+              int a = 10;
+              p = &a;
+              printf("%d\n", *(int *)p);</code></pre>
+            <p>Dans cet exemple, <code>p</code> est un pointeur de type <code>void</code> qui pointe sur un entier. Pour accéder à la valeur de l'entier, on doit caster le pointeur en pointeur sur un entier: conversion explicite de type.</p>
+
+        </section>
+          <h3 id="tableau-multiple-dimension">Tableaux multidimensionnels</h3>
+          <p>Il est possible de déclarer des tableaux de plusieurs dimensions en C. Par exemple, un tableau à deux dimensions peut être déclaré de la façon suivante:</p>
+          <pre><code>int tab[3][3];</code></pre>
+          <p>Cela aura pour effet de réserver un espace en mémoire pour 9 entiers. Pour accéder aux éléments du tableau, on utilise deux indices:</p>
+<pre><code>tab[0][0] = 10;
+  tab[0][1] = 20;
+  printf("%d\n", tab[0][0]); // Affiche 10</code></pre>
+          <p>En pratique, le tableau est une zone contigue où l'on stocke ligne par ligne les éléments du tableau. Ainsi, un tableau à deux dimensions (Z lignes, 3 colonnes) est stocké de la façon suivante:</p>
+          <pre><code>
+                    +4          +3          +2          +1          +0
+        ------------+-----------+-----------+-----------+-----------+
+0x0000  | tab[1][1] | tab[1][0] | tab[0][2] | tab[0][1] | tab[0][0] |
+0x0004  |                                               | tab[1][2] |
+        ------------+-----------+-----------+-----------+-----------+</code></pre>
+          <p>En pratique, <code>tab[0]</code> est un pointeur correspondant à l'entier <code>tab[0][0]</code> (correspondant au tableau 1D de la première ligne) alors que <code>tab[1]</code> correspond à l'entier <code>tab[1][0]</code> (correspondant au tableau 1D de la deuxième ligne).</p>
+          <p>Le type de tab est alors <code>int **</code> (pointeur de pointeur d'entier).</p>
+
+        </section>
+
+        <span class="highlight-box">
+          <p><i class="fa-solid fa-circle-question fa-lg fa-fw"></i><b>Exercice :</b></br>
+            Faire une fonction qui remplit un tableau 2D avec les valeurs correspondant au numéro de ligne et colonne: <code>tab[0][0]</code> continent \(0\), <code>tab[1][0]</code> contient \(1\), <code>tab[0][1]</code> contient \(10\), <code>tab[1][1]</code> contient \(11\) etc. La taille du tableau est supposée quelconque. On fera d'abord le prototype de la fonction.</p>
+
+      </section>
+
+
+
+
+
+      <section>
+        <p><a href="./CM2.html">Vers le CM2</a>
+ / <a href="./index.html">Retour à la liste des CMs</a> / <a href="./CM4.html">Vers le CM4</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>

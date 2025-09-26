@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>TD3 - Gestion de la mémoire et pointeurs</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:#111;border-style:solid;border-width:1px;  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:#111;border-style:solid;border-width:1px;  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+@media (prefers-color-scheme: dark) {
+  .tg td{border-color:#ddd;}
+  .tg th{border-color:#ddd;}
+}
+    
+</style>
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="title-h1">TD3 - Tableaux et pointeurs</h1>
+
+      <section>
+        <h2>Table des matières</h2>
+        <nav id="toc" style="margin-top: 1em;">
+          <ol>
+            <li><a href="#exercice-1">Exercice 1 - Arithmétique de pointeurs</a></li>
+            <li><a href="#exercice-2">Exercice 2 - Occupation mémoire</a></li>
+            <li><a href="#exercice-3">Exercice 3 - Passage par valeur ou par référence</a></li>
+            <li><a href="#exercice-4">Exercice 4 - Comptage dans un tableau</a></li>
+            <li><a href="#exercice-5">Exercice 5 - Tableaux multidimensionnels</a></li>
+          </ol>
+        </nav>
+      </section>
+
+      <section>
+        <h2 id="exercice-1">Exercice 1 - Arithmétique de pointeurs</h2>
+        <span class="highlight-box"><i class="fa-regular fa-lightbulb fa-lg fa-fw"></i> On fera cet exercice sur papier.</span>
+        <p>Soit le code suivant:</p>
+          <pre><code>int a;
+int a;
+int tab[5] = {1, 2, 3, 4, 5};
+int *p = tab;
+++p;
+*(p + 1) = 10;</code></pre>
+        <ol>
+          <li>Afficher le tableau à l'issu de l'exécution de ce programme.</li>
+          <li>Simplifier les opérations suivantes:
+            <ol>
+              <li><code>*(&a)</code></li>
+              <li><code>*tab</code></li>
+              <li><code>*(tab + 1)</code></li>
+              <li><code>*(tab) + 1</code></li>
+            </ol></li>
+          <li>Quelle est la différence entre <code>tab</code> et <code>&tab</code>?</li>
+          <li>Quelle est la différence entre <code>tab</code> et <code>*tab</code>?</li>
+          <li>Donner une instruction utilisant l'arithmétique de pointeurs pour changer la valeur de <code>tab[4]</code> en 42.</li>
+        </ol>
+
+        <p>On a maintenant le code suivant:</p>
+<pre><code>float tab[5] = {1.0, 2.0, 3.0, 4.0, 5.0};
+double tab2[5] = {1.0, 2.0, 3.0, 4.0, 5.0};</code></pre>
+      <ol>
+        <li>En utilisant l'arithmétique de pointeurs, donner une instruction pour changer la valeur de <code>tab[3]</code> en 42.0.</li>
+      <li>En utilisant l'arithmétique de pointeurs, donner une instruction pour changer la valeur de <code>tab2[3]</code> en 42.0.</li>
+      <li>En supposant que l'adresse ne mémoire de tab est <code>0x10B0</code>, quelle est l'adresse de <code>tab + 3</code>?</li>
+      <li>En supposant que l'adresse ne mémoire de tab2 est <code>0x10B0</code>, quelle est l'adresse de <code>tab2 + 3</code>?</li>
+    </ol>
+      </section>
+
+      <section>
+        <h2 id="exercice-2">Exercice 2 - Occupation mémoire</h2>
+        <span class="highlight-box"><i class="fa-regular fa-lightbulb fa-lg fa-fw"></i> On fera cet exercice sur papier. On pourra vérifier sur machine.</span>
+        <p>Il est demandé dans cet exercice de représenter en mémoire les données déclarées dans un programme, ainsi que leurs différentes valeurs, à un moment donné de l’exécution. Pour cela, vous représenterez l’occupation des données en mémoire dans un tableau à 3 colonnes comme montré ci-dessous :</p>
+<table class="tg"><thead>
+  <tr>
+    <th class="tg-0lax">identificateur</th>
+    <th class="tg-0lax">adresse</th>
+    <th class="tg-0lax">valeur</th>
+  </tr></thead>
+<tbody>
+  <tr>
+    <td class="tg-0lax">a</td>
+    <td class="tg-0lax">?</td>
+    <td class="tg-0lax">?</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax">...<br></td>
+    <td class="tg-0lax">...</td>
+    <td class="tg-0lax">...</td>
+  </tr>
+</tbody>
+</table>
+        <p>Pour déterminer les adresses, on fera les approximations suivantes :</p>
+    <ul>
+          <li>les données sont réservées en mémoire dans l’ordre de leur déclaration</li>
+          <li>la première adresse démarre à 1000 en notation décimale</li>
+          <li>l'architecture de la machine est 32 bits</li>
+    </ul>
+        <p>Soit le code suivant:</p>
+        <p>Le programme est donné ci-dessous. Donner alors les tableaux aux endroits qui le demandent en commentaire<label for="sn-turtle"
+       class="margin-toggle sidenote-number">
+              </label>.<input type="checkbox" id="sn-turtle" class="margin-toggle"/> <span class="sidenote">
+          Notez que le programme fait une utilisation abusive des pointeurs, l’objectif étant simplement de vous familiariser avec la syntaxe et la sémantique des instructions manipulant des pointeurs.</span>.</p>
+<pre><code>int a=10;
+int b = 5;
+int tab[3] = {1, 2, 3};
+int *p_int;
+
+/* représenter l’occupation mémoire */
+
+tab[0] = a;
+*(tab + 1) = b;
+p_int = tab + 2;
+
+/* représenter l’occupation mémoire */
+
+*p_int = *(p_int - 1);
+--p_int;
+*p_int = *(p_int - 1);
+--p_int;
+*p_int = *(p_int + 2);
+
+/* représenter l’occupation mémoire */
+
+/* donner l'affichage de ce printf */
+printf("%d\t%d\t%d\t%d\t%d\n",a,b,tab[0],tab[1],tab[2]);</code></pre>
+
+      </section>
+
+      <section>
+        <h2 id="exercice-3">Exercice 3 - Passage par valeur ou par référence</h2>
+        <span class="highlight-box"><i class="fa-regular fa-lightbulb fa-lg fa-fw"></i> On fera cet exercice sur papier. On pourra vérifier sur machine.</span>
+        <p>On considère le code suivant:</p>
+<pre><code>void f(int a, int *b) {
+a = 5;
+*b = 10;
+}
+
+int main() {
+  int x = 1;
+  int y = 2;
+  f(x, &y);
+  printf("%d %d\n", x, y);
+  return 0;
+}</code></pre>
+
+      <ol>
+        <li>Donner l'affichage de ce programme.</li>
+        <li>Comment modifier le programme pour que l'affichage soit <code>5 10</code>?</li>
+        <li>Faire une fonction <code>swap</code>, dont on donnera le protoype, qui échange les valeurs contenues dans <code>a</code> et <code>b</code>. </li>
+          <li>Donner alors un exemple d'utilisation de <code>swap</code> sur les éléments 3 et 5 du tableau suivant : <code>int tab[7] = {1, 2, 3, 4, 5, 6, 7};</code></li>
+      </ol>
+      </section>
+
+      <section>
+        <h2 id="exercice-4">Exercice 4 - Comptage dans un tableau</h2>
+        <p>On suppose que l'on a en mémoire un tableau d'entiers de taille 1024 déjà initialisé: <code>int tab[1024]</code>. On veut alors coder une fonction nommée <code>count_occurence</code> qui compte le nombre d'occurences d'un entier dans un tableau passé en paramètres.</p>
+        <ol>
+          <li>Donner le prototype de la fonction <code>count_occurence</code> et expliquer les choix des types en entrée et sortie.</li>
+          <li>Donner le code de la fonction <code>count_occurence</code>.</li>
+          <li>Donner un exemple d'utilisation de cette fonction.</li>
+        </ol>
+      
+        <p>On veut maintenant effectuer la même chose pour un tableau d'une structure <code>Point</code> définie comme suit:</p>
+<pre><code>typedef struct {
+  int x;
+  int y;
+} Point;</code></pre>
+        <p>Supposons que l'on ait un tableau de <code>Point</code> de taille 1024 déjà initialisé: <code>Point tab[1024]</code>. On veut alors coder une fonction nommée <code>count_point</code> qui compte le nombre d'occurences d'un point dans un tableau passé en paramètres.</p>
+        <ol>
+          <li>Donner le prototype de la fonction <code>count_occurence</code> et expliquer les choix des types en entrée et sortie.</li>
+          <li>Donner le code de la fonction <code>count_occurence</code>.</li>
+          <li>Donner un exemple d'utilisation de cette fonction.</li>
+        </ol>
+
+      </section>
+
+      <section>
+        <h2 id="exercice-5">* Exercice 5 - Représentation de matrices</h2>
+        <p>On veut travailler sur une représentation en mémoire d'une matrice de nombres réels. Pour ce faire, on utilisera un tableau unidimensionnel ou l'on stockera les lignes les un après les autres.</p>
+        <ol>
+          <li>Donner le code pour représenter la matrice identité de taille \(3\times 3\)</li>
+          <li>Supposons que nous avons une matrice carrée de taille \(n\). Faire une fonction <code>void print_matrix(double *mat, int m, int n)</code> qui affiche la matrice \(m\times n\) passée en paramètre.</li>
+          <li>(*) Faire une fonction <code>transpose_matrix</code> qui prend en paramètre une matrice carrée \(n\times n\) et la transpose.</li>
+          <li>(**) Faire une fonction <code>produit_matriciel</code> qui prends deux matrices de tailles \(m\times n\) et \(n\times p\) et renvoie le produit de ces deux matrices. On prendra en entrée un pointeur vers une variable <code>resultat</code> que l'on remplira.<label for="sn-matrix-dot"></label><input type="checkbox" id="sn-matrix-dot" class="margin-toggle"/> <span class="sidenote">On rapelle que le produit de deux matrices \(A\) et \(B\) est une matrice \(C\) telle que \(C_{ij} = \sum_{k=1}^n A_{ik}B_{kj}\).</span></li>
+        </ol>
+      </section>
+
+
+
+
+
+      <section>
+        <p><a href="./TD2.html">Vers le TD2</a> / <a href="./index.html">Retour à la liste des TDs</a> / <a href="./TD4.html">Vers le TD4</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>
+
+

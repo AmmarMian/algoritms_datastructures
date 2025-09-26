@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>TP1 - Tortue graphique et tracés paramétrisés.</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="title-h1">TP1 - Tortue graphique et tracés paramétrisés.</h1>
+
+      <section>
+        <p>Dans ce premier TP, nous allons nous intérésser à la réalisation de graphiques à partir d'équations dans le plan et d'instructions algorithmiques. Pour ce faire nous utilisons une librairie graphique nommée <code>Turtle</code><label for="sn-turtle"
+       class="margin-toggle sidenote-number">
+              </label>.<input type="checkbox" id="sn-turtle" class="margin-toggle"/> <span class="sidenote">Aussi connue sous le nom de tortue graphique en français</span></p>
+
+        <p>Il s'agit d'une librairie en langage <code>Python</code> mais une version simplifiée en langage <code>C</code> existe <a href="https://w3.cs.jmu.edu/lam2mo/cs240_2015_08/turtle.html">ici</a>. Nous allons utiliser cette version simplifiée pour réaliser nos graphiques.</p>
+
+        <p>Dans un premier temps nous mettrons en place l'environnement de travail, pour y réaliser des figures géométriques simples. Puis nous nous intéresserons à réaliser deux types de tracés paramétrisés. Enfin pour les étudiants les plus avancées, nous réaliserons le tracé d'une fractale de Von Koch.</p>
+      </section>
+
+      <section>
+        <h2>Tables des matières</h2>
+        <ol>
+          <li><a href="#environnement">Mise en place de l'environnement de travail</a></li>
+          <li><a href="#exercice-figures-geometriques">Exercice 1 - Figures géométriques</a></li>
+          <li><a href="#exercice-turning">Exercice 2 - Trajectoires spirales</a></li>
+          <li><a href="#exercice-bezier">Exercice 3 - Courbes de Bézier quadratiques</a></li>
+          <li><a href="#exercice-koch">Exercice 4 - Fractale de Von Koch</a></li>
+          <li><a href="#reference-turtle">Référence de la librairie Turtle</a></li>         </ol>
+      </section>
+
+      <section>
+        <h2 id="environnement">Mise en place de l'environnement de travail</h2>
+        <span class="highlight-box">
+          <p><i class="fa-solid fa-triangle-exclamation fa-lg fa-fw"></i>
+            Il est primordial de respecter l'organisation des fichiers et les instructions de compilation pour que le programme marche. Merci de vérifier que vous avez bien faites toutes les étapes avant de demander l'aide de votre professeur</p>
+        </span>
+          <p>Dans un premier temps, nous avons besoin de créer un dossier pour le projet que l'on va nommer <code>TP1_nom1_nom2</code>. Dans ce dossier y télécharger les fichiers suivants:</p>
+          <ul>
+            <li><a href="assets/tp1/turtle.c" download>turtle.c</a></li>
+            <li><a href="assets/tp1/turtle.h" download>turtle.h</a></li>
+          </ul>
+
+        <p><label for="mn-figure-turtlebasic" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-figure-turtlebasic" class="margin-toggle"/><span class="marginnote"><img src="assets/tp1/exemple_basique.bmp" alt="Exemple basique turtle"/></br>
+Exemple basique de tracé avec la tortue graphique.</span></p>
+        <p>Créer alors un dossier <code>Figures</code> dans lequel nous stockerons les tracés générés sous la forme d'une image. Enfin, créer un fichier <code>exemple_basique.c</code> dans lequel mettre le code suivant:</p>
+        <pre><code class="language-c">#include "turtle.h"
+
+int main()
+{
+    turtle_init(700, 700);          
+
+    turtle_forward(50);
+    turtle_turn_left(90);
+    turtle_forward(50);
+    turtle_draw_turtle();
+
+    turtle_save_bmp("Figures/exemple_basique.bmp");  
+
+    return EXIT_SUCCESS;
+}</code></pre>
+
+      <p>Compiler le programme avec la commande suivante dans le terminal:</p>
+<pre><code class="language-bash">gcc -o exemple_basique exemple_basique.c turtle.c -lm</code></pre>
+
+      <p>Une image <code>exemple_basique.bmp</code> devrait être générée dans le dossier <code>Figures</code> et ressembler à celle dans la marge.
+
+        <p><b>Expliquer alors ce que ce programme fait et chaque ligne de celui-ci. Explqiuer également la commande de compilation.</b></p>
+
+        <p>Pour la suite nous réaliserons des fichiers nommés <code>exercice_1</code>, <code>exercise_2</code>, etc... pour chaque exercice. Ces fichiers seront à compiler de la même manière que l'exemple basique.</p>
+        <p>On utilisera également d'autres fonctions de la librairie, dont une référence est donnée en <a href="#reference-turtle">annexe</a>. Vous êtes encouragés à regarder dans le fichier <code>turtle.c</code> pour vous faire une idée des mécanisme internes de la librairie.</p>
+
+
+      </section>
+
+      <section>
+        <h2 id="exercice-figures-geometriques">Exercice 1 - Figures géométriques</h2>
+        <p>A l'aide de votre compréhension de la librairie, réaliser les figures suivantes :<label for="sn-functions-basic"
+       class="margin-toggle sidenote-number">
+              </label><input type="checkbox" id="sn-functions-basic" class="margin-toggle"/><span class="sidenote">Il est conseillé de réaliser des fonctions qui réalisent les figures à partir d'une coordonnée centrale et des paramètres de la figure</span></p>
+        <ol>
+          <li>Un carré dont le côté, paramétrisé par une variable, est de 300 pixels.</li>
+          <li>Un triangle équilatéral dont le côté, paramétrisé par une variable, est de 300 pixels.</li>
+          </ol>
+
+        <p>Nous allons ensuite réaliser un cercle de rayon donné. Même s'il existe une instruction dans la librarie, on ne se basera que sur les fonctions <code>turtle_forward</code> et <code>turtle_turn_left</code> pour réaliser cette figure en réalisant un polygone régulier avec beaucoup de côtés comme une approximation. Pour cela, on défini un nombre \(n_{\mathrm{steps}}\) qui représente le nombre de côtés du polygone régulier qui approche le cercle. On peut alors définir le pas \(p\) de la manière suivante:
+$$
+  p = \frac{2\pi r}{n_{\mathrm{steps}}},
+$$
+ainsi qu'un angle \(\alpha\) de la manière suivante:
+$$
+  \alpha = \frac{360}{n_{\mathrm{steps}}}.
+$$
+</p>
+    <ol>
+      <li>Comment faire à partir de ces trois variables pour réaliser une approximation du cercle?</li>
+      <li>Réaliser un cercle de rayon 300 pixels.</li>
+      <li>Que se passe t-il pour un grand nombre de côtés (\(\approx 10000\)) ? Expliquer ce comportement.</li>
+    </ol>
+
+      <p>Enfin réaliser la figure suivante:
+
+          <img src="assets/tp1/exercice1.bmp" alt="Exercie 1"/>
+      </p>
+        
+      </section>
+
+    <section>
+        <h2 id="exercice-turning">Exercice 2 - Trajectoires spirales</h2>
+
+        <p>On veut réaliser une figure en trajectoire spiralée à partir du principe suivant :</p>
+        <ol>
+          <li>La tortue avance d'une certaine distance \(d_0\);</li>
+          <li>La tortue tourne d'un certain angle \(\alpha\) vers la droite;</li>
+          <li>On augmente la distance d'avance de la tortue d'un pas donné \(p\) : \(d_i = d_{i-1} + p\), tout en conservant l'angle intact;</li>
+          <li>On répète les étapes 1 à 3 un nombre \(n\) de fois.</li>
+        </ol>
+
+        <p>Réaliser un programme sur ce principe qui permet de pouvoir changer facilement les paramètres de la trajectoire. Par exemple avec \(\alpha = 90^\circ\), \(d_0 = 10\), \(p = 1\) et \(n = 100\) on aura (à gauche) alors qu'avec \(d_0=10\), \(p=1\), \(\alpha=91\) et \(n=300\) on aura (à droite) :</p>
+      <img width=400 src="assets/tp1/exo2_archimede.bmp" />
+      <img width=400 src="assets/tp1/exo2_wow.bmp" />
+
+      <ol>
+        <li>Réaliser un programme qui permet de générer des figures similaires à celles ci-dessus.</li>
+        <li>Essayer de jouer avec les paramètres pour obtenir des figures en triangle, en hexagone, etc...</li>
+        <li>Que se passe t-il si on introduit un pas de distance aléatoire? (On pourra utiliser <code>rand()</code> pour cela, tout en se renseignant sur son utilisation).</li>
+      </ol> 
+    </section>
+
+    <section>
+      <h2 id="exercice-bezier">Exercice 3 - Courbes de bézier quadratiques</h2>
+      <p>
+          On s'intérésse maintenant à réaliser des courbes de Bézier quadratiques. Ces courbes sont définies par 3 points \(P_0\), \(P_1\) et \(P_2\). La courbe est alors définie par les points de la forme:
+    \[
+      Q(t) = (1-t)^2 P_0 + 2(1-t)t P_1 + t^2 P_2,
+    \]
+      où \(t \in [0,1]\) est un paramètre de la courbe. On peut alors définir la courbe comme une suite de points \(Q(t)\) pour \(t \in [0,1]\).
+
+          Ce processus est expliqué dans l'animation suivante:
+      <video controls width="100%">
+        <source src="assets/tp1/bezier.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+        </p>
+        <p>        <label for="sn-bezier" class="margin-toggle">&#8853;</label><input type="checkbox" id="sn-bezier" class="margin-toggle"/><span class="marginnote">Pour une vidéo détaillée sur le sujet voir <a href="https://www.youtube.com/watch?v=aVwxzDHniEw">cette vidéo</a>.</span></p>
+      <p>Les courbes de Bézier sont des outils très important en infographie et en design. On peut les utiliser pour réaliser des formes complexes et lisses. On peut également les utiliser pour réaliser des animations et des transitions.
+        </p> 
+
+        <p>On se propose de réaliser un programme qui à partir de trois points \(P_0\), \(P_1\) et \(P_2\) réalise une courbe de Bézier quadratique à partir de l'équation précédente et d'une discrétisation de \(t\).</p>
+      <ol>
+          <li>Proposer une <code>struct</code> pour représenter un point dans le plan<label for="sn-functions-basic"
+       class="margin-toggle sidenote-number">
+              </label>.<input type="checkbox" id="sn-functions-basic" class="margin-toggle"/><span class="sidenote">Se référer à <a href="https://www.w3schools.com/c/c_structs.php">cette page</a> pour des exemples.</span></li>
+        <li>Coder une fonction d'interpolation linéaire entre deux points en entrée, et une variable \(t\in[0,1]\) et qui renvoie un point.</li>
+        <li>Coder une fonction qui réalise une courbe de Bézier quadratique à partir de trois points et d'une discrétisation de \(t\). Pour cela, on fera trois interpolations à chaque pas de temps (entre P1 et P2, P2 et P3 et entre les deux points prduits) comme dans l'animation précédente. On tracera alors la ligne entre les segments succesifs entre pas de temps.</li>
+        </ol>
+        <p>On pourra alors produire des figures telles que:
+  <img src="assets/tp1/bezier.bmp"></p>
+    </section>
+
+    <section>
+        <h2 id="exercice-koch"><b>*</b> Exercice 4 - Fractale de Von Koch</h2>
+
+        <p>Pour les plus avancés d'entre vous, on propose de réaliser une fractale de Von Koch. Cette fractale est définie de la manière suivante:</p>
+        <ol>
+          <li>On part d'un segment de longueur \(L\);</li>
+          <li>On divise ce segment en trois segments de longueur \(L/3\);</li>
+          <li>On construit un triangle équilatéral sur le segment du milieu;</li>
+          <li>On retire le segment du milieu;</li>
+          <li>On répète les étapes 2 à 4 un nombre \(n\) de fois sur les segments obtenu à l'étape précédente.</li>
+        </ol>
+        <p>
+          En réalisant cette procédure sur trois segments d'un triangle équilatéral, on obtient la fractale de Von Koch:
+          <img src="assets/tp1/von_koch.bmp" alt="Fractale de Von Koch"/>
+        </p>
+
+        <p>Réaliser alors cette figure à l'aide de <code>Turtle</code><label for="sn-aide-koch" class="margin-toggle sidenote-number">
+        </label>.<input type="checkbox" id="sn-aide-koch" class="margin-toggle"/><span class="sidenote">On pourra utiliser une fonction récursive pour réaliser cette figure. En cas de difficulté on pourra s'aider de <a href="http://algor.chez.com/math/koch.htm">cette page</a>.</span></p>
+
+
+
+
+      <section>
+        <h2 id="reference-turtle">Référence de la librairie Turtle</h2>
+
+<p> Initialization and cleanup: </p>
+
+<ul>
+
+<li><code>void turtle_init(int width, int height);</code><br/><br/>
+
+Initialize the 2d field that the turtle moves on. This must be called before
+any of the other functions in this library.</li>
+
+<li><code>void turtle_cleanup();</code><br/><br/>
+
+Clean up any memory used by the turtle graphics system. Call this at the end of
+the program to ensure there are no memory leaks.</li>
+
+</ul>
+
+<p> Basic movement: </p>
+
+<ul>
+
+<li><code>void turtle_forward(int pixels);</code><br/><br/>
+
+Move the turtle forward, drawing a straight line if the pen is down.</li>
+
+<li><code>void turtle_backward(int pixels);</code><br/><br/>
+
+Move the turtle backward, drawing a straight line if the pen is down.</li>
+
+<li><code>void turtle_turn_left(double angle);</code><br/><br/>
+
+Turn the turtle to the left by the specified number of degrees.</li>
+
+<li><code>void turtle_turn_right(double angle);</code><br/><br/>
+
+Turn the turtle to the right by the specified number of degrees.</li>
+
+<li><code>void turtle_goto(int x, int y);</code><br/><br/>
+
+Move the turtle to the specified location, drawing a straight line if the pen
+is down. Takes integer coordinate parameters.</li>
+
+<li><code>void turtle_goto_real(double x, double y);</code><br/><br/>
+
+Move the turtle to the specified location, drawing a straight line if the pen
+is down. Takes real-numbered coordinate parameters, and is also used internally
+to implement forward and backward motion.</li>
+
+</ul>
+
+<p> Status and drawing properties: </p>
+
+<ul>
+
+<li><code>void turtle_reset();</code><br/><br/>
+
+Reset the turtle's location, orientation, color, and pen status to the default
+values: center of the field (0,0), facing right (0 degrees), black, and down,
+respectively).</li>
+
+<li><code>void turtle_backup();</code><br/><br/>
+
+Creates a backup of the current turtle. Once you have a backup you can restore
+from a backup using turtle_restore(); This is useful in complex drawing
+situations.</li>
+
+<li><code>void turtle_restore();</code><br/><br/>
+
+Restores the turtle from the backup. Note that the behavior is undefined if you
+have not first called turtle_backup().</li>
+
+<li><code>void turtle_pen_up();</code><br/><br/>
+
+Set the pen status to "up" (do not draw).</li>
+
+<li><code>void turtle_pen_down();</code><br/><br/>
+
+Set the pen status to "down" (draw).</li>
+
+<li><code>void turtle_begin_fill();</code><br/><br/>
+
+Start filling. Call this before drawing a polygon to activate the bookkeeping
+required to run the filling algorithm later.</li>
+
+<li><code>void turtle_end_fill();</code><br/><br/>
+
+End filling. CAll this after drawing a polygon to trigger the fill algorithm.
+The filled polygon may have up to 128 sides.</li>
+
+<li><code>void turtle_set_heading(double angle);</code><br/><br/>
+
+Rotate the turtle to the given heading (in degrees). 0 degrees means facing to
+the right; 90 degrees means facing straight up.</li>
+
+
+<li><code>void turtle_set_pen_color(int red, int green, int blue);</code><br/><br/>
+
+Set the current drawing color. Each component (red, green, and blue) may be any
+value between 0 and 255 (inclusive). Black is (0,0,0) and white is
+(255,255,255).</li>
+
+
+<li><code>void turtle_set_fill_color(int red, int green, int blue);</code><br/><br/>
+
+Set the current filling color. Each component (red, green, and blue) may be any
+value between 0 and 255 (inclusive). Black is (0,0,0) and white is
+(255,255,255).</li>
+
+</ul>
+
+<p> Drawing: </p>
+
+<ul>
+
+<li><code>void turtle_dot();</code><br/><br/>
+
+Draw a 1-pixel dot at the current location, regardless of pen status.</li>
+
+<li><code>void turtle_draw_pixel(int x, int y);</code><br/><br/>
+
+Draw a 1-pixel dot at the given location using the current draw color,
+regardless of current turtle location or pen status.</li>
+
+<li><code>void turtle_fill_pixel(int x, int y);</code><br/><br/>
+
+Draw a 1-pixel dot at the given location using the current fill color,
+regardless of current turtle location or pen status.</li>
+
+<li><code>void turtle_draw_line(int x0, int y0, int x1, int y1);</code><br/><br/>
+
+Draw a straight line between the given coordinates, regardless of current
+turtle location or pen status.</li>
+
+<li><code>void turtle_draw_circle(int x, int y, int radius);</code><br/><br/>
+
+Draw a circle at the given coordinates with the given radius, regardless of
+current turtle location or pen status.</li>
+
+<li><code>void turtle_draw_turtle();</code><br/><br/>
+
+Draws a turtle.</li>
+
+</ul>
+
+<p> Output: </p>
+
+<ul>
+
+<li><code>void turtle_save_bmp(const char *filename);</code><br/><br/>
+
+Save current field to a .bmp file.</li>
+
+
+<li><code>void turtle_begin_video(int pixels_per_frame);</code><br/><br/>
+
+Enable video output. When enabled, periodic frame bitmaps will be saved with
+sequentially-ordered filenames matching the following pattern: "frameXXXX.bmp"
+(X is a digit). Frames are emitted after a regular number of pixels have been
+drawn; this number is set by the parameter to this function. Some
+experimentation may be required to find a optimal values for different
+shapes.</li>
+
+
+<li><code>void turtle_save_frame();</code><br/><br/>
+
+Emit a single video frame containing the current field image.</li>
+
+<li><code>void turtle_end_video();</code><br/><br/>
+
+Disable video output.</li>
+
+</ul>
+      </section>
+
+      <section>
+        <p><a href="./index.html">Retour à la liste des TPs</a> / <a href="./TP2.html">Vers le TP2</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>
+

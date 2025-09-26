@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>CM1 - Notion de programmation informatique.</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+
+  <body>
+    <article>
+      <h1 id="tufte-css">CM1 - Notion de programmation informatique.</h1>
+      <section>
+        <p>Dans ce premier CM, nous allons introduire le principe de ce qu'est la programmation informatique en tant que réalisation d'un fichier qui est compilé à l'aide d'un outil puis exécuté par l'odinateur dans un second temps.</p>
+
+      <h2>Table des matières</h2>
+        <ul>
+        <li><a href="#what-is-programming">Qu'est ce que la programmation ?</a></li>
+        <li><a href="#examples-programming-interessants">Exemples de programmes intéressants</a></li>
+        <li><a href="#C-language">Le langage C dans tout ça</a></li>
+        <li><a href="#elements-language-c">Les éléments de base de la programmation C</a></li>
+        <li><a href="#compilons">Compilons l'exemple du programme "Hello World!"</a></li>
+        <li><a href="#structure-controle">Les structures de contrôle en C</a></li>
+        <li><a href="#fonctions">Les Fonctions</a></li>
+        <li><a href="#nim">Exemple d'un programme qui simule le jeu de Nim</a></li>
+        <li><a href="#pgcd">Exemple d'un programme qui calcule le pgcd de deux nombres</a></li>
+
+      </section>
+
+      <section>
+        <h2 id="what-is-programming">Qu'est ce que la programmation ?</h2>
+        <p>La <i>programmation</i> est une activité qui consiste en la réalisation d'un fichier texte qui contient des instructions que l'ordinateur doit suivre pour réaliser une tâche donnée. Ces instructions sont écrites dans un langage de programmation qui est ensuite compilé par un outil spécifique pour générer un fichier exécutable qui peut être lancé par l'ordinateur. Ce fichier texte répond à un certain nombre de règles syntaxiques qui sont spécifiques au langage de programmation utilisé. Ces règles syntaxiques sont définies par un ensemble de règles qui sont spécifiques à chaque langage de programmation.
+
+
+          <label for="mn-figure-fl" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-figure-fl" class="margin-toggle"/><span class="marginnote">
+<svg width="200" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Define styles for the boxes -->
+  <style>
+    .box {
+      fill: none;
+      stroke: #111;
+      stroke-dasharray: 5, 5;
+    }
+    .arrow {
+      fill: none;
+      stroke: black;
+      stroke-width: 2;
+    }
+    .text {
+      fill: #111;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    @media (prefers-color-scheme: dark) {
+        .box {
+          stroke: #ddd;
+        }
+
+        .arrow {
+          stroke: #ddd;
+        }
+
+        .text {
+          fill: #ddd;
+        }
+           
+    }
+  </style>
+
+  <!-- Box 1: Writing a text file -->
+  <rect x="0" y="10" width="160" height="40" class="box"/>
+  <text x="80" y="30" class="text">Ecrire le programme</text>
+
+  <!-- Arrow from Box 1 to Box 2 -->
+  <line x1="50" y1="50" x2="50" y2="70" class="arrow"/>
+  <polygon points="45,70 50,80 55,70" class="arrow"/>
+
+  <!-- Box 2: Compiling it -->
+  <rect x="0" y="80" width="100" height="40" class="box"/>
+  <text x="50" y="100" class="text">Compilation</text>
+
+  <!-- Arrow from Box 2 to Box 3 -->
+  <line x1="50" y1="120" x2="50" y2="140" class="arrow"/>
+  <polygon points="45,140 50,150 55,140" class="arrow"/>
+
+  <!-- Box 3: Running it -->
+  <rect x="0" y="150" width="100" height="40" class="box"/>
+  <text x="50" y="170" class="text">Exécuter</text>
+  
+</svg>
+<legend style="margin-top: -200px;">Pipeline de la programmation</legend>
+</span>
+
+      On écrit un programme pour résoudre un problème donné qui peut être de nature très diverses. Par exemple, on peut écrire un programme pour calculer la trajectoire d'un objet en chute libre, pour trier une liste d'éléments ou pour afficher un message à l'écran. Les programmes peuvent être de nature très diverses et peuvent être écrits dans une grande variété de langages de programmation.</p>
+
+      <p>Associé à la programmation, une branche de l'informatique appelée l'<i>algorithmique</i> est étudiée. L'algorithmique est la science qui étudie les algorithmes, c'est-à-dire les méthodes pour résoudre un problème donné. L'algorithmique est une discipline qui est étudiée en parallèle de la programmation et qui est essentielle pour écrire des programmes efficaces et corrects. Un autre sujet d'étude correspond à la réalisation de structures de données qui sont des objets qui permettent de stocker des informations de manière structurée.</p> 
+
+        <p> Dans ce cours nous nous intéresserons principalement aux aspects de l'algorithmique et des structures de données en partant du language C.</p>
+      </section>
+
+      <section>
+        <h2 id="examples-programming-interessants">Exemples de programmes intéressants (pour votre professeur..)</h2>
+
+        <p>Illustrons tout d'abord des usages qui me paraissent intéressants de la programmation informatique. Ces exemples sont tirés de la physique et des mathématiques et montrent comment la programmation informatique est utilisée pour résoudre des problèmes complexes.</p>
+
+        <section>
+          <h3 id="example-threebody">Un exemple issu de la physique: le problème à 3 corps</h2>
+          <figure class="fullwidth">
+            <img src="https://hackaday.com/wp-content/uploads/2024/04/3body-ic.png" alt="Human computer." />
+              <legend>Un ordinateur humain, illustration des besoins d'un algorithme de calcul. Image extraite de la série <i>Problème à trois corps</i> basée sur le roman de Liu Cixin.</legend>
+          </figure>
+          <p> 
+  <label for="mn-figure-1" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-figure-1" class="margin-toggle"/><span class="marginnote"><img src="assets/Three-body_Problem_Animation.gif" alt="Example trajectory of the three body problem."/></br>
+  Un exemple de trajectoires obtenues à partir de conditions initiales données. Source:<a title="Dnttllthmmnm, CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0&gt;, via Wikimedia Commons" href="https://commons.wikimedia.org/wiki/File:Three-body_Problem_Animation.gif">Wikipedia</a>.</span>
+
+Le problème à trois corps est un problème classique de la physique qui consiste à étudier le mouvement de trois corps sous l'influence de la gravitation. Ce problème est très difficile à résoudre de manière analytique et nécessite souvent l'utilisation de méthodes numériques pour obtenir des solutions. Un exemple de trajectoires obtenues à partir de conditions initiales données est donné en marge. 
+
+Les trajectoires sont calculées à partir de l'équation de Newton qui décrit le mouvement des corps sous l'influence de la gravitation. Cette équation est donnée par:
+$$
+m_i \frac{d^2 \vec{r}_i}{dt^2} = \sum_{j \neq i} \frac{G m_i m_j}{||\vec{r}_j - \vec{r}_i\|^2} (\vec{r}_j - \vec{r}_i),
+$$
+              où \(m_i\) est la masse du corps, \(\vec{r}_i\) est sa position, \(G\) est la constante de gravitation et \(t\) est le temps. Cette équation est résolue numériquement pour obtenir les trajectoires des corps<label for="sn-threebody-simulation"
+       class="margin-toggle sidenote-number">
+              </label>.<input type="checkbox" id="sn-threebody-simulation" class="margin-toggle"/> <span class="sidenote">Le lecteur intéressé pourra lire la page <a href="https://en.wikipedia.org/wiki/Three-body_problem">Wikipedia</a> qui donne plus de détails sur ce problème. Une simulation en <i>Javascript</i> est disponible <a href="https://evgenii.com/blog/three-body-problem-simulator/">ici</a>.</span>
+        
+    La simulation numérique permet d'observer des comportements très variés en fonction des conditions initiales choisies, ce qui serait impossible sans un programme informatique pour approximer la solution de manière numérique. 
+
+          </p>
+        </section>
+
+        <section>
+          <h3 id=fractales>Un exemple de simulation numérique issu des mathématiques: les fractales</h3>
+          <p>
+
+  <label for="mn-figure-mandelbrot" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-figure-mandelbrot" class="margin-toggle"/><span class="marginnote"><img src="assets/Mandelbrot_sequence_new.gif" alt="Animation zoom sur l'ensemble de Mandelmbrot"/></br>
+  Une visualisation de l'ensemble de Mandelbrot permettant d'observer la structure d'auto-similarité. Source:<a href="https://en.wikipedia.org/wiki/File:Mandelbrot_sequence_new.gif">Wikipedia</a>.</span>
+          Les fractales sont des objets mathématiques qui ont la propriété d'être auto-similaires, c'est-à-dire qu'ils ont la même structure à différentes échelles. Les fractales sont utilisées pour modéliser des phénomènes naturels tels que les montagnes, les nuages ou les côtes maritimes. Un exemple classique de fractale est l'ensemble de Mandelbrot qui est défini par l'équation:
+$$
+z_0 = 0, \quad z_{n+1} = z_n^2 + c,
+$$
+    où \(c\) est un nombre complexe. L'ensemble de Mandelbrot est l'ensemble des nombres complexes \(c\) pour lesquels la suite \(z_n\) reste bornée. L'ensemble de Mandelbrot est un objet fractal qui a une structure complexe et qui peut être visualisé à l'aide d'un programme informatique. Un exemple de visualisation de l'ensemble de Mandelbrot est donné en marge.
+        </p>
+        </section>
+      </section>
+
+      <section>
+        <h2 id="C-language">Le langage C dans tout ça</h2>
+          <figure class="fullwidth">
+            <img src="https://media.cnn.com/api/v1/images/stellar/prod/111014015647-dennis-ritchie-ken-thompson-bell-labs.jpg?q=x_23,y_269,h_1200,w_2133,c_crop/h_653,w_1160/f_webp" alt="Dennis Ritchie and Ken Thompson" />
+              <legend>Dennis Ritchie (à gauche) et Ken Thompson (à droite) en 1972, Courtesy Bell Labs.</legend>
+                        
+          </figure>
+        <p>
+
+    Le langage C est un langage de programmation très populaire qui a été créé en 1972 par Dennis Ritchie. Le langage C est un langage de programmation de bas niveau qui est utilisé pour écrire des systèmes d'exploitation, des applications système et des logiciels embarqués. Le langage C est un langage de programmation impératif qui est basé sur des instructions séquentielles qui sont exécutées les unes après les autres. Il s'agit langage de programmation très puissant qui permet de réaliser des programmes très efficaces et très rapides, ce qui le rends populaire pour de nombreuses applications.</p>
+
+            <figure>
+      <pre><code>
+#include &ltstdio.h&gt
+
+int main(){
+  printf("Hello world!");  
+}
+        </code>              
+        </pre>
+
+      <legend style="margin-top: -30px;">Le fameux hello world. Un exemple de la syntaxe du langage C.</legend>
+            </figure>
+
+        <p>Le choix du C dans le cadre du cours est issu du fait qu'il s'agit d'un langage dis <i>bas-niveau</i> qui permet de comprendre les mécanismes internes de l'ordinateur. Notamment il permet de comprendre le processus de compilation ainsi que la gestion de la mémoire RAM dans l'ordinateur.
+        </p>
+
+        <p>Loin d'être une liste exhaustive de tout ce que le langage C peut faire, nous nous intéressons ici aux éléments de base qui permettent de comprendre comment écrire un programme simple en C. Le lecteur est invité à se référencer au livre de référence de Brian Kernighan et Dennis Ritchie pour plus de détails sur le langage C.<label for="sn-kernighan-ritchie" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-kernighan-ritchie" class="margin-toggle"/><span class="sidenote"><img src="assets/The_C_Programming_Language,_First_Edition_Cover.svg.png"></br>
+          Brian Kernighan et Dennis Ritchie, <i>The C Programming Language</i>, Prentice Hall, 1988. Disponible <a href="../ressources-supplementaires/index.html">ici</a>.</span></p>
+      </section>
+
+    <section>
+      <h2 id="elements-language-c">Les éléments de base de la programmation C</h2>
+        <p>Familiarisons nous avec les éléments du language C qui nous permettront d'écrire des programmes par la suite. Loin d'être une liste exhaustive de tous les éléments de syntaxe du langage C, nous nous intéressons ici aux éléments de base qui permettent de comprendre comment écrire un programme simple en C.</p>
+
+        <p>Un programme en C suit une structure bien définie, et chaque élément a un rôle spécifique. Comprendre cette structure est essentiel pour écrire et organiser correctement votre code.</p>
+        <h3>Directives de Préprocesseur</h3>
+        <p>Les directives de préprocesseur sont des instructions qui commencent par <code>#</code> et sont traitées avant la compilation du programme. Les plus courantes incluent l'inclusion de fichiers d'en-tête (ou bibliothèques) et la définition de constantes.</p>
+        <pre><code>#include &lt;stdio.h&gt;
+</code></pre>
+        <p><strong>Que fait cette ligne ?</strong> : Elle inclut la bibliothèque standard d'entrée/sortie (<code>stdio.h</code>) qui contient des fonctions comme <code>printf</code> et <code>scanf</code> pour afficher du texte ou lire des données.</p>
+        <p><strong>Pourquoi est-elle importante ?</strong> : Sans cette directive, vous ne pourriez pas utiliser les fonctions standards comme <code>printf</code>, ce qui limiterait considérablement vos possibilités.</p>
+        <p><strong>Autres directives courantes :</strong></p>
+        <pre><code>#define PI 3.14159
+</code></pre>
+        <p>Ici, <code>PI</code> est remplacé par <code>3.14159</code> partout dans le code.</p>
+    </section>
+
+    <section>
+        <h3 id="main">La Fonction <code>main</code></h3>
+        <p>La fonction <code>main</code> est le point de départ de tout programme en C. C’est ici que le programme commence son exécution. Voici un exemple détaillé :</p>
+        <pre><code>int main() {
+    // Instructions du programme
+    return 0;
+}
+</code></pre>
+        <p><strong>int :</strong> Le type de retour de la fonction <code>main</code>. Il indique que la fonction renvoie un entier (<code>int</code>), généralement 0, pour signaler que le programme s'est terminé avec succès.</p>
+        <p><strong>main :</strong> Le nom de la fonction principale. C'est un nom spécial reconnu par le compilateur comme le point d'entrée du programme.</p>
+        <p><strong>() :</strong> Les parenthèses indiquent que <code>main</code> est une fonction. Dans certains cas, elles peuvent contenir des paramètres, mais pour un programme de base, elles sont vides.</p>
+        <p><strong>{ }</strong> Les accolades délimitent le corps de la fonction. Toutes les instructions à l'intérieur de ces accolades seront exécutées lorsque le programme sera lancé.</p>
+    </section>
+
+    <section>
+        <h3 id="printf">Affichage de Texte avec <code>printf</code></h3>
+        <p>Une des premières fonctions que vous utiliserez est <code>printf</code>, qui sert à afficher du texte à l'écran.</p>
+        <pre><code>printf("Bonjour, le monde!\n");
+</code></pre>
+        <p><strong>printf :</strong> C'est une fonction fournie par <code>stdio.h</code> qui permet d'afficher du texte sur la console.</p>
+        <p><strong>"Bonjour, le monde!\n" :</strong> Ce texte est ce que la fonction va afficher. Le <code>\n</code> à la fin signifie "nouvelle ligne", donc après avoir affiché "Bonjour, le monde!", le curseur se déplace à la ligne suivante.</p>
+    </section>
+
+    <section>
+        <h3 id="return">Retourner une Valeur avec <code>return</code></h3>
+        <p>La fonction <code>main</code> doit toujours se terminer par une instruction <code>return</code>, qui indique la fin du programme et renvoie un code au système d'exploitation.</p>
+        <pre><code>return 0;
+</code></pre>
+        <p><strong>Pourquoi 0 ?</strong> : En C, retourner 0 signifie que le programme s'est terminé correctement. D'autres valeurs peuvent être utilisées pour indiquer des erreurs ou des états spécifiques, mais 0 est la convention pour un succès.</p>
+    </section>
+
+    <section>
+        <h3 id="variables">Les Variables dans <code>main</code></h3>
+        <p>Vous pouvez déclarer et utiliser des variables à l'intérieur de la fonction <code>main</code>. Par exemple :</p>
+        <pre><code>int main() {
+    int nombre = 10;  // Déclaration d'une variable entière
+    printf("Le nombre est %d\n", nombre);
+    return 0;
+}
+</code></pre>
+        <p><strong>int nombre = 10;</strong> : Cette ligne déclare une variable appelée <code>nombre</code> de type entier (<code>int</code>) et l'initialise à 10.</p>
+        <p><strong>%d</strong> : Dans <code>printf</code>, <code>%d</code> est un spécificateur de format qui indique où insérer la valeur d'une variable entière.</p>
+    </section>
+
+
+    <section>
+        <h3 id="comment-prog-fonctionne">Comment le Programme Fonctionne-t-il ?</h3>
+        <p>Lorsqu’un programme C est exécuté :</p>
+        <ul>
+            <li>Le compilateur lit les directives de préprocesseur pour inclure les fichiers nécessaires.</li>
+            <li>Il trouve la fonction <code>main</code> et commence à exécuter les instructions dans l'ordre.</li>
+            <li>Chaque ligne de code dans <code>main</code> est exécutée séquentiellement.</li>
+            <li>Une fois que toutes les instructions sont exécutées, le programme atteint l'instruction <code>return 0;</code> et se termine en signalant que tout s'est bien passé.</li>
+        </ul>
+        <p>Voici une vue d'ensemble d'un programme complet :</p>
+        <pre><code>#include &lt;stdio.h&gt;  // Inclusion de la bibliothèque standard
+
+int main() {
+    // Déclaration et initialisation de variables
+    int nombre = 10;
+    
+    // Affichage du nombre
+    printf("Le nombre est %d\n", nombre);
+    
+    // Fin du programme
+    return 0;
+}
+</code></pre>
+        <p>Cet exemple met en lumière les éléments essentiels que chaque programme C doit contenir et explique comment ils fonctionnent ensemble pour créer un programme fonctionnel.</p>
+
+
+    </section>
+
+    <section>
+        <h3 id="types">Types de Base en C</h3>
+        <p>En C, il existe plusieurs types de base que vous pouvez utiliser pour stocker différentes sortes de données. Voici les principaux types de base :</p>
+        <ul>
+            <li><strong><code>int</code> :</strong> Utilisé pour stocker des nombres entiers.</li>
+            <li><strong><code>float</code> :</strong> Utilisé pour stocker des nombres à virgule flottante (simple précision).</li>
+            <li><strong><code>double</code> :</strong> Utilisé pour stocker des nombres à virgule flottante (double précision).</li>
+            <li><strong><code>char</code> :</strong> Utilisé pour stocker des caractères uniques.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3 id="printf-variables">Affichage des Variables à l'Écran</h3>
+        <p>Pour afficher les valeurs des variables à l'écran, on utilise la fonction <code>printf</code>. Selon le type de variable, on a des spécificateurs de format différents :
+          <label for="mn-char" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-figure-char" class="margin-toggle"/><span class="marginnote">On détaillera le cas de <code>char</code> ainsi que la syntaxe de la création de celui-ci dans des prochains CMS</span></p>
+        <ul>
+            <li><strong><code>%d</code> :</strong> Pour afficher une variable de type <code>int</code>.</li>
+            <li><strong><code>%f</code> :</strong> Pour afficher une variable de type <code>float</code>.</li>
+            <li><strong><code>%lf</code> :</strong> Pour afficher une variable de type <code>double</code>.</li>
+            <li><strong><code>%c</code> :</strong> Pour afficher une variable de type <code>char</code>.</li>
+            <li><strong><code>%s</code> :</strong> Pour afficher une chaîne de caractères (un tableau de <code>char</code>).
+</li>
+        </ul>
+        <p>Voici des exemples montrant comment déclarer des variables de chaque type et les afficher à l'écran :</p>
+        <pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int entier = 10;
+    float decimal = 3.14;
+    double grandDecimal = 3.1415926535;
+    char lettre = 'A';
+    char chaine[] = "Bonjour!";
+
+    printf("Entier : %d\\n", entier);
+    printf("Décimal (float) : %f\\n", decimal);
+    printf("Grand décimal (double) : %lf\\n", grandDecimal);
+    printf("Caractère : %c\\n", lettre);
+    printf("Chaîne de caractères : %s\\n", chaine);
+
+    return 0;
+}
+</code></pre>
+        <p>Ce programme produira la sortie suivante :</p>
+        <pre><code>Entier : 10
+Décimal (float) : 3.140000
+Grand décimal (double) : 3.141593
+Caractère : A
+Chaîne de caractères : Bonjour!
+</code></pre>
+        <p>Notez que par défaut, <code>%f</code> et <code>%lf</code> affichent six chiffres après la virgule. Vous pouvez spécifier le nombre de chiffres après la virgule avec <code>%.nf</code>, où <code>n</code> est le nombre de chiffres souhaité.</p>
+    </section>
+
+    <section>
+        <h2 id="compilons">Compilons l'exemple du programme "Hello World!"</h2>
+        <p>Nous avons ainsi vu les éléments structurants de la syntaxe C. Mais il ne suffit pas d'écrire un programme pour qu'il soit exécuté. Il faut le compiler. 
+
+        <section>
+          <h3 id="terminal-compilation">A partir du terminal avec <code>gcc</code></h3>
+
+          <p>Une première approche pour compiler, consiste en l'utilisation d'un terminal.</p>
+          <p>Pour cela, nous allons utiliser le compilateur <code>gcc</code> qui est un compilateur C très populaire. Pour compiler un programme en C, vous devez exécuter la commande suivante dans un terminal :</p>
+        <pre><code>gcc -o hello hello.c</code></pre>
+        <p>Cette commande compile le fichier <code>hello.c</code> et crée un fichier exécutable appelé <code>hello</code>. Si la compilation se passe bien, vous pouvez exécuter le programme en tapant :</p>
+        <pre><code>./hello</code></pre>
+        <p>Cela affichera le message "Hello, World!" sur votre console. Félicitations, vous avez écrit et exécuté votre premier programme en C !</p>
+
+
+        <section>
+
+        <section>
+          <h3 id="ide-compilation">Avec un IDE: Le cas VsCode</h3>
+          <p>Une autre approche consiste à utiliser un IDE (Integrated Development Environment) qui est un environnement de développement intégré qui facilite l'écriture, la compilation et l'exécution de programmes. Un IDE populaire pour le développement en C est Visual Studio Code (VSCode).</p>
+          <p>Pour compiler et exécuter un programme en C avec VSCode, vous devez :</p>
+          <ul>
+            <li>Installer l'extension C/C++ pour VSCode.</li>
+            <li>Créer un nouveau fichier C dans VSCode.</li>
+            <li>Écrire votre programme en C.</li>
+            <li>Appuyer sur <code>Ctrl + Shift + B</code> pour compiler le programme.</li>
+            <li>Exécuter le programme en appuyant sur <code>F5</code>.</li>
+          </ul>
+
+          <p>Un terminal intégré affichera les résultats de la compilation et de l'exécution de votre programme. Cela vous permet de voir les erreurs et les messages de sortie directement dans VSCode.</p>
+
+
+        </section>
+      </section>
+
+        </section>
+
+
+  <section>
+    <h2 id="structure-controle">Les structures de contrôle en C</h2>
+    <p>Les structures de contrôle permettent de contrôler le flux d'exécution d'un programme en fonction de certaines conditions. Les structures de contrôle les plus courantes en C sont les suivantes :</p>
+      <section>
+        <h3 id="conditions">Les instructions conditionnelles avec <code>if</code></h3>
+        <p>L'instruction <code>if</code> permet d'exécuter un bloc de code si une condition est vraie. Voici un exemple :</p>
+        <pre><code>int nombre = 10;
+if (nombre &gt; 0) {
+  printf("Le nombre est positif.\n");
+}
+              </code></pre>
+      </section>
+
+    <section>
+        <h3 id="for-loop">La Boucle <code>for</code></h3>
+        <p>La boucle <code>for</code> est utilisée pour répéter un bloc de code un nombre spécifique de fois. Elle est particulièrement utile lorsque vous savez à l'avance combien de fois vous voulez exécuter un bloc de code.</p>
+        <p>La syntaxe de base d'une boucle <code>for</code> en C est la suivante :</p>
+        <pre><code>for (initialisation; condition; incrément) {
+    // Bloc de code à exécuter
+}</code></pre>
+        <p>Voici un exemple simple :</p>
+        <pre><code>for (int i = 0; i &lt; 5; i++) {
+    printf("i vaut %d\\n", i);
+}</code></pre>
+        <p>Dans cet exemple :</p>
+        <ul>
+            <li><strong>Initialisation :</strong> <code>int i = 0;</code> - Cette partie initialise la variable <code>i</code> à 0.</li>
+            <li><strong>Condition :</strong> <code>i &lt; 5;</code> - Tant que cette condition est vraie, la boucle continue de s'exécuter.</li>
+            <li><strong>Incrément :</strong> <code>i++;</code> - Après chaque itération, la variable <code>i</code> est incrémentée de 1.</li>
+        </ul>
+        <p>Le résultat de ce code sera :</p>
+        <pre><code>i vaut 0
+i vaut 1
+i vaut 2
+i vaut 3
+i vaut 4
+</code></pre>
+    </section>
+
+    <section>
+        <h3 id="while-loop">La Boucle <code>while</code></h3>
+        <p>La boucle <code>while</code> est utilisée pour répéter un bloc de code tant qu'une condition spécifiée est vraie. Contrairement à la boucle <code>for</code>, vous n'avez pas besoin de connaître à l'avance le nombre d'itérations.</p>
+        <p>La syntaxe de base d'une boucle <code>while</code> en C est la suivante :</p>
+        <pre><code>while (condition) {
+    // Bloc de code à exécuter
+}</code></pre>
+        <p>Voici un exemple simple :</p>
+        <pre><code>int i = 0;
+while (i &lt; 5) {
+    printf("i vaut %d\\n", i);
+    i++;
+}</code></pre>
+        <p>Dans cet exemple :</p>
+        <ul>
+            <li><strong>Condition :</strong> <code>i &lt; 5;</code> - Tant que cette condition est vraie, la boucle continue de s'exécuter.</li>
+            <li><strong>Incrément :</strong> <code>i++;</code> - À chaque itération, la variable <code>i</code> est incrémentée de 1 pour éviter une boucle infinie.</li>
+        </ul>
+        <p>Le résultat de ce code sera le même que pour la boucle <code>for</code> :</p>
+        <pre><code>i vaut 0
+i vaut 1
+i vaut 2
+i vaut 3
+i vaut 4
+</code></pre>
+    </section>
+
+  </section>
+
+    <section>
+        <h2 id="fonctions">Les Fonctions</h2>
+        <p>Une fonction en C est un bloc de code qui effectue une tâche spécifique. Elle permet de diviser un programme en morceaux plus petits, plus faciles à comprendre et à gérer. Une fonction peut prendre des <strong>paramètres</strong> (les données d'entrée) et renvoyer une <strong>valeur</strong> (le résultat).</p>
+    </section>
+
+    <section>
+        <h3>Prototype d'une Fonction</h3>
+        <p>Le prototype d'une fonction est une déclaration qui indique au compilateur le nom de la fonction, son type de retour, et les types de ses paramètres. Il est généralement placé avant la fonction <code>main</code>, ou dans un fichier d'en-tête séparé.</p>
+        <pre><code>type_de_retour nom_de_fonction(type_param1 param1, type_param2 param2, ...);</code></pre>
+        <p>Voici un exemple de prototype pour une fonction qui additionne deux nombres entiers :</p>
+        <pre><code>int addition(int a, int b);</code></pre>
+    </section>
+
+    <section>
+        <h3>Définition d'une Fonction</h3>
+        <p>La définition d'une fonction comprend le code réel qui sera exécuté lorsque la fonction sera appelée. Elle correspond au prototype, mais avec le corps de la fonction ajouté.</p>
+        <pre><code>type_de_retour nom_de_fonction(type_param1 param1, type_param2 param2, ...) {
+    // Corps de la fonction
+    return valeur_de_retour;
+}</code></pre>
+        <p>Voici un exemple de fonction qui additionne deux nombres entiers :</p>
+        <pre><code>int addition(int a, int b) {
+    int resultat = a + b;
+    return resultat;
+}</code></pre>
+    </section>
+
+    <section>
+        <h3>Appel d'une Fonction</h3>
+        <p>Pour utiliser une fonction, vous devez l'appeler dans le corps de votre programme, généralement dans la fonction <code>main</code>. Lors de l'appel, vous fournissez les valeurs des paramètres.</p>
+        <pre><code>int main() {
+    int x = 5;
+    int y = 10;
+    int somme = addition(x, y);
+
+    printf("La somme de %d et %d est %d\n", x, y, somme);
+
+    return 0;
+}</code></pre>
+        <p>Dans cet exemple, la fonction <code>addition</code> est appelée avec les valeurs <code>x</code> et <code>y</code> comme paramètres. Le résultat est ensuite stocké dans la variable <code>somme</code> et affiché à l'écran.</p>
+    </section>
+
+    <section>
+        <h3>Explication Détailée</h3>
+        <ul>
+            <li><strong>Prototype :</strong> <code>int addition(int a, int b);</code> - Indique que la fonction <code>addition</code> prend deux entiers en entrée et renvoie un entier.</li>
+            <li><strong>Paramètres (Entrées) :</strong> <code>int a</code> et <code>int b</code> - Ce sont les variables d'entrée que la fonction utilisera. Elles sont déclarées avec leur type.</li>
+            <li><strong>Corps de la Fonction :</strong> C'est le code qui réalise la tâche, ici l'addition de <code>a</code> et <code>b</code>.</li>
+            <li><strong>Valeur de Retour :</strong> <code>return resultat;</code> - La fonction renvoie la valeur de <code>resultat</code> à l'endroit où elle a été appelée.</li>
+            <li><strong>Appel de Fonction :</strong> <code>addition(x, y);</code> - C'est ainsi que vous invoquez la fonction dans le programme, en fournissant les valeurs des paramètres.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2 id="nim">Exemple du jeu de nim</h2>
+          <p>Illustrons l'utilisation de C pour réaliser le jeu de nim dont les règle sont les suivantes:</p>
+          <ul>
+            <li>Le jeu commence avec un certain nombre de batonnets sur la table (12).</li>
+            <li>À chaque tour, un joueur peut retirer un nombre de batonnets compris entre 1 et 3.</li>
+            <li>Le joueur qui prend le dernier bâtonnet gagne la partie.</li>
+          </ul>
+
+        <p>Une implémentation en  pratique pourrait ressembler à cela:</p>
+<pre class="fullwidth"><code>#include &ltstdio.h&gt
+#include &ltstdlib.h&gt
+
+int prendre_batons_entree(int nombre_batonnets){
+  int nombre_pris;
+  do {
+    printf("Entrez un nombre de batonnets à prendre: ");
+    scanf("%d", &nombre_pris);
+  } while (nombre_pris&lt1 || nombre_pris&gt3 || nombre_pris>nombre_batonnets);
+  return nombre_pris;
+}
+
+void afficher_batonnets(int nombre_batonnets){
+  printf("Nombre batonners restants: %d\n", nombre_batonnets);
+  for (int i=0; i&ltnombre_batonnets; i++) {
+    printf("|");
+  }
+  printf("\n");
+}
+
+int main(int argc, char *argv[])
+{
+  int nombre_batonnets = 12;
+  int nombre_pris;
+  int joueur = 0;
+
+  printf("Bienvenue dans le jeu de NIM!\n");
+
+  // Tour du jeu
+  do {
+    afficher_batonnets(nombre_batonnets);
+    printf("Joueur %d : ", joueur + 1);
+    nombre_pris = prendre_batons_entree(nombre_batonnets);
+    nombre_batonnets -= nombre_pris;
+    joueur = (joueur + 1) % 2;
+  } while (nombre_batonnets!=0);
+
+  printf("Bravo ! Joueur %d à gagné \n", (joueur+1)%2 );
+  return EXIT_SUCCESS;
+}</code></pre>
+
+        <p>Plusieurs commentaires :</p>
+        <ul>
+          <li>La fonction <code>prendre_batons_entree</code> permet de demander à l'utilisateur de saisir un nombre de bâtonnets à prendre. Elle vérifie que le nombre est valide avant de le renvoyer.</li>
+          <li>La fonction <code>afficher_batonnets</code> affiche le nombre de bâtonnets restants sous forme de barres verticales. On utilise le fait que <code>printf</code> ne saute pas de ligne après chaque appel.</li>
+          <li>La fonction <code>main</code> est le point d'entrée du programme. Elle initialise les variables, affiche un message de bienvenue, puis exécute le jeu en alternant les tours des joueurs jusqu'à ce qu'un joueur gagne.</li>
+          <li>L'alternance entre les joueurs est gérée par la variable <code>joueur</code> qui est incrémentée à chaque tour. Grâce au modulo 2, on alterne entre les valeurs 0 et 1 pour les joueurs.</li>
+          <li>Les tours de jeux sont gérés par une boucle <code>do...while</code> qui continue jusqu'à ce que tous les bâtonnets soient pris. On prends cette commande plutôt que <code>while</code> pour éviter de répéter le code d'affichage des bâtonnets et de devoir faire la demande de saisie avant le début de la boucle.</li>
+        </ul>
+
+
+    </section>
+
+
+    <section>
+        <h2 id="pgcd">Exemple d'un programme qui calcule le pgcd de deux nombres</h2>
+        <p>
+
+  <label for="mn-figure-PGCD" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-figure-mandelbrot" class="margin-toggle"/><span class="marginnote"><img src="assets/Algorithme_PGCD.svg.png" alt="Algorithme PGCD"/></br>
+  Une visualisation de l'algorithme d'Euclide. Source:<a href="https://fr.wikipedia.org/wiki/Fichier:Algorithme_PGCD.svg">Wikipedia</a>.</span>
+
+            Le <i>Plus Grand Commun Diviseur</i> de deux nombres est le plus grand nombre qui divise les deux nombres sans laisser de reste. On peut calculer le PGCD de deux nombres en utilisant l'algorithme d'Euclide qui est un algorithme classique pour calculer le PGCD de deux nombres. L'algorithme d'Euclide est basé sur la propriété suivante: si \(a\) et \(b\) sont deux nombres entiers, alors le PGCD de \(a\) et \(b\) est égal au PGCD de \(b\) et \(a \mod b\). Cet algorithme est récursif et s'arrête lorsque le reste de la division de \(a\) par \(b\) est nul. Un exemple de programme qui calcule le PGCD de deux nombres sera fait en TD1.
+          </p>
+
+
+<!--       <pre><code> -->
+<!-- #include &ltstdio.h&gt -->
+
+<!-- int main() -->
+<!-- { -->
+<!--     int nbr1, nbr2, pgcd, i; -->
+<!--    -->
+<!--     printf("Entrez deux entiers: "); -->
+<!--     scanf("%d %d", &nbr1, &nbr2); -->
+<!--    -->
+<!--     for(i=1; i <= nbr1 && i <= nbr2; ++i) -->
+<!--     { -->
+<!--         if(nbr1%i==0 && nbr2%i==0) -->
+<!--             pgcd = i; -->
+<!--     } -->
+<!--    -->
+<!--     printf("PGCD de %d et %d = %d", nbr1, nbr2, pgcd); -->
+<!--     return 0; -->
+<!-- } -->
+<!--   </code>               -->
+<!--   </pre> -->
+<!--         <legend style="margin-top: -30px;">Un exemple de programme qui calcule le PGCD de deux nombres.</legend> -->
+<!--         <p>Commentons ce programme:   </p> -->
+
+<!--     </section> -->
+
+
+      <section>
+        <p><a href="./index.html">Retour à la liste des CMs</a> / <a href="./CM2.html">Vers le CM2</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>

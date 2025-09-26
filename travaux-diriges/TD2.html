@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>TD2 - Codage et Numération</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="title-h1">TD2 - Codage et Numération.</h1>
+
+      <section>
+        <h2>Table des matières</h2>
+        <ul>
+          <li><a href="#exercice-1">Exercice 1: Codage et décodage</a></li>
+          <li><a href="#exercice-2">Exercice 2: Numération et programmation</a></li>
+          <li><a href="#exercice-3">Exercice 3: Calcul flottant</a></li>
+        </ul>
+        <section>
+
+      <section>
+        <h2 id="exercice-1">Exercice 1: Codage et décodage</h2>
+<p>Une entreprise souhaite automatiser son système de stockage. Elle implante pour cela un transstockeur (voir figure ci-dessous) constitué de 10 rayonnages. Chaque rayonnage est une matrice de cases. Pour simplifier, on supposera que chaque rayonnage comporte 10 rangées de chacune 20 cases. Chaque case peut accueillir 3 casiers.</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="text-align:center head"><p><img alt="Transtocker &#64;Wikipedia" src="assets/Miniload_ASRS.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-align:center"><p><em>Transstocker &#64;Wikipedia</em></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>(1).</strong> Si l’on associait un nombre entier à chaque casier, combien de bits seraient nécessaires pour pouvoir coder la totalité des casiers du transstockeur ?</p>
+<p>Pour gérer le rangement des casiers, il est décidé d’adopter un codage particulier pour repérer la position d’un casier dans le transstockeur. Ce code est construit de façon à prévoir la croissance de l’entreprise, qui envisage d’avoir un second transstockeur, dont la taille n’est pas encore définitive mais dont on sait qu’il pourrait avoir un maximum de 16 rayonnages de 16 rangées, chacune contenant 32 cases pouvant accueillir 4 casiers.</p>
+<p>Il est donc proposé de construire un code de 16 bits de la manière suivante :</p>
+<ul class="simple">
+<li><p>Le bit de poids fort représente le numéro du transstockeur ;</p></li>
+<li><p>Les 4 bits suivants représentent le numéro du rayonnage dans le transstockeur;</p></li>
+<li><p>Les 4 bits suivants représentent le numéro de la rangée dans le rayonnage;</p></li>
+<li><p>Les 5 bits suivants représentent le numéro de la case dans la rangée ;</p></li>
+<li><p>Les 2 bits suivants représentent la position du casier dans la case.</p></li>
+</ul>
+<p>Ainsi le code 00100001100010012 correspond au 2e casier de la 3e case de la 4e rangée du 5e rayonnage du premier transstockeur.</p>
+<p><strong>(2).</strong> Quel est le code, exprimé en base 2, correspondant au 1er casier de la 5e case de la 3e rangée du 7e rayonnage du second transstockeur ?</p>
+<p><strong>(3).</strong> L’expression générale du code, exprimé en base 10, correspondant au casier <span class="math notranslate nohighlight">\(a\)</span> de la case <span class="math notranslate nohighlight">\(b\)</span> de la rangée <span class="math notranslate nohighlight">\(c\)</span> du rayonnage <span class="math notranslate nohighlight">\(d\)</span> du transstockeur <span class="math notranslate nohighlight">\(e\)</span> est:</p>
+<p><span class="math notranslate nohighlight">\(
+N = (e-1)2^{15}+(d-1)2^{11}+(c-1)2^{7}+(b-1)2^{2}+(a-1),
+\)</span></p>
+<p>où <span class="math notranslate nohighlight">\(a\)</span>, <span class="math notranslate nohighlight">\(b\)</span>, <span class="math notranslate nohighlight">\(c\)</span>, <span class="math notranslate nohighlight">\(d\)</span>, <span class="math notranslate nohighlight">\(e\)</span> sont exprimés en base <span class="math notranslate nohighlight">\(10\)</span>. Justifier cette expression et calculer la valeur décimale du code correspondant à la question 2.</p>
+<p><strong>(4).</strong>  En utilisant cette expression et les opérateurs «division entière (<em>div</em> ou <em>//</em> en Python)» et «reste de la division entière (modulo ou <em>%</em> en Python)», déterminer le numéro du casier, du transstockeur et du rayonnage correspondant au code <span class="math notranslate nohighlight">\(N = 43822\)</span>.</p>
+
+      </section>
+
+      <section>
+        <h2 id="exercice-2">Exercice 2: Numération et programmation</h2>
+<p>Soit <span class="math notranslate nohighlight">\(N_3\)</span> un nombre, exprimé en base <span class="math notranslate nohighlight">\(B\)</span> dont la partie entière s’écrit sur <span class="math notranslate nohighlight">\(n\)</span> digits et la parte fractionnaire s’écrit sur <span class="math notranslate nohighlight">\(m\)</span> digits. En notant <span class="math notranslate nohighlight">\(x_i\)</span> Les digits, ce nombre s’écrit:</p>
+<p><span class="math notranslate nohighlight">\(
+N_B = x_{n-1}\dots x_1x_0x_{-1}\dots x_{-m}.
+\)</span></p>
+<p>Un exemple de nombre écrit en base 2 de cette manièere est <span class="math notranslate nohighlight">\(N_2 = (10010,101)_2\)</span>.</p>
+<p><strong>(1).</strong> Donner l’expression générale de ce nombre en base <span class="math notranslate nohighlight">\(10\)</span>, <span class="math notranslate nohighlight">\(N_{10}\)</span> à partir de son expression en base 2. Que vaut <span class="math notranslate nohighlight">\(N_{10}\)</span> si <span class="math notranslate nohighlight">\(N_2=(10010,101)_2\)</span>.</p>
+<p><strong>(2).</strong> À partir de l’expression générale <span class="math notranslate nohighlight">\(N_{10}\)</span>, donner le principe de conversion de la partie entière et de la partie fractionnaire en base <span class="math notranslate nohighlight">\(2\)</span>. Que vaut <span class="math notranslate nohighlight">\(N_2\)</span> si <span class="math notranslate nohighlight">\(N_{10}=28,375\)</span>.</p>
+      </section>
+
+      <section>
+<!--         <h2 id="iii-programme-de-changement-de-base">Exercice 3 - Programme de changement de base</h2> -->
+<!-- <p>Parmi les exemples disponibles dans le cours, la fonction <strong><em>decimalToBaseWithDigits</em>(<em>x</em>, <em>digits</em>)</strong> convertit l’entier <span class="math notranslate nohighlight">\(x\)</span> en dans la base dont les éléments sont définis par la chaîne <em><strong>digits</strong></em>. Ainsi les appels <strong><em>decimalToBaseWithDigits</em>(<em>x</em>, “01”)</strong> et <em><strong>decimalToBaseWithDigits(x, “0123456789ABCDEF”)</strong></em> convertiront respectivement le nombre <span class="math notranslate nohighlight">\(x\)</span> en base <span class="math notranslate nohighlight">\(2\)</span> et en base <span class="math notranslate nohighlight">\(16\)</span>.</p> -->
+<!-- <p>Dans cet exercice on souhaite écrire la fonction <em><strong>baseToDecimalWithDigits(s, digits)</strong></em> qui convertit la chaîne <em><strong>s</strong></em>, représentant un nombre écrit dans la base définie par la chaîne <em><strong>digits</strong></em>, en un nombre décimal. Ainsi <strong><em>baseToDecimalWithDigits</em>(“11110”, “01”)</strong> retournera la valeur <span class="math notranslate nohighlight">\(30\)</span>. On rappelle que si <span class="math notranslate nohighlight">\(N_B =x_n\dots x_1x_0\)</span> est un nombre écrit en base <span class="math notranslate nohighlight">\(B\)</span>, sa conversion en base <span class="math notranslate nohighlight">\(10\)</span> est <span class="math notranslate nohighlight">\(\left(N_{B}\right)_{10}=p_{n} B^{n}+\ldots+p_{1} B+p_{0}=\sum_{k=0}^{n} p_{k} B^{k}\)</span>, où <span class="math notranslate nohighlight">\(p_k\)</span> est le poids de <span class="math notranslate nohighlight">\(x_k\)</span> dans la base <span class="math notranslate nohighlight">\(B\)</span>. On retrouve donc une sommation comme dans les exercices précédents.</p> -->
+<!-- <p>Python dispose de nombreux outils de traitement des chaînes de caractères. Toutefois, l’objectif de ce TD étant l’initiation à la programmation, on se limitera à l’utilisation des fonctions de base du langage Python. On rappelle que si <em><strong>s</strong></em> est une chaîne alors <em><strong>s[i]</strong></em> est le <span class="math notranslate nohighlight">\(i\)</span>-ième caractère de cette chaîne et que les indices commencent à <span class="math notranslate nohighlight">\(0\)</span>. On rappelle aussi que <em><strong>len(s)</strong></em> retourne la longueur de la chaîne <em><strong>s</strong></em>, c’est-à-dire le nombre de caractères qu’elle contient.</p> -->
+<!-- <p>L’usage est d’écrire les nombres de la gauche vers la droite de sorte que le chiffre de plus fort poids, i.e. <span class="math notranslate nohighlight">\(x_n\)</span>, se trouve à gauche et celui de plus faible poids, i.e. <span class="math notranslate nohighlight">\(x_0\)</span>, se trouve à droite. Ainsi pour la chaine <em><strong>s</strong></em> qui contient un nombre <span class="math notranslate nohighlight">\(N_B=x_n\dots x_1x_0\)</span>, le premier caractère de la chaîne est <span class="math notranslate nohighlight">\(s[0]=x_n\)</span>. Le dernier caractère est, quant à lui, à la position <em><strong>len(s)-1</strong></em> et on a <strong><span class="math notranslate nohighlight">\(s[len(s)-1]=x_0\)</span></strong>. Tester le petit programme suivant pour bien comprendre l’accès aux éléments de la chaîne <em><strong>s</strong></em>:</p> -->
+<!-- <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;2021&#39;</span> -->
+<!-- <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> -->
+<!-- <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> -->
+<!-- <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> -->
+<!-- </pre></div> -->
+<!-- </div> -->
+<!-- <p><strong>(1).</strong> On voit donc que pour convertir la chaîne en sa valeur en base <span class="math notranslate nohighlight">\(10\)</span>, on ne peut appliquer directement la sommation précédente sur le parcours de la chaîne <em><strong>s</strong></em> car cette sommation opère de la droite vers la gauche. Toutefois, il est toujours possible d’opérer un changement d’indice par une fonction <span class="math notranslate nohighlight">\(f\)</span>. Soit <span class="math notranslate nohighlight">\(i\)</span>, l’indice qui sert au parcours de la chaîne <em><strong>s</strong></em>. Cet indice varie de 0 à <em><strong>len(s)-1</strong></em>. La fonction <span class="math notranslate nohighlight">\(f\)</span> dépend donc de la longueur de la chaîne <em><strong>s</strong></em> et de la l’indice <span class="math notranslate nohighlight">\(i\)</span>. Plutôt que de passer la longueur à la fonction, on choisit de passer la chaîne elle-même. Ecrire la fonction <span class="math notranslate nohighlight">\(f(s, i)\)</span> telle que <span class="math notranslate nohighlight">\((N_B)_{10}=\sum_{k=0}p_kB^k=\sum_{i=0}^{len(s)-1}p_{f(s,i)}B^{f(s,i)}\)</span>.</p> -->
+<!-- <p><strong>(2).</strong> Le poids d’un digit, i.e. <span class="math notranslate nohighlight">\(p_k\)</span> est simplement fourni par la position du caractère <span class="math notranslate nohighlight">\(x_k\)</span>​ dans la chaîne définissant les digits de la base. Ainsi dans la base <span class="math notranslate nohighlight">\(16\)</span>, le poids de <strong>A</strong> est la position du caractère “A” dans la chaîne “0123456789ABCDEF”. Ecrire la fonction <strong><em>search</em>(<em>c</em>, <em>s</em>)</strong> qui retourne la position du caractère <em>c</em> dans la chaîne <em><strong>s</strong></em> si ce caractère existe dans <em><strong>s</strong></em> et <strong>None</strong> sinon.</p> -->
+<!-- <p>Tester votre programme avec <strong><em>search</em>(“A”, “0123456789ABCDEF”)</strong>.</p> -->
+<!-- <p><strong>(3).</strong> En utilisant les fonctions précédentes, écrire la fonction <strong><em>baseToDecimalWithDigits</em>(<em>s</em>, <em>digits</em>)</strong> et tester votre fonction.</p> -->
+<!-- <p><strong>(4).</strong> Modifier votre programme pour que la fonction retourne <strong>None</strong> si un des <span class="math notranslate nohighlight">\(x_k\)</span> n’est pas dans la base.</p> -->
+
+<!--       </section> -->
+
+        <section>
+          <h2 id="exercice-3">Exercice 3: Calcul flottant</h2>
+<p><strong>(1).</strong> À partir de l’expression précédente en base 2 du nombre 28,375, donner sa représentation dans le format IEEE 754 en simple précision.</p>
+<p><strong>(2).</strong> On souhaite calculer en représentation flottante, les différentes valeurs produites par la suite <span class="math notranslate nohighlight">\(u_n=4u_{n-1}-1\)</span> avec <span class="math notranslate nohighlight">\(u_0=\frac{1}{3}\)</span>. Dans un ordinateur, on ne pourra coder qu’une approximation de <span class="math notranslate nohighlight">\(\frac{1}{3}\)</span>, c’est-à-dire en pratique <span class="math notranslate nohighlight">\(\frac{1}{3}-\epsilon\)</span> qvec <span class="math notranslate nohighlight">\(\epsilon\)</span> qui represénte la différente entre le nombre le plus proche qui est codé et <span class="math notranslate nohighlight">\(\frac{1}{3}\)</span>. En partant de <span class="math notranslate nohighlight">\(u_0=\frac{1}{3}-\epsilon\)</span>, analyser l’évolution des valeurs produites.</p>
+        </section>
+
+
+
+
+
+
+      <section>
+        <p><a href="./TD1.html">Vers le TD1</a> / <a href="./index.html">Retour à la liste des TDs</a> / <a href="./TD3.html">Vers le TD3</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>
+

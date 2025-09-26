@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>TD1 - Familiarisons nous avec le langage C.</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+    </head>
+
+  <body>
+    <article>
+      <h1 id="title-h1">TD1 - Familiarisons nous avec le langage C.</h1>
+
+      <h2>Table des matières</h2>
+      <ul>
+        <li><a href="#hello-world">Préambule : Hello World</a></li>
+        <li><a href="#vscode">Visual Studio Code</a></li>
+        <li><a href="#terminal-triangle">Exercice 1: Un triangle dans le terminal</a></li>
+        <li><a href="#fonction-somme-prod">Exercice 2 : Des sommes et des produits</a></li>
+        <li><a href="#fonction-sinus">Exercice 3 : Le sinus d'un angle</a></li>
+        <li><a href="#fonction-pgcd">Exercice 4 : Calcul du PGCD et PPCM de deux entiers</a></li>
+      </ul>
+
+      <section>
+        <h2 id="hello world">Préambule : Hello World</h2>
+        <p>Rappelons dans un premier temps les bases de l'écriture, compilation et exécution d'un programme C. Pour cela concentrons sur le programme suivant :</p>
+        <pre><code>
+#include &lt;stdio.h&gt;
+
+int main(){
+  printf("Hello, World\n");
+}
+        </code></pre>
+
+        <p>L'objectif de ce préambule est d'être capable d'écrire, compiler et exécuter ce programme à travers le terminal de linux. En vous aidant de ce que vous avez vu en cours, éxécuter ce programme à l'écran. 
+        </p>
+        <span class="highlight-box"> <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i>  Organisez vous de façon à créer un dossier pour cet exercice et à y placer le fichier source et le fichier exécutable. Le fichier source devra s'appeler <code>main.c</code> et l'éxécutable <code>hello_world</code>.</p></span>
+
+
+      <p>Pourquoi doit-on mettre la ligne <code>#include &lt;stdio.h&gt;</code> ?</p>
+
+    
+      </section>
+
+      <section>
+        <h2 id="vscode">Visual Studio Code</h2>
+        <p>On va maintenant passer à l'exécution sous Visual Studio Code. Pour cela, on va utiliser l'extension <a href="https://code.visualstudio.com/docs/languages/cpp">C/C++</a> de Microsoft que le logiciel vous propose d'installer dés lors que vous ouvrez un fichier C. Lorsque l'on ouvre VS Code on a la fenêtre suivante:
+        <img src="assets/vs_code/0_open_vscode.png" alt="Visual Studio Code"/>
+        </p>
+        <p>Ouvrez alors votre dossier précédent et on aura par exemple:
+          <img src="assets/vs_code/1_write_program.png" alt="Visual Studio Code open file"/>
+
+        </p>
+
+        <p>On a alors deux façon d'exécuter le programme : à travers un terminal dans VS Code ou bien directement dans le logiciel. Pour cela, on peut appuyer sur le bouton <i class="fa-solid fa-play fa-fw"></i> en haut à droite de l'écran ou bien faire <code>Ctrl+Shift+B</code>:
+          <img src="assets/vs_code/2_where_run.png" alt="Visual Studio Code run"/>
+          Une fois le programme lancé, on aura le résultat dans le terminal de VS Code:
+          <img src="assets/vs_code/3_exec_button.png" alt="Visual Studio Code run"/>
+        </p>
+                <p>Cette façon de procéder amène beaucoup de d'éléments au dela de l'exécution du programme et pour des programmes simples on peut se contenter de passer par le terminal intégré à VSCode :
+          <img src="assets/vs_code/4_exec_terminal.png" alt="Visual Studio Code run terminal"/>
+        </p>
+
+      </section>
+
+
+
+
+      <section>
+        <h2 id="terminal-triangle">Exercice 1: Un triangle dans le terminal</h2>
+        <p>On souhaite écrire un programme qui affiche un triangle dans le terminal. Pour cela, on vous demande d'écrire un programme qui prend en entrée un entier <code>n</code> impair et affiche un triangle de hauteur <code>n</code> dans le terminal. Par exemple, si <code>n = 5</code>, le programme devra afficher :</p>
+  <pre><code>    *
+   ***
+  *****
+ *******
+*********</code></pre>
+        <ol>
+          <li>Dans un premier temps, écrire un programme qui affiche un triangle de hauteur 3 pour vous familiariser avec <code>printf</code>.
+          <li>Supposez <code>n</code> fixé, écrire le programme.
+<details>
+
+          <summary style="font-size: large;"><b>Aide</b></summary>
+          <p>Compter le nombre d'espaces à mettre et d'étoiles à mettre par ligne.</p>
+</details>
+          <li>Demandez à l'utilisateur de rentrer <code>n</code> et affichez le triangle correspond.
+<label for="sn-order-impair"
+       class="margin-toggle sidenote-number">
+</label><input type="checkbox"
+      id="sn-order-impair"
+              class="margin-toggle"/><span class="sidenote">
+              <b>Bonus:</b> On pourra vérifiera que <code>n</code> est impair et redemander autant de fois que nécéssaire.</span>
+          <li>Réorganiser votre code de façon à faire une fonction <code>print_triangle</code> qui prend en paramètre <code>n</code> et affiche le triangle correspondant. Le prototype de cette fonction sera <code>void print_triangle(int n)</code>. On expliquera pourquoi on écrit <code>void</code> dans ce cas.
+                  
+        </ol>
+
+        <span class="highlight-box"> <p><i class="fa-solid fa-circle-info fa-lg -fa-fw"></i>  On s'organisera évidemment pour faire un autre dossier pour ce nouvel exercice de façon à ne pas mélanger les fichiers.</p> </span>
+      </section>
+
+  <section>
+    <h2 id="fonction-somme-prod">Exercice 2 : Des sommes et des produits</h2>
+        <section>
+        <h3 id="somme-naturals">2.1 - Somme des \(n\) premiers entiers</h3>
+          <p>On souhaite écrire un programme qui calcule la somme des \(n\) premiers entiers:
+        $$    
+          \sum_{i=1}^{n} i = 1 + 2 + 3 + \ldots + n.
+        $$
+
+
+        Pour effectuer un calcul itératif de cette somme, supposons que nous ayons calculé la somme des \(n−1\) Premiers entiers et que nous ayons placé le résultat dans une variable resultat. On a alors que la somme des \(n\) premiers entiers est la somme des \(n−1\) premiers entiers plus \(n\).:
+          $$
+          \underbrace{\sum_{i=1}^{n} i}_{\mathrm{resultat}} = \underbrace{\sum_{i=1}^{n-1} i}_{\mathrm{resultat}}  + n
+          $$
+        Ecrire un programme qui demande à l'utilisateur de rentrer un entier \(n\) et qui affiche la somme des \(n\) premiers entiers. On utilisera une boucle <code>for</code> pour effectuer la somme.
+        </p>
+  <details>
+          <summary style="font-size: larger;"><b>Aide</b></summary>
+          <p>D'après la description, le pseudo-code serait le suivant:</p>
+
+  <code>
+            resultat <- 0</br>
+pour i allant de 1 à n faire:</br>
+&nbsp; &nbsp; resultat <- resultat + i</br>
+</code>
+  </details>
+
+        </section>
+
+    <section>
+      <h3 id="factiorielle">2.2 - Factorielle d'un entier</h3>
+
+          <p> On souhaite écrire un programme qui calcule la factorielle d'un entier \(n\), notée \(n!\). La factorielle d'un entier \(n\) est le produit des entiers de 1 à \(n\):
+$$
+            n! = \prod_{i=1}^{n} i = 1 \times 2 \times 3 \times \ldots \times n.
+$$
+    En vous basant sur le programme réalisé précédemment, écrire un programme qui demande à l'utilisateur de rentrer un entier \(n\) et qui affiche la factorielle de \(n\). On utilisera une boucle <code>for</code> pour effectuer le calcul.
+      </p>
+
+    </section>
+
+        <span class="highlight-box"><p>Enfin mettez ces deux programmes sous la forme de fonctions dont on spécifiera les prototypes</p></span>
+
+
+  </section>
+
+  <section>
+    <h2 id="fonction-sinus">Exercice 3 : Le sinus d'un angle</h2>
+        <p><label for="mn-manim-visu" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-manim-visu" class="margin-toggle"/><span class="marginnote">
+<img src="assets/sinus-taylor.gif"></br>
+            Une visualisation du développement limité. Source: <a href="https://www.youtube.com/watch?v=qCMNOIsdi8A">Youtube</a>.
+
+        </span>
+    <p>On rappelle que le développement limité de la fonction sinus au voisinage de \(0\) à l’ordre \(2k+1\) (et même \(2k+2\) puisque les termes des puissances paires sont nuls) est le suivant :
+$$
+\sin (\theta)=\theta-\frac{\theta^{3}}{3 !}+\frac{\theta^{5}}{5 !}-\cdots+(-1)^{k} \frac{\theta^{(2 k+1)}}{(2 k+1) !}+O\left(\theta^{(2 k+3)}\right).
+$$
+L’objectif de cet exercice est de calculer une approximation de la valeur de la fonction sinus en utilisant ce développement limité.
+    </p>
+
+<ol>
+          <li>Ecrire, sur papier, le développement limité <b>à l’ordre n</b><label for="sn-order-n"
+       class="margin-toggle sidenote-number">
+</label>
+<input type="checkbox"
+      id="sn-order-n"
+              class="margin-toggle"/><span class="sidenote">Et non pas à l'ordre \(2k+1\).</span> en utilisant le symbole de sommation comme à la partie précédente. On fera très attention aux limites pour l’indice de sommation. Afin d’éviter les erreurs, vérifier votre formule pour l’ordre 1 et l’ordre 5.</li>
+          <li>Ecrire alors un fonction <code>float sinus(float x, int n)</code> qui prend en paramètre un réel \(x\) et un entier \(n\) et qui renvoie une approximation de \(\sin(x)\) à l’ordre \(n\). On utilisera la formule précédente pour effectuer le calcul ainsi que la fonction <code>factorielle</code> de l'exercice précédent. Tester votre fonction pour des angle de \(\frac{\pi}{2}\), \(\frac{\pi}{3}\) et \(\pi\). </li>
+          <li>À l’itération i, on calcule \((2i+1)!\) et à l’itération \(i+1\), on calcule \((2i+3)!\) et cette manière de procéder n’est pas optimale. En effet, il suffit de remarquer que:
+$$
+(2i+3)! = (2i+1)!\times(2i+2)\times(2i+3)
+$$
+            Ainsi, à l’itération \(i+1\), on recalcule \((2i+1)!\), information que l’on avait calculée à l’itération \(i\). En utilisant cette remarque, optimiser votre algorithme pour qu’il calcule à chaque itération \((2i+1)!\) mais sans utiliser la fonction factorielle.
+          <li>On s’intéresse maintenant à l’erreur d’approximation entre le calcul du sinus par la fonction sin de la librairie math et celui par le développement limité. </p>
+  
+              
+
+            <p>Ecrire le programme qui fait croître l’ordre du développement limité jusqu’à ce que la valeur absolue de l’erreur d’approximation soit inférieure à une valeur donnée.</li>
+            <p>Pour pouvoir utiliser la fonction sin de la librairie math, il faut inclure la librairie <code>math.h</code> en début de programme. On aura alors accès aux fonctions <code>sin</code> et <code>fabs</code> qui permettent de calculer respectivement le sinus d’un angle et la valeur absolue d’un réel. La compilation change légèrement et il faut ajouter l’option <code>-lm</code> à la commande de compilation. Par exemple, si votre programme s’appelle <code>sinus.c</code>, la commande de compilation sera:</p>
+            <pre><code>gcc -o sinus main.c -lm</code></pre>
+</ol>
+        <span class="highlight-box"><p> <i class="fa-solid fa-circle-info fa-lg -fa-fw"></i>  On n'hésitera pas à définir des fonctions annexes qui seraient utiles pour l'exercice.</p></span>
+
+      </section>
+
+
+  <section>
+    <h2 id="fonction-pgcd">Exercice 4 : Calcul du PGCD et PPCM de deux entiers</h2>
+  <p>En vous aidant du CM1 ainsi que de vos recherches, faire un programme qui demande à l'utilisateur de rentrer deux entiers \(a\) et \(b\) et qui affiche le PGCD et le PPCM de ces deux entiers. On utilisera l'algorithme d'Euclide pour le calcul du PGCD et la formule suivante pour le PPCM:
+$$
+  \text{PPCM}(a,b) = \frac{a \times b}{\text{PGCD}(a,b)}.
+$$
+    </p>
+
+  </section>
+
+
+      <section>
+        <p><a href="./index.html">Retour à la liste des TDs</a> / <a href="./TD2.html">Vers le TD2</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>TP2 - Chiffrage et déchiffrage de messages.</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="title-h1">TP2 - Chiffrage et déchiffrage de messages.</h1>
+
+      <section>
+        <h2>Table des matières</h2>
+
+        <nav>
+          <ul>
+            <li><a href="#description-caesar">Chiffrage de César</a></li>
+            <li><a href="#environnement-travail">Environnement de travail</a></li>
+            <li><a href="#strings">Partie I - Traitement de chaînes de caractères</a></li>
+            <li><a href="#caesar-string">Partie II - Caesar sur entrée utilisateur</a></li>
+            <li><a href="#caesar-file">Partie III - Caesar sur fichiers</a></li>
+            <li><a href="#caesar-bruteforce">Partie IV - Brute force sur Caesar</a></li>
+            <li><a href="#analyse-frequences">Partie V - Analyse de fréquences</a></li>
+            <li><a href="#aller-plus-loin">Aller plus loin</a></li>
+          </ul>
+        </nav>
+
+      </section>
+      
+      <section>
+      <p>Dans ce TP, nous allons nous mettre à chiffrer et déchiffrer des messages à partir d'algorithmes simples. Dans un premier temps nous allons considérer le chiffrage de César, dont nous allons aussi implémenter un déchiffrage sans connaître la clé. Selon le temps, nous allons considérer d'autres algorithmes de chiffrage.</p>
+      </section>
+
+      <section>
+          <h2 id="description-caesar">Chiffrage de César</h2>
+        <p>Le chiffrage dit de César est un chiffrage par substitution. Il consiste à décaler chaque lettre du message d'un certain nombre de positions dans l'alphabet. Par exemple, avec un décalage de 3, la lettre A devient D, la lettre B devient E, etc. Le déchiffrage consiste à décaler les lettres dans l'autre sens.
+          <img src="assets/tp2/Caesar3.svg.png" />
+        </p>
+
+
+        <p>Mathématiquement, le chiffrage de César est une fonction de la forme :
+          $$
+            f(x) = (x + k) \mod 26,
+          $$
+          où \(k\) est la clé de chiffrage et \(x\) l'indice de la lettre à chiffrer dans l'alphabet.</p>
+        <p>Le déchiffrage est la fonction inverse :
+          $$
+            f^{-1}(x) = (x - k) \mod 26.
+          $$
+          où \(k\) est la clé de déchiffrage et \(x\) l'indice de la lettre à déchiffrer dans l'alphabet.</p>
+
+      </section>
+
+      <section>
+        <h2 id="environnement-travail">Environnement de travail</h2>
+        <p>Pour ce TP, créer un dossier nommé <code>info501_tp2_nom1_nom2</code> avec la structure suivante:</p>
+<pre><code>
+info501_tp2_nom1_nom2/
+├─ src/
+│  ├─ traitements_chaines.c
+│  ├─ traitement_chaines.h
+│  ├─ caesar.c
+│  ├─ caesar.h
+│  ├─ decrypt_caesar.c
+│  ├─ decrypt_caesar.h
+│  ├─ fichiers.c
+│  ├─ fichiers.h
+├─ tests/
+├─ executables/
+│  ├─ encrypt_caesar_stdin.c
+│  ├─ decrypt_caesar_stdin.c
+│  ├─ encrypt_caesar_file.c
+│  ├─ decrypt_caesar_file.c
+│  ├─ decrypt_caesar_bruteforce.c
+├─ Makefile
+</code></pre>
+
+        <p>Le fichier <code>Makefile</code> est un fichier spécial qui permet de définir des cibles à exécuter pour compiler le projet. Pour plus de détails, voir <a href="https://www.gnu.org/software/make/manual/make.html">la documentation de GNU Make</a>. Si l'on est sur Windows, il convient d'abord d'installer <code>make</code> en utilisant <a href="https://gnuwin32.sourceforge.net/packages/make.htm">cette page</a>. 
+
+        <p>Pour ce TP nous vous donnons les fichiers:</p>
+
+        <ol>
+          <li><b>Sur Windows</b> : <a href="assets/tp2/windows/Makefile" download>Makefile</a>,</li>
+          <li><b>Sur Linux/OSX</b> : <a href="assets/tp2/linux/Makefile" download>Makefile</a>.</li>
+        </ol>
+
+      <p>Pour l'utiliser dans le terminal, il suffit de taper la commande <code>make cible</code>, où <code>cible</code> est la cible à exécuter. Par exemple, pour compiler le fichier <code>encrypt_caesar_stdin.c</code>, il suffit de taper la commande <code>make encrypt_caesar_stdin</code>.</p>
+
+    <span class="highlight-box">
+          <p><i class="fas fa-exclamation-triangle fa-lg fa-fw"></i>
+            Dans ce TP nous allons prendre l'habitude de tester nos fonctions dans des fichiers séparés dans le dossier test. Une commande spécifique <code>make compile_tests</code> a été réalisée pour compiler tous les fichiers contenus dans le dossier <code>tests</code>.</p>
+    </span>
+
+      <section>
+        <h2 id="strings">Partie I - Traitement de chaînes de caractères</h2>
+        <p>Avant de considérer le chiffrage de César, nous allons implémenter quelques fonctions de traitement de chaînes de caractères. Créer les fichiers <code>traitements_chaines.c</code> et <code>traitements_chaines.h</code> dans le dossier <code>src</code>.</p>
+        <ol>
+            <li>On veut pouvoir lire un texte en mémoire mais on ne connait pas à l'avance. Une solution consiste en allouant un tableau de caractères de taille fixe qui définira la limite de la taille du texte. Implémenter la fonction <code>read_text</code> qui prend en paramètre la taille du tableau. La fonction doit lire un texte entré par l'utilisateur et le stocker dans un tableau alloué dynamiquement. La fonction doit retourner le nombre de caractères lus. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>. Il est possible d'exécuter tous les tests en lançant la commande <code>make run_tests</code> dans le terminal à la racine du projet.</li>
+          <li>On propose de remplacer la fonction par la fonction suivante qui lit une ligne de taille quelconque
+<pre><code>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+char * getline_file(FILE * f)
+{
+    size_t size = 0;
+    size_t len  = 0;
+    size_t last = 0;
+    char * buf  = NULL;
+
+    do {
+        size += BUFSIZ; /* BUFSIZ is defined as "the optimal read size for this platform" */
+        buf = realloc(buf,size); /* realloc(NULL,n) is the same as malloc(n) */            
+        /* Actually do the read. Note that fgets puts a terminal '\0' on the
+           end of the string, so we make sure we overwrite this */
+        fgets(buf+last,size,f);
+        len = strlen(buf);
+        last = len - 1;
+    } while (!feof(f) && buf[last]!='\n');
+    return buf;
+}</code></pre>
+              Cette fonction prends en entrée un pointeur vers un fichier, ce qui est un type particulier de pointeur qui pointe sur le contenu d'un fichier. Il est possible de considérer l'entrée standard comme un fichier. On peut donc lire une ligne de texte entrée par l'utilisateur en utilisant cette fonction avec comme entrée <code>stdin</code>, qui est un pointeur vers l'entrée standard. Essayer cette fonction en faisant un nouveau test dans un fichier séparé de test que vote fonction précédente.</li>
+            <li>Faire une fonction qui teste si un caractère est une lettre de l'alphabet. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>. On pourra s'aider de la représentation ASCII des caractères.</li>
+        <li>On ne voudra traiter un texte que si celui-ci est en minuscules. Implémenter la fonction <code>to_lower</code> qui prend en paramètre une chaîne de caractères et la transforme en minuscules. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>. On pourra essayer de trouver une relation entre les caractères minuscules et majuscules dans la table ASCII.</li>
+        <li>Faire enfin une fonction <code>is_space</code> qui teste si un caractère est un espace. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>.</li>
+        </ol>
+
+      </section>
+
+      <section>
+        <h2 id="caesar-string">Partie II - Caesar sur entrée utilisateur</h2>
+        <p>On veut maintenant implémenter le chiffrage de César sur une chaîne de caractères entrée par l'utilisateur. Créer les fichiers <code>caesar.c</code> et <code>caesar.h</code> dans le dossier <code>src</code>.</p>
+        <ol>
+          <li>Implémenter la fonction <code>encrypt_caesar</code> qui prend en paramètre une chaîne de caractères et une clé de chiffrage. La fonction modifie la chaine en entrée et s'arrête si elle rencontre un caractère non supporté à part les espaces. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>.</li>
+          <li>Implémenter la fonction <code>decrypt_caesar</code> qui prend en paramètre une chaîne de caractères chiffrée et une clé de déchiffrage. La fonction doit retourner une chaîne de caractères déchiffrée. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>.</li>
+            <li>Créer un fichier <code>encrypt_caesar_stdin.c</code> dans le dossier <code>executables</code> qui prend en entrée une chaîne de caractères et une clé de chiffrage et affiche la chaîne chiffrée. On testera le fichier en utilisant la commande <code>make encrypt_caesar_stdin</code> dans le terminal.</li>
+            <li>Créer un fichier <code>decrypt_caesar_stdin.c</code> dans le dossier <code>executables</code> qui prend en entrée une chaîne de caractères chiffrée et une clé de déchiffrage et affiche la chaîne déchiffrée. On testera le fichier en utilisant la commande <code>make decrypt_caesar_stdin</code> dans le terminal.</li>
+          </ol>
+      </section>
+
+      <section>
+        <h2 id="caesar-file">Partie III - Caesar sur fichiers</h2>
+          <p>On veut dans cette partie traiter toutes les lignes d'un fichier plutôt que de taper à la main avec la sortie standard. Pour cela, nous allons lire en mémoire chaque ligne d'un fichier à l'aide des fonctions <code>fopen</code> et <code>fgets</code> de la librairie standard. En vous aidant de la <a href="https://www.geeksforgeeks.org/read-a-file-line-by-line-in-c/">documentation</a>, réaliser les programmes <code>encrypt_caesar_file.c</code> et <code>decrypt_caesar_file.c</code> dans le dossier <code>executables</code> en supposant que le chemin du fichier ainsi que la clé de chiffrage est demandé à l'utilisateur. On ne supposera plus une taille quelconque pour les lignes mais on définira une taille maximum à priori.</p>
+          <p>Plutôt que de demander à l'utilisateur le chemin du fichier, on peut passer le chemin du fichier en argument du programme. Pour cela, on peut utiliser la variable <code>argc</code> qui contient le nombre d'arguments passés au programme et la variable <code>argv</code> qui contient les arguments passés au programme. Par exemple, pour passer le chemin du fichier, on peut lancer le programme de la manière suivante : <code>./encrypt_caesar_file fichier.txt 3</code>. Le chemin du fichier sera alors stocké dans <code>argv[1]</code> et la clé de chiffrage dans <code>argv[2]</code>. Adapter alors les programmes pour qu'ils prennent en compte ces arguments.</p>
+      </section>
+
+      <section>
+        <h2 id="caesar-bruteforce">Partie IV - Brute force sur Caesar</h2>
+        <p>On veut maintenant implémenter un déchiffrage de César sans connaître la clé. Pour cela, on va tester toutes les clés possibles et on va choisir la clé qui donne le plus de mots valides. Créer les fichiers <code>decrypt_caesar.c</code> et <code>decrypt_caesar.h</code> dans le dossier <code>src</code>.</p>
+          <p>Pour tester si des mots sont valides, on donne le fichier suivant: <a href="assets/tp3/francais.txt" download>francais.txt</a> qui contient tous les mots français. Il suffirait en théorie de tester pour chaque clé, pour tous les mots s'ils existent dans le dictionnaire et de comptabiliser le nombre de mots valides.</p>
+          <ol>
+            <li>Faire une fonction <code>is_word</code> qui teste si un mot est dans le dictionnaire. Pour ce faire, on lira le dictionnaire à partir du début et s'arrête dés que l'on trouve le mot ou que l'on dépasse le mot. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>.</li>
+            <li>Faire une fonction <code>count_words</code> qui compte le nombre de mots valides dans une chaîne de caractères. Pour cela il est nécéssaire de parcourir la chaine lettre en lettre et découper les mots intelligemment (ou utiliser <code>strtok</code> de la libraire <code>string.h</code>). On rapelle que la comparaison de texte se fait avec <code>strcmp</code> de la librairie <code>string.h</code>. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>.</li>
+            <li>Codez la fonction <code>decrypt_caesar_brute</code> qui prend en paramètre une chaîne de caractères chiffrée et qui retourne la chaîne déchiffrée. La fonction doit tester toutes les clés possibles et choisir la clé qui donne le plus de mots valides. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>.</li>
+            <li>Adapter cette fonction pour gérer un fichier en entrée plutôt qu'une chaine de caractères. On testera la fonction en créeant un fichier adéquat dans le dossier <code>tests</code>.</li>
+            <li>Faire enfin un programme <code>decrypt_caesar_brute_file.c</code> qui prend en entrée un fichier chiffré et un fichier dictionnaire et qui affiche le fichier déchiffré. On testera le programme en utilisant la commande <code>make decrypt_caesar_brute_file</code> dans le terminal.</li>
+          </ol>
+
+
+      </section>
+
+      <section>
+          <h2 id="analyse-frequences">Partie V - Analyse de fréquences</h2>
+          <p>En vous inspirant de la méthodologie décrite <a href="https://fr.wikipedia.org/wiki/Chiffrement_par_décalage#Analyse_fréquentielle">ici</a>, mettre en place un déchiffrement sans la clé.</p>
+      </section>
+
+      <section>
+          <h2 id="aller-plus-loin">Aller plus loin</h2>
+          <p>S'il vous reste du temps, mettre en place un programme de <a href="https://fr.wikipedia.org/wiki/Chiffrement_par_substitution#Substitution_polyalphabétique">substitution polyalphabétique</a>.</p>
+
+      <section>
+        <p><a href="./TP1.html">Vers le TP1</a> / <a href="./index.html">Retour à la liste des TPs</a> / <a href="./TP3.html">Vers le TP3</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>
+

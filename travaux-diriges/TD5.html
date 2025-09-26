@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>TD5 - Algorithmes et calculs de complexité</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:#111;border-style:solid;border-width:1px;  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:#111;border-style:solid;border-width:1px;  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+@media (prefers-color-scheme: dark) {
+  .tg td{border-color:#ddd;}
+  .tg th{border-color:#ddd;}
+}
+    
+</style>
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="title-h1">TD5 - Algorithmes et calculs de complexité</h1>
+
+      <section>
+        <h2>Table des matières</h2>
+        <ul>
+          <li><a href="#exercice-1">Exercice 1 - Tris</a></li>
+          <li><a href="#exercice-2">Exercice 2 - Un compteur</a></li>
+          <li><a href="#exercice-3">Exercice 3 - Recherche dichotomique</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 id="exercice-1">Exercice 1 - Tris</h2>
+        <p>On s'intéresse dans cet exercice à la notion de tri d'un tableau d'entiers. Supposons que l'on a un tableau <code>tab</code> d'un nombre d'éléments connus, on veut écrire une procédure qui modifie le tableau pour le trier à l'aide du tri à bulle dont le principe est le suivant</p>
+        <ol>
+          <li>On parcourt le tableau de gauche à droite en comparant les éléments deux à deux.</li>
+          <li>Si deux éléments consécutifs ne sont pas dans l'ordre, on les échange.</li>
+          <li>On recommence jusqu'à ce que le tableau soit trié.</li>
+        </ol>
+
+
+        <p>Ce processus est résumé sur la vidéo suivante:
+          <video controls width="100%">
+            <source src="assets/bubble_sort.mov" type="video/quicktime">
+            Your browser does not support the video tag.
+          </video>
+        </p>
+  
+        <p><b>Questions</b></p>
+        <ol>
+          <li>Combien d'opérations d'échange doit on faire dans le <b>pire cas</b>, c'est-à-dire lorsque le tableau est trié dans l'ordre décroissant ?</br>Réfléchir avec un tableau de 3 puis 5 éléments</li>
+          <li>Coder une procédure <code>tri_bulle</code> qui prend en paramètre un tableau d'entiers et le trie en utilisant le tri à bulle. On ajoutera un compteur qui permet de vérifier le nombre d'opérations d'échanges effectuées pour comparer avec la question précédente.</li>
+          <li>Quelle est la complexité en temps de cet algorithme ?</li>
+          <li>Quelle est la complexité en espace de cet algorithme ?</li>
+          <li>Même question si on ne tri pas le tableau mais on effectue une copie de celui-ci avant le tri.</li>
+        </ol>
+
+      </section>
+
+      <section>
+        <h2 id="exercice-2">Exercice 2 - Un compteur</h2>
+        <p>On donne le programme suivant qui incrémente la valeur d'un compteur:</p>
+<pre><code>void procedure(int n) {
+  int compteur = 0;
+  int i = 0;
+  int j;
+  while (i &lt; n) {
+    j = i + 1;
+    while (j &lt;= n) {
+      compteur++;
+      j++;
+    }
+    i+2;
+}</code></pre>
+      <p>On veut estimer la complexité en temps de cette procédure en fonction de la taille de l'entrée \(n\) dans le cas particulier où \(n\) est une puissance de 2. Pour cela répondre aux questions suivantes :</p>
+      <ol>
+        <li>Quelle est la valeur finale du compteur dans le cas où \(n=16\) ?</li>
+          <li>Puisque \(n\) est une puissance de 2, on peut écrire \(n=2^p\) ave \(p\) un entier positif connu. Exprimer alors la valeur finale du compteur en fonction \(p\).</br>On pourra essayer de compter le nombre fois que l'on incrémente la variable <code>compteur</code> et utiliser un résultat sur la somme des puissances de \(2\).</li>
+          <li>Exprimer le résutlat précédent en fonction de \(n\).</li>
+          <li>En déduire la complexité de cette procédure</li>
+      </section>
+
+      <section>
+        <h2 id="exercice-3">Exercice 3 - Recherche dichotomique</h2>
+
+        <p>On s'intéresse à la recherche dichotomique dans un tableau trié. Le principe est le suivant:</p>
+        <ol>
+          <li>On considère un tableau trié \(tab\) de taille \(n\) et un élément \(x\) à chercher.</li>
+          <li>On compare \(x\) à l'élément du milieu du tableau.</li>
+          <li>Si \(x\) est plus petit, on cherche \(x\) dans la première moitié du tableau, sinon on le cherche dans la deuxième moitié.</li>
+          <li>On répète le processus jusqu'à trouver \(x\) ou bien jusqu'à ce que la taille du tableau soit nulle.</li>
+          <li>Si on ne trouve pas \(x\), on renvoie \(-1\).</li>
+        </ol>
+
+        <p>Cette approche à l'avantage de réduire le nombre de comparaisons à effectuer pour trouver un élément dans un tableau trié. On peut voir le principe de la recherche dichotomique sur la vidéo suivante:</p>
+        <figure>
+          <iframe width="100%" height="400" src="https://www.youtube.com/embed/E6IOrZUpvSE?si=y8VpzuUiXYQfGaVQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </figure>
+
+        <p><b>Questions</b></p>
+        <ol>
+          <li>Implémenter une fonction <code>recherche_dichotomique</code> qui prend en paramètre un tableau trié et un élément à chercher et renvoie l'indice de l'élément dans le tableau ou \(-1\) si l'élément n'est pas dans le tableau.</li>
+          <li>Supposons que l'élément que l'on cherche se trouve dans le tableau. Quel scénario correpsond <b>au pire cas</b> ?</li>
+          <li>Combien de divisions du tableau doit-on effectuer dans ce cas ?</li>
+          <li>En déduire la complexité en temps de cet algorithme. Est-ce plus efficace qu'une recherche linéaire classique ?</li>
+          <li>Quelle est la complexité en espace de cet algorithme ?</li>
+        </ol>
+
+      </section>
+
+
+
+
+
+
+      <section>
+        <p><a href="./TD4.html">Vers le TD4</a> / <a href="./index.html">Retour à la liste des TDs</a> / <a href="./TD6.html">Vers le TD6</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>
+
+

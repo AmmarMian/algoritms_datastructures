@@ -1,0 +1,582 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>CM4 - Allocation dynamique de mémoire</title>
+    <link rel="stylesheet" href="../tufte.css"/>
+    <link rel="stylesheet" href="../latex.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 55%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+             
+      
+      }
+
+      .hight-light-box-margin{
+                display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+    font: inherit;
+    vertical-align: baseline;
+    max-width: 100%;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+          .highlight-box {
+              border-color: #ddd;
+          }
+
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+              }
+    </style>
+  </head>
+
+  <body>
+    <article>
+      <h1 id="tufte-css">CM4 - Allocation dynamique de mémoire</h1>
+      <span class="highlight-box">
+        <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i>Dans ce CM, nous nous intéressons à la notion d'allocation dynamique de mémoire en C. Il s'agit d'allouer dans la mémoire de l'ordinateur des blocks dont la taille est incertaine à la compilation. Nous verrons comment allouer et libérer de la mémoire en C. Nous illustrerons l'intérêt en introduisant la première structure de données dans ce cours : la liste chaînée.</p>
+      </span>
+      
+      <h2>Table des matières</h2>
+      <ul>
+        <li><a href="#why-allocate-dynamically">Pourquoi allouer dynamiquement de la mémoire ?</a></li>
+        <li><a href="#malloc">Les fonctions <code>malloc</code> et <code>calloc</code></a></li>
+        <li><a href="#free">De l'importance de libérer la mémoire</a></li>
+        <li><a href="#realloc">La fonction <code>realloc</code></a></li>
+        <li><a href="#linked-list">Les listes chaînées</a></li>
+      </ul>
+
+
+      <section>
+        <h2 id="why-allocate-dynamically">Pourquoi allouer dynamiquement de la mémoire ?</h2>
+        <p>Nous avons vu dans le CM précédent la notion de pointeurs et de tableaux. Dans ce cadre, lorsque l'on allouait de la mémoire pour un tableau d'entiers par exemple :</p>
+<pre><code class="language-c">int tab[10];</code></pre>
+        <p>la taille du tableau était fixée. Il arrive cependant que l'on ai besoin de stocker un nombre de données dont la taille est inconnue à l'avance<label for="sn-avancecompil"
+       class="margin-toggle sidenote-number">
+              </label>.<input type="checkbox" id="sn-threebody-avancecompil" class="margin-toggle"/> <span class="sidenote">C'est à dire au moment de la compilation du programme.</span> Par exemple si l'on veut créer un tableau dont la taille est demandée à l'utilisateur pour la remplir d'entiers naturels on écrirait :</p>
+        <pre><code class="language-c">#include &lt;stdio.h&gt;
+
+int main(){
+  int n;
+  printf("Entrez la taille du tableau : ");
+  scanf("%d", &n);
+  int tab[n];
+  for (int i = 0; i < n; i++)
+  {
+    tab[i] = i;
+  }
+  for (int i = 0; i < n; i++)
+  {
+    printf("%d\n", tab[i]);
+  }
+
+  return 0;
+}</code></pre>
+      <p>Dans ce cas si l'on teste avec une valeur de 100 ou 1000, le code semble marcher et affiche bien le résultat attendu. Toutefois, cela es tun comportement relativement nouveau (C99) dépendant de ce qu'on appele les  variable-length arrays (VLA) et n'est pas supporté par tous les compilateurs. De plus, la mémoire est allouée dans la pile comme pour tout ce que l'on a vu jusqu'à présent. Or, la pile est limitée en taille<label for="sn-piletaille" class="margin-toggle sidenote-number"></label> <input type="checkbox" id="sn-threebody-piletaille" class="margin-toggle"/> <span class="sidenote">La taille de la pile dépend du système d'exploitation et de la configuration de la machine en pratique.</span> et si l'on veut allouer un tableau de taille importante, on risque de dépasser la taille de la pile et d'avoir une erreur de type  <b>stack overflow</b>. Pour s'en rendre compte, essayons ceci:</p>
+<pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n = 1000000;  // Start with a large value
+
+    while (n > 0) {
+        printf("Trying to allocate array of size: %d\n", n);
+        int arr[n];  // Attempt to allocate a large VLA
+        arr[0] = 0;  // Access the array to ensure it's allocated
+
+        n += 100000;  // Increase array size for the next iteration
+    }
+
+    return 0;
+}</code></pre>
+    <p>qui donne sur un terminal :</p>
+<pre class="fullwidth"><code>Trying to allocate array of size: 1000000
+Trying to allocate array of size: 1100000
+Trying to allocate array of size: 1200000
+Trying to allocate array of size: 1300000
+Trying to allocate array of size: 1400000
+Trying to allocate array of size: 1500000
+Trying to allocate array of size: 1600000
+Trying to allocate array of size: 1700000
+Trying to allocate array of size: 1800000
+Trying to allocate array of size: 1900000
+Trying to allocate array of size: 2000000
+Trying to allocate array of size: 2100000
+fish: Job 1, './bigalloc' terminated by signal SIGSEGV (Address boundary error)</code></pre>
+
+      <p>On voit que l'on obtient une erreur de segmentation (SIGSEGV) qui est une erreur de type <b>stack overflow</b>. Cela signifie que l'on a dépassé la taille de la pile et que le programme a été arrêté. C'est pourquoi il est préférable d'allouer de la mémoire dynamiquement. Cela permet d'allouer de la mémoire dans le tas (heap) qui est plus grand que la pile.</p>
+
+      <p>De plus, il est possible que l'on veuille allouer de la mémoire pour des structures de données plus complexes que des tableaux : Par exemple une liste dont la taille change avec l'exécution. L'allocation dynamique de mémoire est alors indispensable.</p>
+
+
+      </section>
+
+      <section>
+        <h2 id="malloc">Les fonctions <code>malloc</code> et <code>calloc</code></h2>
+        <p>Pour allouer de la mémoire dynamiquement, C propose deux fonctions: <code>malloc</code> et <code>calloc</code> dont les différences seront illustrées plus bas.</p>
+        <section>
+          <h3 id="malloc">La fonction <code>malloc</code></h3>
+          <p>La fonction <code>malloc</code> permet d'allouer de la mémoire dans le tas. Elle prend en argument le nombre d'octets à allouer et retourne un pointeur sur la mémoire allouée. Par exemple, pour allouer un tableau de 10 entiers, on écrirait :</p>
+        <pre><code class="language-c">int *tab = (int *)malloc(10 * sizeof(int));</code></pre>
+        <p>On peut alors accéder aux éléments du tableau comme d'habitude :</p>
+        <pre><code class="language-c">tab[0] = 0;
+*(tab + 1) = 1;</code></pre>
+        <p>La syntaxe de malloc pour une allocation sur un objet quelconque est la suivante :</p>
+        <pre><code class="language-c">type *ptr = (type *)malloc(n * sizeof(type));</code></pre>
+        <p>où <code>type</code> est le type de l'objet à allouer et <code>n</code> le nombre d'objets à allouer. À noter que l'on a écrit <code>(type *)</code> à la place de <code>type *</code> pour indiquer au compilateur que l'on veut un pointeur de type <code>type</code> et non un pointeur de type <code>void</code> qui est le type de retour de <code>malloc</code><label for="sn-void" class="margin-toggle sidenote-number"></label>.<input type="checkbox" id="sn-threebody-void" class="margin-toggle"/> <span class="sidenote">La fonction <code>malloc</code> retourne un pointeur de type <code>void</code> qui est un type générique en C pour désigner un pointeur vers n'importe quoi. En ce sens malloc permettant d'allouer de la mémoire pour nimporte quel type, il retourne un pointeur de type <code>void</code>.</span>. Réinterpretez le <code>void *</code> en un pointeur compatible avec le type est important pour que l'arithmétique des pointeurs fonctionne correctement.</p>
+          <p> En résumé nous avons la situation suivante :</p>
+          <img src="./assets/malloc.svg" alt="malloc" style="max-width: 100%;"/>
+
+        <span class="highlight-box"><p><b>Exercice</b></p>
+          <p>Écrire un programme qui alloue un tableau de 10 entiers et l'initialise avec les valeurs de 0 à 9. Affichez ensuite les valeurs du tableau.</p>
+          <p>Créer une structure <code>Pers</code> qui contient un nom et un prénom. Allouez dynamiquement un tableau de 5 structures <code>Pers</code> et initialisez les noms et prénoms avec des valeurs demandées à l'utilisateur. Affichez ensuite les valeurs des noms et prénoms.</p>
+        </span>
+
+        </section>
+
+        <section>
+          <h3 id="calloc">La fonction <code>calloc</code></h3>
+        <p>La fonction <code>calloc</code> est similaire à <code>malloc</code> à la différence que <code>calloc</code> initialise la mémoire allouée à 0. La syntaxe est la suivante :</p>
+        <pre><code class="language-c">type *ptr = (type *)calloc(n, sizeof(type));</code></pre>
+          <p> En résumé nous avons la situation suivante :</p>
+          <img src="./assets/calloc.svg" alt="calloc" style="max-width: 100%;"/>
+
+        </section>
+
+      </section>
+
+      <section>
+        <h2 id="free">De l'importance de libérer la mémoire</h2>
+      <p>Il est important de libérer la mémoire allouée dynamiquement lorsque l'on a fini de l'utiliser. En effet, si l'on ne libère pas la mémoire, celle-ci reste allouée et n'est pas utilisée. Cela peut poser des problèmes de fuites de mémoire (memory leaks) qui peuvent ralentir le programme et consommer de la mémoire inutilement. Pour libérer la mémoire allouée par <code>malloc</code> ou <code>calloc</code>, on utilise la fonction <code>free</code> :</p>
+      <pre><code class="language-c">free(ptr);</code></pre>
+      <p>où <code>ptr</code> est le pointeur sur la mémoire allouée. Par exemple, pour libérer un tableau de 10 entiers alloué avec <code>malloc</code>, on écrirait :</p>
+      <pre><code class="language-c">free(tab);</code></pre>
+      <p>Il est important de noter que l'on ne peut libérer que de la mémoire allouée dynamiquement. Si l'on essaie de libérer de la mémoire allouée statiquement, le programme plantera. Par exemple :</p>
+      <pre><code class="language-c">int tab[10];
+free(tab);</code></pre>
+      <p>donnera une erreur de segmentation (SIGSEGV) telle que :</p>
+      <pre class="fullwidth"><code>test(3505,0x7ff849e8cdc0) malloc: *** error for object 0x7ff7be1592c0: pointer being freed was not allocated</code></pre> <p>car le tableau <code>tab</code> a été alloué statiquement et non dynamiquement.</p>
+
+      </section>
+
+      <section>
+        <h2 id="realloc">La fonction <code>realloc</code></h2>
+      <p>Par moments, il peut être nécessaire de redimensionner un bloc de mémoire alloué dynamiquement. Pour cela, C propose la fonction <code>realloc</code> qui permet de redimensionner un bloc de mémoire alloué dynamiquement. La syntaxe est la suivante :</p>
+      <pre><code class="language-c">type *ptr = (type *)realloc(ptr, n * sizeof(type));</code></pre>
+      <p>où <code>ptr</code> est le pointeur sur le bloc de mémoire à redimensionner et <code>n</code> la nouvelle taille du bloc. <code>realloc</code> retourne un pointeur sur le bloc redimensionné. Si la redimension est impossible, <code>realloc</code> retourne <code>NULL</code> et le bloc original est préservé. Par exemple, pour redimensionner un tableau de 10 entiers en un tableau de 20 entiers, on écrirait :</p>
+      <pre><code class="language-c">tab = (int *)realloc(tab, 20 * sizeof(int));</code></pre>
+      <p>Il est important de noter que <code>realloc</code> peut déplacer le bloc de mémoire alloué. Il est donc important de ne pas conserver de pointeurs sur le bloc original après un appel à <code>realloc</code> pour éviter des erreurs de segmentation.</p>
+
+      <p>En résumé, nous avons la situation suivante :</p>
+      <img src="./assets/realloc.svg" alt="realloc" style="max-width: 80%;"/>
+
+
+
+
+<section>
+  <h2 id="linked-list">Les listes chaînées</h2>
+  <p>Les listes chaînées sont une structure de données très utiles lorsque l'on ne connaît pas à l'avance la taille des données que l'on souhaite stocker. Contrairement aux tableaux, les listes chaînées permettent de rajouter et de supprimer des éléments de manière dynamique, sans avoir à redimensionner manuellement la mémoire. Une liste chaînée est composée de plusieurs <em>nœuds</em>, chaque nœud contenant deux informations : une donnée et un pointeur vers le nœud suivant.</p>
+  
+  <h3 id="structure-linked-list">Structure d'une liste chaînée</h3>
+  <p>Pour représenter une liste chaînée en C, on utilise généralement une structure. Par exemple, pour créer une liste chaînée qui stocke des entiers, on peut définir une structure comme suit :</p>
+  <pre><code class="language-c">struct Node {
+    int data;
+    struct Node* next;
+};</code></pre>
+  <p>Ici, chaque <code>Node</code> (nœud) contient un entier <code>data</code> et un pointeur <code>next</code> qui pointe vers le nœud suivant de la liste.</p>
+        <p>Par exemple, on peut créer une liste à un élément avec<label for="sn-arrownotation" class="margin-toggle sidenote-number"></label>.<input type="checkbox" id="sn-arrownotation" class="margin-toggle"/> <span class="sidenote">On utilise une notation fléchée qui permet de simplifier l'écriture : <code>newNode->data</code> est équivalent à <code>(*newNode).data</code> et <code>newNode->next</code> est équivalent à <code>(*newNode).next</code>.</span> :</p>
+        <pre><code class="language-c">struct Node* head = NULL;
+struct Node* newNode = (struct Node*) malloc(sizeof(struct Node));
+newNode->data = 10;
+newNode->next = NULL;
+head = newNode;</code></pre>
+        <p>On a créé un nœud avec la valeur <code>10</code> et le pointeur <code>next</code> à <code>NULL</code>. Le pointeur <code>head</code> pointe sur le premier nœud de la liste. Cela correspond à la situation suivante :</p>
+        <img src="./assets/list_one_element.svg" alt="linked-list-1"/>
+
+        <p>Une liste à trois éléments ressemblerait à :</p>
+        <pre><code class="language-c">struct Node* head = (struct Node*) malloc(sizeof(struct Node));
+struct Node* second = (struct Node*) malloc(sizeof(struct Node));
+struct Node* third = (struct Node*) malloc(sizeof(struct Node));
+head->data = 1;
+head->next = second;
+second->data = 2;
+second->next = third;
+third->data = 3;
+third->next = NULL;</code></pre>
+        <p>On obtient la situation suivante :</p>
+        <img src="./assets/list_three_element.svg" alt="linked-list-3"/>
+
+
+
+  <h3 id="creating-nodes">Création et ajout de nœuds</h3>
+        <p>Pour ajouter un élément dans une liste chaînée, il faut d'abord allouer dynamiquement de la mémoire pour un nouveau nœud en utilisant la fonction <code>malloc</code>. Selon si on veut ajouter un élément en tête, en queue ou bien à un endroit précis de la liste.</p>
+
+  <span class="highlight-box"><p><b>Exercice :</b>
+    <ul>
+      <li>Faire un dessin des trois situations à gérer pour ajouter un élément dans une liste chaînée.</li>
+      <li>Écrire une fonction qui ajoute un élément en tête de liste.</li>
+    </ul>
+  </p>
+  </span>
+
+
+
+  <h3 id="traversing-list">Parcours de la liste chaînée</h3>
+  <p>Pour parcourir une liste chaînée, il suffit de suivre les pointeurs <code>next</code> jusqu'à ce que l'on atteigne un nœud dont le pointeur est <code>NULL</code>. Voici un exemple de parcours d'une liste chaînée :</p>
+  <pre><code class="language-c">struct Node* current = head;
+while (current != NULL) {
+    printf("%d ", current->data);
+    current = current->next;
+}</code></pre>
+  <p>Ce code affiche les éléments de la liste chaînée en commençant par la tête et en suivant chaque nœud jusqu'à la fin de la liste.</p>
+
+  <h3 id="deleting-nodes">Suppression de nœuds</h3>
+  <p>La suppression d'un nœud dans une liste chaînée nécessite d'abord de mettre à jour les pointeurs pour ne plus faire référence au nœud à supprimer. Ensuite, il est important de libérer la mémoire allouée pour ce nœud en utilisant la fonction <code>free</code>. Voici un exemple de suppression du premier nœud :</p>
+  <pre><code class="language-c">struct Node* temp = head;
+head = head->next;
+free(temp);</code></pre>
+  <p>Dans cet exemple, nous stockons temporairement le nœud à supprimer dans <code>temp</code>, mettons à jour <code>head</code> pour pointer vers le nœud suivant, puis libérons la mémoire associée à l'ancien nœud de tête.</p>
+
+  <h3 id="exercice-linked-list">Exercice</h3>
+  <p>Écrire un programme qui implémente une liste chaînée simple en C. Votre programme doit permettre d'ajouter des nœuds, de les afficher et de les supprimer. Vous pouvez commencer avec les éléments suivants :</p>
+  <ul>
+    <li>Créer une structure <code>Node</code> avec un entier et un pointeur vers le nœud suivant.</li>
+    <li>Implémenter des fonctions pour ajouter un élément en tête, parcourir et afficher la liste, et supprimer un nœud.</li>
+  </ul>
+
+  <h3>Exemple de liste doublement chaînée</h3>
+        <p><img src="assets/double_linked_list.svg" /></p>
+        <p>Voici un exemple de liste <b>doublement chainée</b>, c'est à dire que chaque noeud contient un pointeur vers le suivant et le précédent, de type <code>double</code> obtenue sur <a href="https://github.com/TheAlgorithms/C/blob/master/data_structures/linked_list/doubly_linked_list.c">github</a><label for="sn-doublylinkedlist" class="margin-toggle sidenote-number"></label>.<input type="checkbox" id="sn-threebody-doublylinkedlist" class="margin-toggle"/> <span class="sidenote">On ne regardera cette implémentation évidemment qu'après avoir essayé l'exercice tout seul.</span> :</p>
+        
+<details>
+          <summary>Code de l'exemple</summary>
+<pre class="fullwidth"><code>/**
+ * @file
+ * @brief Implementation of [Doubly linked list](https://en.wikipedia.org/wiki/Doubly_linked_list)
+ * @details
+ * A doubly linked list is a data structure with a sequence
+ * of components called nodes. Within that nodes there are
+ * three elements: a value recorded, a pointer to the next
+ * node, and a pointer to the previous node.
+ *
+ * In this implementation, the functions of creating the list,
+ * inserting by position, deleting by position, searching 
+ * for value, printing the list, and an example of how the
+ * list works were coded.
+ *
+ * @author  [Gabriel Mota Bromonschenkel Lima](https://github.com/GabrielMotaBLima)
+ */
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/**
+ * @brief Doubly linked list struct
+ */
+typedef struct list
+{
+    double value;               ///< value saved on each node
+    struct list *next, *prev;   ///< directing to other nodes or NULL
+} List;
+
+/**
+ * @brief   Create list function, a new list containing one node will be created
+ * @param   value       a value to be saved into the first list node
+ * @returns new_list    the list created
+ */
+List *create(double value);
+
+/**
+ * @brief   Insertion by position into the list function
+ * @param   list    a doubly linked List
+ * @param   value   a value to be inserted into the list
+ * @param   pos     a position into the list for value insertion
+ * @returns list    the input list with a node more or the same list
+ */
+List *insert(List *list, double value, int pos);
+
+/**
+ * @brief   Deletion by position into the list function
+ * @param   list    a doubly linked List
+ * @param   pos     a position into the list for value Deletion
+ * @returns list    the input list with deleted values or the same list
+ */
+List *delete(List *list, int pos);
+
+/**
+ * @brief   Search value into the list function
+ * @param   list    a doubly linked list
+ * @param   value   a value to be looked for into the list
+ * @returns `1`     if the looked up value exists
+ * @returns `0`     if the looked up value doesn't exist
+ */
+int search(List *list, double value);
+
+/**
+ * @brief   Print list function
+ * @param   list    a doubly linked List
+ * @returns void
+ */
+void print(List *list);
+
+/**
+ * @brief   Example function
+ * @returns void
+ */
+void example();
+
+/**
+ * @brief   Main function
+ * @returns 0   on exit
+ */
+int main()
+{
+    // examples for better understanding
+    example();
+    // code here
+    return 0;
+}
+
+/**
+ * @brief   Create list function, a new list containing one node will be created
+ * @param   value       a value to be saved into the first list node
+ * @returns new_list    the list created
+ */
+List *create(double value)
+{
+    List *new_list = (List *)malloc(sizeof(List));
+    new_list->value = value;
+    new_list->next = NULL;
+    new_list->prev = NULL;
+    return new_list;
+}
+
+/**
+ * @brief   Insertion by position into the list function
+ * @param   list    a doubly linked List
+ * @param   value   a value to be inserted into the list
+ * @param   pos     a position into the list for value insertion
+ * @returns list    the input list with a node more or the same list
+ */
+List *insert(List *list, double value, int pos)
+{
+    // list NULL case
+    if (list == NULL)
+    {
+        list = create(value);
+        return list;
+    }
+
+    // position existing case
+    if (pos > 0)
+    {
+        List *cpy = list, *tmp = cpy;
+        int flag = 1, index = 1, size = 0;
+
+        while (tmp != NULL)
+        {
+            size++;
+            tmp = tmp->next;
+        }
+
+        // first position case
+        if (pos == 1)
+        {
+            List *new_node = create(value);
+            new_node->next = cpy;
+            cpy->prev = new_node;
+            list = new_node;
+            return list;
+        }
+
+        // position existing in list range case
+        if (size + 2 > pos)
+        {
+            while (cpy->next != NULL && index < pos)
+            {
+                flag++;
+                index++;
+                cpy = cpy->next;
+            }
+
+            List *new_node = (List *)malloc(sizeof(List));
+            new_node->value = value;
+
+            // position into list with no poiting for NULL
+            if (flag == pos)
+            {
+                cpy->prev->next = new_node;
+                new_node->next = cpy;
+                new_node->prev = cpy->prev;
+                cpy->prev = new_node;
+            }
+
+            // last position case
+            if (flag < pos)
+            {
+                new_node->next = cpy->next;
+                new_node->prev = cpy;
+                cpy->next = new_node;
+            }
+        }
+        return list;
+    }
+}
+
+/**
+ * @brief   Deletion by position into the list function
+ * @param   list    a doubly linked List
+ * @param   pos     a position into the list for value Deletion
+ * @returns list    the input list with deleted values or the same list
+ */
+List *delete(List *list, int pos)
+{
+    // list NULL case
+    if (list == NULL)
+        return list;
+
+    // position existing case
+    if (pos > 0)
+    {
+        List *cpy = list, *tmp = cpy;
+        int flag = 1, index = 1, size = 0;
+
+        while (tmp != NULL)
+        {
+            size++;
+            tmp = tmp->next;
+        }
+
+        // first position case
+        if (pos == 1)
+        {
+            if (size == 1)
+                return NULL;
+            cpy = cpy->next;
+            cpy->prev = NULL;
+            return cpy;
+        }
+
+        // position existing in list range case
+        if (size + 2 > pos)
+        {
+            while (cpy->next != NULL && index < pos)
+            {
+                flag++;
+                index++;
+                cpy = cpy->next;
+            }
+
+            if (flag == pos)
+            {
+                // position into list with no poiting for NULL
+                if (cpy->next != NULL)
+                {
+                    cpy->prev->next = cpy->next;
+                    cpy->next->prev = cpy->prev;
+                }
+
+                // last position case
+                else
+                    cpy->prev->next = NULL;
+            }
+        }
+        return list;
+    }
+}
+
+/**
+ * @brief   Search value into the list function
+ * @param   list    a doubly linked list
+ * @param   value   a value to be looked for into the list
+ * @returns `1`     if the looked up value exists
+ * @returns `0`     if the looked up value doesn't exist
+ */
+int search(List *list, double value)
+{
+    if (list == NULL)
+        return 0;
+    if (list->value == value)
+        return 1;
+    search(list->next, value);
+}
+
+/**
+ * @brief   Print list function
+ * @param   list    a doubly linked List
+ * @returns void
+ */
+void print(List *list)
+{
+    if (list != NULL)
+    {
+        printf("%f\t", list->value);
+        print(list->next);
+    }
+}
+
+/**
+ * @brief   Example function
+ * @returns void
+ */
+void example()
+{
+    List *my_list = NULL;
+    double node_value = 0;
+    int searching;
+
+    my_list = create(node_value);
+    my_list = insert(my_list, 3, 1);
+    my_list = insert(my_list, 5, 3);
+    my_list = insert(my_list, 10, 3);
+    my_list = insert(my_list, 20, 3);
+
+    print(my_list);
+    searching = search(my_list, 20);
+    printf("\n%d\n", searching);
+
+    my_list = delete (my_list, 1);
+    my_list = delete (my_list, 1);
+    my_list = delete (my_list, 1);
+    my_list = delete (my_list, 1);
+
+    print(my_list);
+    searching = search(my_list, 20);
+    printf("\n%d\n", searching);
+}</code></pre>
+</details>
+</section>
+
+      <section>
+        <p><a href="./CM3.html">Vers le CM3</a>
+ / <a href="./index.html">Retour à la liste des CMs</a> / <a href="./CM5.html">Vers le CM5</a></p>
+      </section>
+
+    </article>
+  </body>
+</html>
