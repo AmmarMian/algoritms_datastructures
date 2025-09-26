@@ -59,20 +59,30 @@
 
   <body>
     <article>
-      <h1 id="title-h1">TD1 - Familiarisons nous avec le langage C.</h1>
+      <h1 id="title-h1">TD1 - Utilisation de Linux et premiers programmes en C.</h1>
 
+      <section>
+        <p>Ce premier TD a pour objectif de vous familiariser avec l'utilisation de Linux et de vous faire écrire vos premiers programmes en C. Pour cela, nous allons commencer par un préambule qui vous permettra de vous organiser pour la suite du cours. Ensuite, nous verrons quelques exercices simples pour vous familiariser avec la syntaxe du langage C.</p>
       <h2>Table des matières</h2>
       <ul>
-        <li><a href="#hello-world">Préambule : Hello World</a></li>
-        <li><a href="#vscode">Visual Studio Code</a></li>
+        <li><a href="#linux">Préambule : Utiisation de Linux</a></li>
+        <li><a href="#hello world">Premier programme : Hello World</a></li>
         <li><a href="#terminal-triangle">Exercice 1: Un triangle dans le terminal</a></li>
         <li><a href="#fonction-somme-prod">Exercice 2 : Des sommes et des produits</a></li>
         <li><a href="#fonction-sinus">Exercice 3 : Le sinus d'un angle</a></li>
         <li><a href="#fonction-pgcd">Exercice 4 : Calcul du PGCD et PPCM de deux entiers</a></li>
       </ul>
 
+      </section>
+
       <section>
-        <h2 id="hello world">Préambule : Hello World</h2>
+        <h2 id="linux">Préambule : Utilisation de Linux</h2>
+
+        Points a aborder : Terminal, cd, mkdir, touch, edition de fichiers avec gedit, gcc, ./a.out, mv, rm, clear, ls
+      </section>
+
+      <section>
+        <h2 id="hello world">Premier programme : Hello World</h2>
         <p>Rappelons dans un premier temps les bases de l'écriture, compilation et exécution d'un programme C. Pour cela concentrons sur le programme suivant :</p>
         <pre><code>
 #include &lt;stdio.h&gt;
@@ -91,28 +101,6 @@ int main(){
 
     
       </section>
-
-      <section>
-        <h2 id="vscode">Visual Studio Code</h2>
-        <p>On va maintenant passer à l'exécution sous Visual Studio Code. Pour cela, on va utiliser l'extension <a href="https://code.visualstudio.com/docs/languages/cpp">C/C++</a> de Microsoft que le logiciel vous propose d'installer dés lors que vous ouvrez un fichier C. Lorsque l'on ouvre VS Code on a la fenêtre suivante:
-        <img src="assets/vs_code/0_open_vscode.png" alt="Visual Studio Code"/>
-        </p>
-        <p>Ouvrez alors votre dossier précédent et on aura par exemple:
-          <img src="assets/vs_code/1_write_program.png" alt="Visual Studio Code open file"/>
-
-        </p>
-
-        <p>On a alors deux façon d'exécuter le programme : à travers un terminal dans VS Code ou bien directement dans le logiciel. Pour cela, on peut appuyer sur le bouton <i class="fa-solid fa-play fa-fw"></i> en haut à droite de l'écran ou bien faire <code>Ctrl+Shift+B</code>:
-          <img src="assets/vs_code/2_where_run.png" alt="Visual Studio Code run"/>
-          Une fois le programme lancé, on aura le résultat dans le terminal de VS Code:
-          <img src="assets/vs_code/3_exec_button.png" alt="Visual Studio Code run"/>
-        </p>
-                <p>Cette façon de procéder amène beaucoup de d'éléments au dela de l'exécution du programme et pour des programmes simples on peut se contenter de passer par le terminal intégré à VSCode :
-          <img src="assets/vs_code/4_exec_terminal.png" alt="Visual Studio Code run terminal"/>
-        </p>
-
-      </section>
-
 
 
 
@@ -175,72 +163,6 @@ pour i allant de 1 à n faire:</br>
 
         </section>
 
-    <section>
-      <h3 id="factiorielle">2.2 - Factorielle d'un entier</h3>
-
-          <p> On souhaite écrire un programme qui calcule la factorielle d'un entier \(n\), notée \(n!\). La factorielle d'un entier \(n\) est le produit des entiers de 1 à \(n\):
-$$
-            n! = \prod_{i=1}^{n} i = 1 \times 2 \times 3 \times \ldots \times n.
-$$
-    En vous basant sur le programme réalisé précédemment, écrire un programme qui demande à l'utilisateur de rentrer un entier \(n\) et qui affiche la factorielle de \(n\). On utilisera une boucle <code>for</code> pour effectuer le calcul.
-      </p>
-
-    </section>
-
-        <span class="highlight-box"><p>Enfin mettez ces deux programmes sous la forme de fonctions dont on spécifiera les prototypes</p></span>
-
-
-  </section>
-
-  <section>
-    <h2 id="fonction-sinus">Exercice 3 : Le sinus d'un angle</h2>
-        <p><label for="mn-manim-visu" class="margin-toggle">&#8853;</label><input type="checkbox" id="mn-manim-visu" class="margin-toggle"/><span class="marginnote">
-<img src="assets/sinus-taylor.gif"></br>
-            Une visualisation du développement limité. Source: <a href="https://www.youtube.com/watch?v=qCMNOIsdi8A">Youtube</a>.
-
-        </span>
-    <p>On rappelle que le développement limité de la fonction sinus au voisinage de \(0\) à l’ordre \(2k+1\) (et même \(2k+2\) puisque les termes des puissances paires sont nuls) est le suivant :
-$$
-\sin (\theta)=\theta-\frac{\theta^{3}}{3 !}+\frac{\theta^{5}}{5 !}-\cdots+(-1)^{k} \frac{\theta^{(2 k+1)}}{(2 k+1) !}+O\left(\theta^{(2 k+3)}\right).
-$$
-L’objectif de cet exercice est de calculer une approximation de la valeur de la fonction sinus en utilisant ce développement limité.
-    </p>
-
-<ol>
-          <li>Ecrire, sur papier, le développement limité <b>à l’ordre n</b><label for="sn-order-n"
-       class="margin-toggle sidenote-number">
-</label>
-<input type="checkbox"
-      id="sn-order-n"
-              class="margin-toggle"/><span class="sidenote">Et non pas à l'ordre \(2k+1\).</span> en utilisant le symbole de sommation comme à la partie précédente. On fera très attention aux limites pour l’indice de sommation. Afin d’éviter les erreurs, vérifier votre formule pour l’ordre 1 et l’ordre 5.</li>
-          <li>Ecrire alors un fonction <code>float sinus(float x, int n)</code> qui prend en paramètre un réel \(x\) et un entier \(n\) et qui renvoie une approximation de \(\sin(x)\) à l’ordre \(n\). On utilisera la formule précédente pour effectuer le calcul ainsi que la fonction <code>factorielle</code> de l'exercice précédent. Tester votre fonction pour des angle de \(\frac{\pi}{2}\), \(\frac{\pi}{3}\) et \(\pi\). </li>
-          <li>À l’itération i, on calcule \((2i+1)!\) et à l’itération \(i+1\), on calcule \((2i+3)!\) et cette manière de procéder n’est pas optimale. En effet, il suffit de remarquer que:
-$$
-(2i+3)! = (2i+1)!\times(2i+2)\times(2i+3)
-$$
-            Ainsi, à l’itération \(i+1\), on recalcule \((2i+1)!\), information que l’on avait calculée à l’itération \(i\). En utilisant cette remarque, optimiser votre algorithme pour qu’il calcule à chaque itération \((2i+1)!\) mais sans utiliser la fonction factorielle.
-          <li>On s’intéresse maintenant à l’erreur d’approximation entre le calcul du sinus par la fonction sin de la librairie math et celui par le développement limité. </p>
-  
-              
-
-            <p>Ecrire le programme qui fait croître l’ordre du développement limité jusqu’à ce que la valeur absolue de l’erreur d’approximation soit inférieure à une valeur donnée.</li>
-            <p>Pour pouvoir utiliser la fonction sin de la librairie math, il faut inclure la librairie <code>math.h</code> en début de programme. On aura alors accès aux fonctions <code>sin</code> et <code>fabs</code> qui permettent de calculer respectivement le sinus d’un angle et la valeur absolue d’un réel. La compilation change légèrement et il faut ajouter l’option <code>-lm</code> à la commande de compilation. Par exemple, si votre programme s’appelle <code>sinus.c</code>, la commande de compilation sera:</p>
-            <pre><code>gcc -o sinus main.c -lm</code></pre>
-</ol>
-        <span class="highlight-box"><p> <i class="fa-solid fa-circle-info fa-lg -fa-fw"></i>  On n'hésitera pas à définir des fonctions annexes qui seraient utiles pour l'exercice.</p></span>
-
-      </section>
-
-
-  <section>
-    <h2 id="fonction-pgcd">Exercice 4 : Calcul du PGCD et PPCM de deux entiers</h2>
-  <p>En vous aidant du CM1 ainsi que de vos recherches, faire un programme qui demande à l'utilisateur de rentrer deux entiers \(a\) et \(b\) et qui affiche le PGCD et le PPCM de ces deux entiers. On utilisera l'algorithme d'Euclide pour le calcul du PGCD et la formule suivante pour le PPCM:
-$$
-  \text{PPCM}(a,b) = \frac{a \times b}{\text{PGCD}(a,b)}.
-$$
-    </p>
-
-  </section>
 
 
       <section>

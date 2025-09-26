@@ -67,6 +67,7 @@
           <li><a href="#entiers-signes">Entiers signés</a></li>
           <li><a href="#nombres-flottants">Nombre Flottants</a></li>
           <li><a href="#caracteres">Caractères</a></li>
+          <li><a href="#exercices">Exercices</a></li>
         </ul>
       </section>
       <section>
@@ -493,6 +494,60 @@ en trois champs repectivement appelés Signe, Exposant et Mantisse.</p>
 </ul>
 <p>Si l’on saisit la suite de caractères 123 au clavier, quelle est la représentation de cette saisie dans la mémoire de l’ordinateur ?</p>
 </span>
+        </section>
+
+      <section>
+        <h2 id="exercices">Exercices supplémentaires</h2>
+        
+  <p>Afin de valider les connaissances acquises dans ce chapitre, nous proposons les exercices suivants.</p>
+
+        <h3 id="exercice-1">Exercice 1: Codage et décodage</h3>
+<p>Une entreprise souhaite automatiser son système de stockage. Elle implante pour cela un transstockeur (voir figure ci-dessous) constitué de 10 rayonnages. Chaque rayonnage est une matrice de cases. Pour simplifier, on supposera que chaque rayonnage comporte 10 rangées de chacune 20 cases. Chaque case peut accueillir 3 casiers.</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="text-align:center head"><p><img alt="Transtocker &#64;Wikipedia" src="assets/Miniload_ASRS.jpg" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-align:center"><p><em>Transstocker &#64;Wikipedia</em></p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>(1).</strong> Si l’on associait un nombre entier à chaque casier, combien de bits seraient nécessaires pour pouvoir coder la totalité des casiers du transstockeur ?</p>
+<p>Pour gérer le rangement des casiers, il est décidé d’adopter un codage particulier pour repérer la position d’un casier dans le transstockeur. Ce code est construit de façon à prévoir la croissance de l’entreprise, qui envisage d’avoir un second transstockeur, dont la taille n’est pas encore définitive mais dont on sait qu’il pourrait avoir un maximum de 16 rayonnages de 16 rangées, chacune contenant 32 cases pouvant accueillir 4 casiers.</p>
+<p>Il est donc proposé de construire un code de 16 bits de la manière suivante :</p>
+<ul class="simple">
+<li><p>Le bit de poids fort représente le numéro du transstockeur ;</p></li>
+<li><p>Les 4 bits suivants représentent le numéro du rayonnage dans le transstockeur;</p></li>
+<li><p>Les 4 bits suivants représentent le numéro de la rangée dans le rayonnage;</p></li>
+<li><p>Les 5 bits suivants représentent le numéro de la case dans la rangée ;</p></li>
+<li><p>Les 2 bits suivants représentent la position du casier dans la case.</p></li>
+</ul>
+<p>Ainsi le code 00100001100010012 correspond au 2e casier de la 3e case de la 4e rangée du 5e rayonnage du premier transstockeur.</p>
+<p><strong>(2).</strong> Quel est le code, exprimé en base 2, correspondant au 1er casier de la 5e case de la 3e rangée du 7e rayonnage du second transstockeur ?</p>
+<p><strong>(3).</strong> L’expression générale du code, exprimé en base 10, correspondant au casier <span class="math notranslate nohighlight">\(a\)</span> de la case <span class="math notranslate nohighlight">\(b\)</span> de la rangée <span class="math notranslate nohighlight">\(c\)</span> du rayonnage <span class="math notranslate nohighlight">\(d\)</span> du transstockeur <span class="math notranslate nohighlight">\(e\)</span> est:</p>
+<p><span class="math notranslate nohighlight">\(
+N = (e-1)2^{15}+(d-1)2^{11}+(c-1)2^{7}+(b-1)2^{2}+(a-1),
+\)</span></p>
+<p>où <span class="math notranslate nohighlight">\(a\)</span>, <span class="math notranslate nohighlight">\(b\)</span>, <span class="math notranslate nohighlight">\(c\)</span>, <span class="math notranslate nohighlight">\(d\)</span>, <span class="math notranslate nohighlight">\(e\)</span> sont exprimés en base <span class="math notranslate nohighlight">\(10\)</span>. Justifier cette expression et calculer la valeur décimale du code correspondant à la question 2.</p>
+<p><strong>(4).</strong>  En utilisant cette expression et les opérateurs «division entière (<em>div</em> ou <em>//</em> en Python)» et «reste de la division entière (modulo ou <em>%</em> en Python)», déterminer le numéro du casier, du transstockeur et du rayonnage correspondant au code <span class="math notranslate nohighlight">\(N = 43822\)</span>.</p>
+
+
+        <h3 id="exercice-2">Exercice 2: Numération et programmation</h3>
+<p>Soit <span class="math notranslate nohighlight">\(N_3\)</span> un nombre, exprimé en base <span class="math notranslate nohighlight">\(B\)</span> dont la partie entière s’écrit sur <span class="math notranslate nohighlight">\(n\)</span> digits et la parte fractionnaire s’écrit sur <span class="math notranslate nohighlight">\(m\)</span> digits. En notant <span class="math notranslate nohighlight">\(x_i\)</span> Les digits, ce nombre s’écrit:</p>
+<p><span class="math notranslate nohighlight">\(
+N_B = x_{n-1}\dots x_1x_0x_{-1}\dots x_{-m}.
+\)</span></p>
+<p>Un exemple de nombre écrit en base 2 de cette manièere est <span class="math notranslate nohighlight">\(N_2 = (10010,101)_2\)</span>.</p>
+<p><strong>(1).</strong> Donner l’expression générale de ce nombre en base <span class="math notranslate nohighlight">\(10\)</span>, <span class="math notranslate nohighlight">\(N_{10}\)</span> à partir de son expression en base 2. Que vaut <span class="math notranslate nohighlight">\(N_{10}\)</span> si <span class="math notranslate nohighlight">\(N_2=(10010,101)_2\)</span>.</p>
+<p><strong>(2).</strong> À partir de l’expression générale <span class="math notranslate nohighlight">\(N_{10}\)</span>, donner le principe de conversion de la partie entière et de la partie fractionnaire en base <span class="math notranslate nohighlight">\(2\)</span>. Que vaut <span class="math notranslate nohighlight">\(N_2\)</span> si <span class="math notranslate nohighlight">\(N_{10}=28,375\)</span>.</p>
+
+          <h3 id="exercice-3">Exercice 3: Calcul flottant</h3>
+<p><strong>(1).</strong> À partir de l’expression précédente en base 2 du nombre 28,375, donner sa représentation dans le format IEEE 754 en simple précision.</p>
+<p><strong>(2).</strong> On souhaite calculer en représentation flottante, les différentes valeurs produites par la suite <span class="math notranslate nohighlight">\(u_n=4u_{n-1}-1\)</span> avec <span class="math notranslate nohighlight">\(u_0=\frac{1}{3}\)</span>. Dans un ordinateur, on ne pourra coder qu’une approximation de <span class="math notranslate nohighlight">\(\frac{1}{3}\)</span>, c’est-à-dire en pratique <span class="math notranslate nohighlight">\(\frac{1}{3}-\epsilon\)</span> qvec <span class="math notranslate nohighlight">\(\epsilon\)</span> qui represénte la différente entre le nombre le plus proche qui est codé et <span class="math notranslate nohighlight">\(\frac{1}{3}\)</span>. En partant de <span class="math notranslate nohighlight">\(u_0=\frac{1}{3}-\epsilon\)</span>, analyser l’évolution des valeurs produites.</p>
+
+      </section>
+
 
       <section>
         <p><a href="./CM1.html">Vers le CM1</a>
