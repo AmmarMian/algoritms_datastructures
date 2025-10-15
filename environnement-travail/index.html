@@ -7,33 +7,703 @@
     <link rel="stylesheet" href="../latex.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .highlight-box {
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 20px;
+        margin: 10px;
+        font: inherit;
+        vertical-align: baseline;
+        max-width: 55%;
+        -webkit-margin-start: 0;
+        -webkit-margin-end: 0;
+      }
+
+      .hight-light-box-margin{
+        display: inline-block;
+        border-style: dashed;
+        border-color: #111;
+        border-width: 1px;
+        padding: 10px;
+        margin: 10px;
+        font: inherit;
+        vertical-align: baseline;
+        max-width: 100%;
+        -webkit-margin-start: 0;
+        -webkit-margin-end: 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .highlight-box {
+          border-color: #ddd;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .highlight-box {
+          max-width: 90%;
+        }
+      }
+    </style>
   </head>
 
   <body>
     <article>
       <h1 id="tufte-css">Environnement de travail</h1>
       <section>
-        <p>Cette page décrit l'environnement informatique nécéssaire sur vos ordinateurs personnels pour pouvoir réaliser les exercices en CM, les TDs et TPs du cours INFO501.</p>
+        <p>Cette page décrit l'environnement informatique nécessaire sur vos ordinateurs personnels pour pouvoir réaliser les exercices en CM, les TDs et TPs du cours INFO501.</p>
+
+        <h3>Outils nécessaires</h3>
+        <p>Pour travailler en C dans ce cours, vous aurez besoin de trois éléments essentiels :</p>
+        <ul>
+          <li><strong>Un compilateur C (gcc)</strong> : transforme votre code source en programme exécutable</li>
+          <li><strong>Un éditeur de code</strong> : nous recommandons <strong>Visual Studio Code</strong> pour sa simplicité et ses fonctionnalités</li>
+          <li><strong>Un terminal</strong> : interface en ligne de commande pour compiler et exécuter vos programmes</li>
+        </ul>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-circle-exclamation fa-lg fa-fw"></i> <strong>Important :</strong> Dans ce cours, nous compilerons <strong>toujours manuellement</strong> via le terminal avec la commande <code>gcc</code>. Nous n'utiliserons pas les fonctionnalités de compilation automatique de VS Code. Cela vous permet de comprendre le processus de compilation et de maîtriser les options du compilateur.</p>
+        </div>
+
         <h3>Plan</h3>
         <p>Les sections suivantes décrivent les environnements de travail pour les systèmes d'exploitation suivants:
           <ul>
-            <li><a href="#le-cas-windows">Windows</a></li>
-            <li><a href="#le-cas-osx">OSX</a></li>
-            <li><a href="#le-cas-linux">Linux</a></li>
+            <li><a href="#le-cas-windows">🪟 Windows</a></li>
+            <li><a href="#le-cas-osx">🍎 macOS</a></li>
+            <li><a href="#le-cas-linux">🐧 Linux</a></li>
+            <li><a href="#configuration-vscode">⚙️ Configuration de VS Code</a></li>
+            <li><a href="#workflow">📋 Workflow de travail</a></li>
           </ul>
         </p>
       </section>
 
       <section>
-        <h2 id="le-cas-windows">Le cas Windows</h2>
+        <h2 id="le-cas-windows">🪟 Le cas Windows</h2>
+
+        <p>Sous Windows, nous utiliserons <strong>WSL (Windows Subsystem for Linux)</strong>, qui permet d'avoir un environnement Linux complet directement dans Windows. C'est la solution recommandée par Microsoft pour le développement.</p>
+
+        <h3>1. Installation de WSL</h3>
+
+        <h4>Prérequis</h4>
+        <p>Vous devez avoir <strong>Windows 10 version 2004</strong> ou supérieure, ou <strong>Windows 11</strong>.</p>
+
+        <h4>Étapes d'installation</h4>
+        <ol>
+          <li>Ouvrez <strong>PowerShell</strong> en tant qu'administrateur (clic droit sur le menu Démarrer → "Terminal (admin)" ou "PowerShell (admin)")</li>
+          <li>Exécutez la commande suivante :</li>
+        </ol>
+
+        <pre><code>wsl --install</code></pre>
+
+        <p>Cette commande va :</p>
+        <ul>
+          <li>Activer les fonctionnalités nécessaires de Windows</li>
+          <li>Télécharger et installer Ubuntu (la distribution Linux par défaut)</li>
+          <li>Installer WSL2 (la version la plus récente)</li>
+        </ul>
+
+        <ol start="3">
+          <li><strong>Redémarrez</strong> votre ordinateur lorsque demandé</li>
+          <li>Au redémarrage, une fenêtre Ubuntu s'ouvrira automatiquement. Patientez pendant l'installation finale</li>
+          <li>Créez votre compte utilisateur Linux :
+            <ul>
+              <li>Entrez un nom d'utilisateur (en minuscules, sans espaces)</li>
+              <li>Entrez un mot de passe (il ne s'affichera pas pendant la saisie, c'est normal)</li>
+              <li>Confirmez le mot de passe</li>
+            </ul>
+          </li>
+        </ol>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i> <strong>Note :</strong> Retenez bien votre mot de passe, vous en aurez besoin pour les commandes <code>sudo</code> (administrateur).</p>
+        </div>
+
+        <h3>2. Installation de gcc</h3>
+
+        <p>Une fois WSL installé, ouvrez le terminal Ubuntu et exécutez les commandes suivantes :</p>
+
+        <h4>Mise à jour des paquets</h4>
+        <pre><code>sudo apt update && sudo apt upgrade -y</code></pre>
+
+        <p>Entrez votre mot de passe lorsque demandé.</p>
+
+        <h4>Installation des outils de développement</h4>
+        <pre><code>sudo apt install build-essential -y</code></pre>
+
+        <p>Cette commande installe <code>gcc</code>, <code>make</code> et d'autres outils essentiels pour la compilation.</p>
+
+        <h4>Vérification de l'installation</h4>
+        <pre><code>gcc --version</code></pre>
+
+        <p>Vous devriez voir quelque chose comme :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0      ║
+║  Copyright (C) 2021 Free Software Foundation...  ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <h3>3. Installation de Visual Studio Code</h3>
+
+        <ol>
+          <li>Téléchargez VS Code depuis le site officiel : <a href="https://code.visualstudio.com/" target="_blank">https://code.visualstudio.com/</a></li>
+          <li>Installez-le normalement sous Windows</li>
+          <li>Ouvrez VS Code</li>
+          <li>Installez l'extension <strong>"WSL"</strong> :
+            <ul>
+              <li>Cliquez sur l'icône Extensions dans la barre latérale (ou <code>Ctrl+Shift+X</code>)</li>
+              <li>Recherchez "WSL"</li>
+              <li>Installez l'extension officielle de Microsoft</li>
+            </ul>
+          </li>
+          <li>Installez l'extension <strong>"C/C++"</strong> :
+            <ul>
+              <li>Recherchez "C/C++"</li>
+              <li>Installez l'extension officielle de Microsoft</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>Ouvrir un dossier WSL dans VS Code</h4>
+        <p>Pour travailler avec vos fichiers dans WSL :</p>
+        <ol>
+          <li>Ouvrez le terminal Ubuntu (WSL)</li>
+          <li>Naviguez vers votre dossier de travail, par exemple :
+            <pre><code>mkdir -p ~/INFO501/TD1
+cd ~/INFO501/TD1</code></pre>
+          </li>
+          <li>Ouvrez VS Code depuis ce dossier :
+            <pre><code>code .</code></pre>
+          </li>
+        </ol>
+
+        <p>VS Code s'ouvrira avec une connexion directe à WSL (vous verrez "WSL: Ubuntu" dans le coin inférieur gauche).</p>
+
+        <h3>4. Test de l'environnement</h3>
+
+        <p>Testons que tout fonctionne correctement :</p>
+
+        <ol>
+          <li>Dans VS Code connecté à WSL, créez un fichier <code>test.c</code></li>
+          <li>Écrivez ce programme :
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main(){
+    printf("Hello depuis WSL!\n");
+    return 0;
+}</code></pre>
+          </li>
+          <li>Ouvrez le terminal intégré dans VS Code (<code>Ctrl+`</code> ou menu Terminal → New Terminal)</li>
+          <li>Compilez :
+            <pre><code>gcc test.c -o test</code></pre>
+          </li>
+          <li>Exécutez :
+            <pre><code>./test</code></pre>
+          </li>
+          <li>Vous devriez voir :
+            <pre><code>Hello depuis WSL!</code></pre>
+          </li>
+        </ol>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-circle-check fa-lg fa-fw"></i> <strong>Félicitations !</strong> Votre environnement Windows est prêt pour programmer en C !</p>
+        </div>
+
+        <h3>Informations complémentaires</h3>
+
+        <details>
+          <summary><b>Accéder aux fichiers WSL depuis Windows</b></summary>
+          <p>Vous pouvez accéder à vos fichiers WSL depuis l'explorateur Windows en tapant dans la barre d'adresse :</p>
+          <pre><code>\\wsl$\Ubuntu\home\votre_nom_utilisateur</code></pre>
+          <p>Ou directement depuis l'explorateur de fichiers, WSL apparaît dans la barre latérale.</p>
+        </details>
+
+        <details>
+          <summary><b>Problèmes courants</b></summary>
+          <ul>
+            <li><strong>WSL ne démarre pas :</strong> Vérifiez que la virtualisation est activée dans le BIOS</li>
+            <li><strong>"wsl --install" ne fonctionne pas :</strong> Vérifiez votre version de Windows avec <code>winver</code></li>
+            <li><strong>Permission denied lors de l'exécution :</strong> Vérifiez que vous avez bien compilé avec <code>gcc</code> et que le fichier existe</li>
+          </ul>
+        </details>
+
       </section>
 
       <section>
-        <h2 id="le-cas-osx">Le cas OSX</h2>
+        <h2 id="le-cas-osx">🍎 Le cas macOS</h2>
+
+        <p>macOS est basé sur Unix, ce qui le rend naturellement adapté au développement en C. L'installation est simple grâce aux <strong>Command Line Tools</strong> fournis par Apple.</p>
+
+        <h3>1. Installation des Command Line Tools</h3>
+
+        <p>Les Command Line Tools incluent <code>gcc</code> (en réalité <code>clang</code> déguisé, mais compatible pour notre usage) et d'autres outils nécessaires.</p>
+
+        <h4>Méthode simple</h4>
+        <ol>
+          <li>Ouvrez le <strong>Terminal</strong> (Applications → Utilitaires → Terminal, ou cherchez "Terminal" avec Spotlight)</li>
+          <li>Exécutez la commande :
+            <pre><code>xcode-select --install</code></pre>
+          </li>
+          <li>Une fenêtre apparaîtra, cliquez sur <strong>"Installer"</strong></li>
+          <li>Acceptez la licence et patientez pendant le téléchargement et l'installation (peut prendre quelques minutes)</li>
+        </ol>
+
+        <h4>Vérification de l'installation</h4>
+        <p>Une fois l'installation terminée, vérifiez que tout fonctionne :</p>
+        <pre><code>gcc --version</code></pre>
+
+        <p>Vous devriez voir quelque chose comme :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  Apple clang version 14.0.0 (clang-1400.0.29.2) ║
+║  Target: arm64-apple-darwin22.1.0                ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i> <strong>Note :</strong> Sur macOS, la commande <code>gcc</code> pointe en réalité vers <code>clang</code>, le compilateur C d'Apple. C'est tout à fait normal et suffisant pour ce cours. Les deux sont compatibles pour nos usages.</p>
+        </div>
+
+        <h3>2. Installation de Visual Studio Code</h3>
+
+        <ol>
+          <li>Téléchargez VS Code depuis le site officiel : <a href="https://code.visualstudio.com/" target="_blank">https://code.visualstudio.com/</a></li>
+          <li>Ouvrez le fichier <code>.dmg</code> téléchargé</li>
+          <li>Glissez l'application VS Code dans le dossier Applications</li>
+          <li>Lancez VS Code depuis le dossier Applications</li>
+          <li>Installez l'extension <strong>"C/C++"</strong> :
+            <ul>
+              <li>Cliquez sur l'icône Extensions dans la barre latérale (ou <code>Cmd+Shift+X</code>)</li>
+              <li>Recherchez "C/C++"</li>
+              <li>Installez l'extension officielle de Microsoft</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h4>Ouvrir VS Code depuis le terminal (optionnel mais pratique)</h4>
+        <p>Pour pouvoir lancer VS Code avec la commande <code>code</code> depuis le terminal :</p>
+        <ol>
+          <li>Ouvrez VS Code</li>
+          <li>Ouvrez la palette de commandes (<code>Cmd+Shift+P</code>)</li>
+          <li>Tapez "shell command" et sélectionnez <strong>"Shell Command: Install 'code' command in PATH"</strong></li>
+          <li>Redémarrez le terminal</li>
+        </ol>
+
+        <p>Vous pourrez maintenant ouvrir des dossiers avec <code>code .</code> depuis le terminal.</p>
+
+        <h3>3. Test de l'environnement</h3>
+
+        <p>Testons que tout fonctionne correctement :</p>
+
+        <ol>
+          <li>Créez un dossier pour vos TDs :
+            <pre><code>mkdir -p ~/INFO501/TD1
+cd ~/INFO501/TD1</code></pre>
+          </li>
+          <li>Ouvrez VS Code dans ce dossier :
+            <pre><code>code .</code></pre>
+            Ou ouvrez VS Code et utilisez File → Open Folder
+          </li>
+          <li>Créez un fichier <code>test.c</code> avec ce contenu :
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main(){
+    printf("Hello depuis macOS!\n");
+    return 0;
+}</code></pre>
+          </li>
+          <li>Ouvrez le terminal intégré dans VS Code (<code>Ctrl+`</code> ou menu Terminal → New Terminal)</li>
+          <li>Compilez :
+            <pre><code>gcc test.c -o test</code></pre>
+          </li>
+          <li>Exécutez :
+            <pre><code>./test</code></pre>
+          </li>
+          <li>Vous devriez voir :
+            <pre><code>Hello depuis macOS!</code></pre>
+          </li>
+        </ol>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-circle-check fa-lg fa-fw"></i> <strong>Parfait !</strong> Votre environnement macOS est configuré et prêt à l'emploi !</p>
+        </div>
+
+        <h3>Informations complémentaires</h3>
+
+        <details>
+          <summary><b>Installer le vrai gcc avec Homebrew (optionnel)</b></summary>
+          <p>Si vous souhaitez vraiment utiliser GCC au lieu de Clang, vous pouvez l'installer via Homebrew :</p>
+          <ol>
+            <li>Installez Homebrew si ce n'est pas déjà fait :
+              <pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+            </li>
+            <li>Installez gcc :
+              <pre><code>brew install gcc</code></pre>
+            </li>
+            <li>Utilisez <code>gcc-13</code> (ou la version installée) au lieu de <code>gcc</code></li>
+          </ol>
+          <p><strong>Note :</strong> Ce n'est pas nécessaire pour le cours. Clang est parfait pour nos besoins.</p>
+        </details>
+
+        <details>
+          <summary><b>Problèmes courants</b></summary>
+          <ul>
+            <li><strong>Les Command Line Tools ne s'installent pas :</strong> Vérifiez votre connexion internet et l'espace disque disponible (environ 2 Go nécessaires)</li>
+            <li><strong>Permission denied lors de l'exécution :</strong> Vérifiez que vous avez bien compilé et que le fichier existe</li>
+            <li><strong>xcrun: error:</strong> Réinstallez les Command Line Tools avec <code>xcode-select --install</code></li>
+          </ul>
+        </details>
+
       </section>
 
       <section>
-        <h2 id="le-cas-linux">Le cas Linux</h2>
+        <h2 id="le-cas-linux">🐧 Le cas Linux</h2>
+
+        <p>Linux est l'environnement natif idéal pour le développement en C. L'installation de gcc est simple et directe, selon votre distribution.</p>
+
+        <h3>1. Installation de gcc</h3>
+
+        <p>La méthode d'installation dépend de votre distribution Linux. Voici les commandes pour les distributions les plus courantes :</p>
+
+        <h4>Debian / Ubuntu / Linux Mint</h4>
+        <pre><code>sudo apt update
+sudo apt install build-essential -y</code></pre>
+
+        <h4>Fedora (comme à la fac)</h4>
+        <pre><code>sudo dnf install gcc gcc-c++ make -y</code></pre>
+
+        <h4>Arch Linux / Manjaro</h4>
+        <pre><code>sudo pacman -S base-devel</code></pre>
+
+        <h4>openSUSE</h4>
+        <pre><code>sudo zypper install gcc gcc-c++ make</code></pre>
+
+        <h4>Vérification de l'installation</h4>
+        <p>Quelle que soit votre distribution, vérifiez que gcc est bien installé :</p>
+        <pre><code>gcc --version</code></pre>
+
+        <p>Vous devriez voir quelque chose comme :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  gcc (GCC) 13.2.1 20230801                       ║
+║  Copyright (C) 2023 Free Software Foundation...  ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-circle-info fa-lg fa-fw"></i> <strong>À la fac :</strong> Les machines de TP sous Fedora ont déjà gcc installé. Cette section est surtout pour votre ordinateur personnel.</p>
+        </div>
+
+        <h3>2. Installation de Visual Studio Code</h3>
+
+        <p>Il existe plusieurs méthodes pour installer VS Code sous Linux :</p>
+
+        <h4>Méthode 1 : Paquet officiel (recommandé)</h4>
+
+        <p><strong>Pour Debian/Ubuntu :</strong></p>
+        <ol>
+          <li>Téléchargez le paquet <code>.deb</code> depuis <a href="https://code.visualstudio.com/" target="_blank">https://code.visualstudio.com/</a></li>
+          <li>Installez-le :
+            <pre><code>sudo dpkg -i code_*.deb
+sudo apt install -f</code></pre>
+          </li>
+        </ol>
+
+        <p><strong>Pour Fedora :</strong></p>
+        <ol>
+          <li>Téléchargez le paquet <code>.rpm</code> depuis <a href="https://code.visualstudio.com/" target="_blank">https://code.visualstudio.com/</a></li>
+          <li>Installez-le :
+            <pre><code>sudo dnf install code-*.rpm</code></pre>
+          </li>
+        </ol>
+
+        <h4>Méthode 2 : Via Snap (toutes distributions)</h4>
+        <pre><code>sudo snap install code --classic</code></pre>
+
+        <h4>Méthode 3 : Via Flatpak (toutes distributions)</h4>
+        <pre><code>flatpak install flathub com.visualstudio.code</code></pre>
+
+        <h4>Installation de l'extension C/C++</h4>
+        <ol>
+          <li>Lancez VS Code</li>
+          <li>Ouvrez le panneau Extensions (<code>Ctrl+Shift+X</code>)</li>
+          <li>Recherchez "C/C++"</li>
+          <li>Installez l'extension officielle de Microsoft</li>
+        </ol>
+
+        <h3>3. Test de l'environnement</h3>
+
+        <p>Testons que tout fonctionne correctement :</p>
+
+        <ol>
+          <li>Créez un dossier pour vos TDs :
+            <pre><code>mkdir -p ~/INFO501/TD1
+cd ~/INFO501/TD1</code></pre>
+          </li>
+          <li>Ouvrez VS Code dans ce dossier :
+            <pre><code>code .</code></pre>
+            Ou lancez VS Code et utilisez File → Open Folder
+          </li>
+          <li>Créez un fichier <code>test.c</code> avec ce contenu :
+            <pre><code>#include &lt;stdio.h&gt;
+
+int main(){
+    printf("Hello depuis Linux!\n");
+    return 0;
+}</code></pre>
+          </li>
+          <li>Ouvrez le terminal intégré dans VS Code (<code>Ctrl+`</code> ou menu Terminal → New Terminal)</li>
+          <li>Compilez :
+            <pre><code>gcc test.c -o test</code></pre>
+          </li>
+          <li>Exécutez :
+            <pre><code>./test</code></pre>
+          </li>
+          <li>Vous devriez voir :
+            <pre><code>Hello depuis Linux!</code></pre>
+          </li>
+        </ol>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-circle-check fa-lg fa-fw"></i> <strong>Excellent !</strong> Votre environnement Linux est prêt. Vous disposez de l'environnement natif idéal pour le développement C !</p>
+        </div>
+
+        <h3>Informations complémentaires</h3>
+
+        <details>
+          <summary><b>Installer VS Code via le dépôt officiel Microsoft</b></summary>
+          <p>Pour recevoir les mises à jour automatiques via votre gestionnaire de paquets :</p>
+
+          <p><strong>Debian/Ubuntu :</strong></p>
+          <pre><code>wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+sudo apt update
+sudo apt install code</code></pre>
+
+          <p><strong>Fedora/RHEL :</strong></p>
+          <pre><code>sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+sudo dnf check-update
+sudo dnf install code</code></pre>
+        </details>
+
+        <details>
+          <summary><b>Problèmes courants</b></summary>
+          <ul>
+            <li><strong>gcc: command not found :</strong> gcc n'est pas installé, réexécutez la commande d'installation pour votre distribution</li>
+            <li><strong>Permission denied lors de l'exécution :</strong> Vérifiez que vous avez bien compilé et que le fichier existe</li>
+            <li><strong>Erreur avec sudo :</strong> Assurez-vous que votre utilisateur a les droits sudo</li>
+            <li><strong>VS Code ne se lance pas avec Snap :</strong> Essayez la méthode via paquet .deb ou .rpm</li>
+          </ul>
+        </details>
+
+      </section>
+
+      <section>
+        <h2 id="configuration-vscode">⚙️ Configuration de VS Code (tous systèmes)</h2>
+
+        <p>Maintenant que VS Code est installé sur votre système, voici quelques configurations et extensions utiles pour travailler efficacement en C.</p>
+
+        <h3>Extensions recommandées</h3>
+
+        <h4>Extensions essentielles</h4>
+        <ul>
+          <li><strong>C/C++</strong> (Microsoft) - <em>Obligatoire</em>
+            <ul>
+              <li>Coloration syntaxique</li>
+              <li>IntelliSense (autocomplétion)</li>
+              <li>Détection d'erreurs de syntaxe</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Extensions optionnelles mais utiles</h4>
+        <ul>
+          <li><strong>C/C++ Extension Pack</strong> (Microsoft) - Pack complet d'outils C/C++</li>
+          <li><strong>Error Lens</strong> - Affiche les erreurs directement dans le code</li>
+          <li><strong>Better C++ Syntax</strong> - Meilleure coloration syntaxique</li>
+          <li><strong>Code Spell Checker</strong> - Vérification orthographique dans les commentaires</li>
+        </ul>
+
+        <h3>Configuration du terminal intégré</h3>
+
+        <p>VS Code dispose d'un terminal intégré très pratique pour compiler sans quitter l'éditeur :</p>
+
+        <ul>
+          <li>Ouvrir/Fermer le terminal : <code>Ctrl+`</code> (ou <code>Cmd+`</code> sur macOS)</li>
+          <li>Créer un nouveau terminal : Cliquez sur le <code>+</code> dans le panneau terminal</li>
+          <li>Basculer entre terminaux : Menu déroulant dans le panneau terminal</li>
+        </ul>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-triangle-exclamation fa-lg fa-fw"></i> <strong>Rappel important :</strong> Nous compilerons <strong>toujours manuellement</strong> en tapant <code>gcc</code> dans le terminal. Ne cherchez pas de bouton "Compiler" ou "Run" dans VS Code. Le but est de comprendre le processus de compilation, pas de l'automatiser.</p>
+        </div>
+
+        <h3>Raccourcis clavier utiles</h3>
+
+        <div class="hight-light-box-margin">
+          <table>
+            <tr>
+              <th>Action</th>
+              <th>Windows/Linux</th>
+              <th>macOS</th>
+            </tr>
+            <tr>
+              <td>Ouvrir le terminal</td>
+              <td><code>Ctrl+`</code></td>
+              <td><code>Cmd+`</code></td>
+            </tr>
+            <tr>
+              <td>Sauvegarder</td>
+              <td><code>Ctrl+S</code></td>
+              <td><code>Cmd+S</code></td>
+            </tr>
+            <tr>
+              <td>Sauvegarder tout</td>
+              <td><code>Ctrl+K S</code></td>
+              <td><code>Cmd+K S</code></td>
+            </tr>
+            <tr>
+              <td>Ouvrir un fichier</td>
+              <td><code>Ctrl+O</code></td>
+              <td><code>Cmd+O</code></td>
+            </tr>
+            <tr>
+              <td>Rechercher dans le fichier</td>
+              <td><code>Ctrl+F</code></td>
+              <td><code>Cmd+F</code></td>
+            </tr>
+            <tr>
+              <td>Palette de commandes</td>
+              <td><code>Ctrl+Shift+P</code></td>
+              <td><code>Cmd+Shift+P</code></td>
+            </tr>
+          </table>
+        </div>
+
+        <h3>Personnalisation (optionnel)</h3>
+
+        <details>
+          <summary><b>Ajuster la taille de la police</b></summary>
+          <ol>
+            <li>Fichier → Préférences → Paramètres (ou <code>Ctrl+,</code>)</li>
+            <li>Recherchez "Font Size"</li>
+            <li>Ajustez selon vos préférences (12-16 recommandé)</li>
+          </ol>
+        </details>
+
+        <details>
+          <summary><b>Changer le thème</b></summary>
+          <ol>
+            <li>Fichier → Préférences → Thème de couleur</li>
+            <li>Choisissez un thème sombre ou clair selon votre préférence</li>
+            <li>Thèmes populaires : Dark+ (par défaut), Light+, Monokai, Solarized</li>
+          </ol>
+        </details>
+
+      </section>
+
+      <section>
+        <h2 id="workflow">📋 Workflow de travail et récapitulatif</h2>
+
+        <h3>Le cycle de développement en C</h3>
+
+        <p>Voici le workflow que vous utiliserez tout au long du cours :</p>
+
+        <ol>
+          <li><strong>Éditer</strong> : Écrivez ou modifiez votre code dans VS Code
+            <ul>
+              <li>Profitez de la coloration syntaxique</li>
+              <li>L'autocomplétion vous aidera</li>
+              <li>Les erreurs de syntaxe évidentes seront soulignées</li>
+            </ul>
+          </li>
+          <li><strong>Sauvegarder</strong> : <code>Ctrl+S</code> (ou <code>Cmd+S</code>)</li>
+          <li><strong>Compiler</strong> : Dans le terminal, tapez :
+            <pre><code>gcc nomfichier.c -o nomprogramme</code></pre>
+            <ul>
+              <li>Si erreurs de compilation : lisez les messages, corrigez et recompilez</li>
+              <li>Si succès : un fichier exécutable est créé</li>
+            </ul>
+          </li>
+          <li><strong>Exécuter</strong> : Dans le terminal :
+            <pre><code>./nomprogramme</code></pre>
+          </li>
+          <li><strong>Tester</strong> : Vérifiez que le programme fait ce qui est attendu</li>
+          <li><strong>Débugger</strong> : Si le résultat n'est pas correct, retour à l'étape 1</li>
+        </ol>
+
+        <h3>Checklist de vérification de l'environnement</h3>
+
+        <div class="hight-light-box-margin">
+          <p><strong>✓ Vérifiez que vous avez :</strong></p>
+          <ul>
+            <li>☐ <code>gcc --version</code> fonctionne et affiche une version</li>
+            <li>☐ VS Code est installé et se lance</li>
+            <li>☐ L'extension C/C++ est installée dans VS Code</li>
+            <li>☐ Le terminal s'ouvre correctement (intégré dans VS Code ou externe)</li>
+            <li>☐ Vous avez réussi à compiler et exécuter le programme de test</li>
+            <li>☐ Vous savez ouvrir un dossier dans VS Code</li>
+            <li>☐ Vous savez créer un nouveau fichier</li>
+          </ul>
+        </div>
+
+        <h3>Commandes essentielles à retenir</h3>
+
+        <div class="hight-light-box-margin">
+          <table>
+            <tr>
+              <th>Commande</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td><code>gcc fichier.c</code></td>
+              <td>Compile et crée <code>a.out</code></td>
+            </tr>
+            <tr>
+              <td><code>gcc fichier.c -o nom</code></td>
+              <td>Compile avec nom personnalisé</td>
+            </tr>
+            <tr>
+              <td><code>gcc -Wall fichier.c</code></td>
+              <td>Compile avec tous les avertissements</td>
+            </tr>
+            <tr>
+              <td><code>gcc -Wextra fichier.c</code></td>
+              <td>Avertissements supplémentaires</td>
+            </tr>
+            <tr>
+              <td><code>./programme</code></td>
+              <td>Exécute le programme compilé</td>
+            </tr>
+            <tr>
+              <td><code>ls</code></td>
+              <td>Liste les fichiers du dossier</td>
+            </tr>
+            <tr>
+              <td><code>pwd</code></td>
+              <td>Affiche le dossier courant</td>
+            </tr>
+            <tr>
+              <td><code>cd dossier</code></td>
+              <td>Change de dossier</td>
+            </tr>
+          </table>
+        </div>
+
+        <h3>Bonnes pratiques</h3>
+
+        <ul>
+          <li><strong>Organisation :</strong> Créez un dossier par TD/TP (ex: <code>~/INFO501/TD1/</code>, <code>~/INFO501/TD2/</code>)</li>
+          <li><strong>Nommage :</strong> Utilisez des noms explicites pour vos fichiers (<code>exercice1.c</code>, <code>triangle.c</code>)</li>
+          <li><strong>Sauvegarde :</strong> Sauvegardez régulièrement votre travail</li>
+          <li><strong>Compilation :</strong> Compilez souvent pour détecter les erreurs tôt</li>
+          <li><strong>Avertissements :</strong> Utilisez <code>-Wall -Wextra</code> pour détecter plus de problèmes potentiels</li>
+          <li><strong>Tests :</strong> Testez votre code avec différentes entrées</li>
+        </ul>
+
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-rocket fa-lg fa-fw"></i> <strong>Vous êtes prêt !</strong> Vous avez maintenant tout ce qu'il faut pour programmer en C. Bon courage pour le cours INFO501 !</p>
+        </div>
+
       </section>
 
       <section>
