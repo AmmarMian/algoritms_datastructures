@@ -78,7 +78,276 @@
       <section>
         <h2 id="linux">Préambule : Utilisation de Linux</h2>
 
-        Points a aborder : Terminal, cd, mkdir, touch, edition de fichiers avec gedit, gcc, ./a.out, mv, rm, clear, ls
+        <p>Dans ce cours, nous allons programmer en C sous Linux. Pour cela, nous utiliserons principalement le <strong>terminal</strong> (Konsole sous Fedora), qui nous permet de compiler et exécuter nos programmes. Cette section vous familiarisera avec les commandes essentielles.</p>
+
+        <h3>1. Découvrir le terminal</h3>
+        <p>Le terminal est une interface texte qui permet d'interagir avec le système d'exploitation. Sous Fedora, ouvrez l'application <strong>Konsole</strong>. Vous verrez quelque chose comme :</p>
+
+        <pre><code>╔══════════════════════════════════════════════════╗
+║ 📟 Konsole                         ─  □  ✕       ║
+╠══════════════════════════════════════════════════╣
+║                                                  ║
+║  [user@fedora ~]$ █                              ║
+║                                                  ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p>Le symbole <code>[user@fedora ~]$</code> est appelé le <strong>prompt</strong>. Il indique que le terminal attend une commande. Le <code>~</code> représente votre répertoire personnel (<em>home</em>).</p>
+
+        <h3>2. Les commandes essentielles</h3>
+
+        <h4>2.1. Se repérer : <code>pwd</code> et <code>ls</code></h4>
+        <p><strong><code>pwd</code></strong> (Print Working Directory) affiche le chemin du répertoire courant :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora ~]$ pwd                            ║
+║  /home/user                                      ║
+║  [user@fedora ~]$ █                              ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p><strong><code>ls</code></strong> (LiSt) liste les fichiers et dossiers du répertoire courant :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora ~]$ ls                             ║
+║  Bureau  Documents  Images  Téléchargements      ║
+║  [user@fedora ~]$ █                              ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p>Options utiles : <code>ls -l</code> (format détaillé), <code>ls -a</code> (fichiers cachés inclus).</p>
+
+        <h4>2.2. Se déplacer : <code>cd</code></h4>
+        <p><strong><code>cd</code></strong> (Change Directory) permet de changer de répertoire :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora ~]$ cd Documents                   ║
+║  [user@fedora Documents]$ pwd                    ║
+║  /home/user/Documents                            ║
+║  [user@fedora Documents]$ █                      ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p>Raccourcis utiles :</p>
+        <ul>
+          <li><code>cd ~</code> ou simplement <code>cd</code> : retour au répertoire personnel</li>
+          <li><code>cd ..</code> : remonter d'un niveau</li>
+          <li><code>cd -</code> : revenir au répertoire précédent</li>
+        </ul>
+
+        <h4>2.3. Créer : <code>mkdir</code> et <code>touch</code></h4>
+        <p><strong><code>mkdir</code></strong> (MaKe DIRectory) crée un nouveau dossier :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora ~]$ mkdir test_linux               ║
+║  [user@fedora ~]$ ls                             ║
+║  Bureau  Documents  test_linux  Téléchargements  ║
+║  [user@fedora ~]$ █                              ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p>Pour créer une arborescence complète : <code>mkdir -p dossier1/dossier2/dossier3</code></p>
+
+        <p><strong><code>touch</code></strong> crée un fichier vide :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora test_linux]$ touch fichier.txt    ║
+║  [user@fedora test_linux]$ ls                    ║
+║  fichier.txt                                     ║
+║  [user@fedora test_linux]$ █                     ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <h4>2.4. Manipuler : <code>cp</code>, <code>mv</code>, <code>rm</code></h4>
+        <p><strong><code>cp</code></strong> (CoPy) copie un fichier : <code>cp source.txt copie.txt</code></p>
+        <p><strong><code>mv</code></strong> (MoVe) déplace ou renomme un fichier : <code>mv ancien.txt nouveau.txt</code></p>
+        <p><strong><code>rm</code></strong> (ReMove) supprime un fichier : <code>rm fichier.txt</code></p>
+
+        <span class="highlight-box">
+          <p><i class="fa-solid fa-triangle-exclamation fa-lg fa-fw"></i> <strong>Attention :</strong> La suppression avec <code>rm</code> est définitive ! Pour supprimer un dossier et son contenu : <code>rm -r nom_dossier</code></p>
+        </span>
+
+        <h4>2.5. Afficher et nettoyer : <code>cat</code> et <code>clear</code></h4>
+        <p><strong><code>cat</code></strong> affiche le contenu d'un fichier :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora ~]$ cat test.txt                   ║
+║  Bonjour, ceci est un fichier texte !           ║
+║  [user@fedora ~]$ █                              ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p><strong><code>clear</code></strong> nettoie l'écran du terminal (raccourci : <code>Ctrl+L</code>).</p>
+
+        <h3>3. Éditer des fichiers texte</h3>
+        <p>Pour écrire du code C, vous devez éditer des fichiers. Vous avez plusieurs options :</p>
+
+        <h4>Option 1 : Éditeur externe (recommandé pour débuter)</h4>
+        <p>Utilisez un éditeur graphique comme <strong>gedit</strong>, <strong>Kate</strong> ou <strong>VS Code</strong>. Créez votre fichier avec <code>touch</code>, puis ouvrez-le depuis le gestionnaire de fichiers.</p>
+
+        <h4>Option 2 : nano (simple et guidé)</h4>
+        <p><strong>nano</strong> est un éditeur de texte simple dans le terminal. Les commandes sont affichées en bas de l'écran :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  GNU nano 7.2              test.c                ║
+╠══════════════════════════════════════════════════╣
+║                                                  ║
+║  #include &lt;stdio.h&gt;                              ║
+║                                                  ║
+║  int main(){                                     ║
+║      printf("Hello World\n");                    ║
+║      return 0;                                   ║
+║  }                                               ║
+║                                                  ║
+╠══════════════════════════════════════════════════╣
+║ ^G Aide   ^O Écrire  ^W Chercher  ^K Couper     ║
+║ ^X Quitter ^R Lire   ^\ Remplacer ^U Coller     ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p>Commandes essentielles (le symbole <code>^</code> signifie <code>Ctrl</code>) :</p>
+        <ul>
+          <li>Ouvrir un fichier : <code>nano nomfichier.c</code></li>
+          <li>Sauvegarder : <code>Ctrl+O</code> puis <code>Entrée</code></li>
+          <li>Quitter : <code>Ctrl+X</code></li>
+        </ul>
+
+        <h4>Option 3 : vi/vim (pour les plus aventureux)</h4>
+        <p><strong>vi</strong> est un éditeur puissant mais avec une courbe d'apprentissage plus raide. Il fonctionne avec des <strong>modes</strong> :</p>
+        <ul>
+          <li><strong>Mode normal</strong> : déplacement et commandes (mode par défaut)</li>
+          <li><strong>Mode insertion</strong> : écriture de texte (touche <code>i</code>)</li>
+          <li><strong>Mode commande</strong> : commandes avancées (touche <code>:</code>)</li>
+        </ul>
+
+        <p>Commandes de survie :</p>
+        <ul>
+          <li>Ouvrir : <code>vi nomfichier.c</code></li>
+          <li>Passer en mode insertion : <code>i</code></li>
+          <li>Sortir du mode insertion : <code>Échap</code></li>
+          <li>Sauvegarder et quitter : <code>:wq</code> puis <code>Entrée</code></li>
+          <li>Quitter sans sauvegarder : <code>:q!</code> puis <code>Entrée</code></li>
+        </ul>
+
+        <span class="highlight-box">
+          <p><i class="fa-solid fa-lightbulb fa-lg fa-fw"></i> <strong>Notre recommandation :</strong> Utilisez <strong>nano</strong> pour débuter. Une fois à l'aise avec Linux, vous pourrez explorer <strong>vim</strong> qui est très puissant pour l'édition de code.</p>
+        </span>
+
+        <h3>4. Exercice pratique : Préparer votre espace de travail</h3>
+        <p>Maintenant, créons la structure de dossiers pour ce cours. Suivez ces étapes :</p>
+
+        <ol>
+          <li>Ouvrez un terminal et vérifiez que vous êtes dans votre répertoire personnel avec <code>pwd</code></li>
+          <li>Créez l'arborescence pour le cours : <code>mkdir -p INFO501/TD1</code></li>
+          <li>Vérifiez la création : <code>ls</code> (vous devriez voir <code>INFO501</code>)</li>
+          <li>Naviguez dans ce dossier : <code>cd INFO501/TD1</code></li>
+          <li>Vérifiez votre position : <code>pwd</code> (devrait afficher <code>/home/user/INFO501/TD1</code>)</li>
+        </ol>
+
+        <pre><code>home/user/
+└── INFO501/
+    └── TD1/            ← Vous êtes ici !</code></pre>
+
+        <h3>5. Introduction à la compilation avec gcc</h3>
+        <p><strong>gcc</strong> (GNU Compiler Collection) est le compilateur C que nous utiliserons. Il transforme votre code source (<code>.c</code>) en programme exécutable.</p>
+
+        <h4>5.1. Premier test avec un programme minimal</h4>
+        <p>Dans le dossier <code>INFO501/TD1</code>, créez un fichier <code>test.c</code> :</p>
+        <pre><code>nano test.c</code></pre>
+
+        <p>Écrivez ce programme minimal :</p>
+        <pre><code>int main(){
+    return 0;
+}</code></pre>
+
+        <p>Sauvegardez (<code>Ctrl+O</code>) et quittez (<code>Ctrl+X</code>).</p>
+
+        <h4>5.2. Compiler et exécuter</h4>
+        <p>Compilez votre programme :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora TD1]$ gcc test.c                   ║
+║  [user@fedora TD1]$ ls                           ║
+║  a.out  test.c                                   ║
+║  [user@fedora TD1]$ █                            ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p>Par défaut, gcc crée un fichier exécutable nommé <code>a.out</code>. Pour l'exécuter :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora TD1]$ ./a.out                      ║
+║  [user@fedora TD1]$ echo $?                      ║
+║  0                                                ║
+║  [user@fedora TD1]$ █                            ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <p>Le <code>./</code> signifie "dans le répertoire courant". La commande <code>echo $?</code> affiche le code de retour du programme (ici <code>0</code>, ce qui signifie succès).</p>
+
+        <h4>5.3. Donner un nom à l'exécutable</h4>
+        <p>Pour donner un nom spécifique à votre programme, utilisez l'option <code>-o</code> :</p>
+        <pre><code>╔══════════════════════════════════════════════════╗
+║  [user@fedora TD1]$ gcc test.c -o mon_programme  ║
+║  [user@fedora TD1]$ ls                           ║
+║  mon_programme  test.c                           ║
+║  [user@fedora TD1]$ ./mon_programme              ║
+║  [user@fedora TD1]$ █                            ║
+╚══════════════════════════════════════════════════╝</code></pre>
+
+        <h3>6. Récapitulatif des commandes</h3>
+        <div class="hight-light-box-margin">
+        <p><strong>📋 Antisèche des commandes essentielles</strong></p>
+        <table>
+          <tr>
+            <td><code>pwd</code></td>
+            <td>Afficher le répertoire courant</td>
+          </tr>
+          <tr>
+            <td><code>ls</code></td>
+            <td>Lister les fichiers</td>
+          </tr>
+          <tr>
+            <td><code>cd dossier</code></td>
+            <td>Se déplacer dans un dossier</td>
+          </tr>
+          <tr>
+            <td><code>mkdir dossier</code></td>
+            <td>Créer un dossier</td>
+          </tr>
+          <tr>
+            <td><code>touch fichier</code></td>
+            <td>Créer un fichier vide</td>
+          </tr>
+          <tr>
+            <td><code>nano fichier</code></td>
+            <td>Éditer un fichier</td>
+          </tr>
+          <tr>
+            <td><code>cat fichier</code></td>
+            <td>Afficher le contenu d'un fichier</td>
+          </tr>
+          <tr>
+            <td><code>cp source dest</code></td>
+            <td>Copier un fichier</td>
+          </tr>
+          <tr>
+            <td><code>mv source dest</code></td>
+            <td>Déplacer/renommer un fichier</td>
+          </tr>
+          <tr>
+            <td><code>rm fichier</code></td>
+            <td>Supprimer un fichier</td>
+          </tr>
+          <tr>
+            <td><code>clear</code></td>
+            <td>Nettoyer le terminal</td>
+          </tr>
+          <tr>
+            <td><code>gcc fichier.c</code></td>
+            <td>Compiler un programme C</td>
+          </tr>
+          <tr>
+            <td><code>./programme</code></td>
+            <td>Exécuter un programme</td>
+          </tr>
+        </table>
+        </div>
+
+        <h3>7. Workflow typique</h3>
+        <p>Voici le cycle de travail que vous répéterez tout au long du cours :</p>
+        <ol>
+          <li><strong>Éditer</strong> : Écrivez votre code dans un fichier <code>.c</code> avec votre éditeur</li>
+          <li><strong>Compiler</strong> : Utilisez <code>gcc fichier.c -o programme</code></li>
+          <li><strong>Exécuter</strong> : Lancez avec <code>./programme</code></li>
+          <li><strong>Débugger</strong> : Si erreur, corrigez le code et recommencez</li>
+        </ol>
+
+        <span class="highlight-box">
+          <p><i class="fa-solid fa-circle-check fa-lg fa-fw"></i> <strong>Vous êtes prêt !</strong> Vous maîtrisez maintenant les bases du terminal Linux. Passons à l'écriture de programmes C !</p>
+        </span>
+
       </section>
 
       <section>
