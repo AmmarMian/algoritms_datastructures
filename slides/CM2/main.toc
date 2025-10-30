@@ -1,0 +1,6 @@
+\beamer@sectionintoc {1}{Notion de Codage}{4}{0}{1}
+\beamer@sectionintoc {2}{Entiers non signés}{13}{0}{2}
+\beamer@sectionintoc {3}{Entiers signés}{34}{0}{3}
+\beamer@sectionintoc {4}{Nombres à virgule flottante}{58}{0}{4}
+\beamer@sectionintoc {5}{Représentation des caractères}{76}{0}{5}
+\beamer@sectionintoc {6}{Exercices de synthèse}{90}{0}{6}

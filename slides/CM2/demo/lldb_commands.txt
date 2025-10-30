@@ -1,0 +1,92 @@
+# Commandes lldb pour la démonstration CM2
+# ==========================================
+
+# ÉTAPE 1 : Lancer le programme game
+# -----------------------------------
+# Dans Terminal 1 :
+./game
+# (Notez le PID et les adresses affichées)
+
+
+# ÉTAPE 2 : Attacher lldb au processus
+# -------------------------------------
+# Dans Terminal 2 :
+lldb -p <PID>
+
+
+# ÉTAPE 3 : Lire la mémoire
+# --------------------------
+# Remplacez <ADRESSE> par l'adresse de 'gold' affichée
+(lldb) memory read <ADRESSE>
+
+# Exemple si l'adresse est 0x7ff7bfeff2ec :
+(lldb) memory read 0x7ff7bfeff2ec
+
+# Vous devriez voir quelque chose comme :
+# 0x7ff7bfeff2ec: 0a 00 00 00 64 00 00 00  ........d...
+#                 ^^ ^^ ^^ ^^
+#                 10 en little-endian (0x0000000A)
+
+
+# ÉTAPE 4 : Modifier la mémoire (changer gold à 255)
+# ---------------------------------------------------
+(lldb) memory write <ADRESSE> 0xFF
+
+# Exemple :
+(lldb) memory write 0x7ff7bfeff2ec 0xFF
+
+
+# ÉTAPE 5 : Vérifier la modification
+# -----------------------------------
+(lldb) memory read <ADRESSE>
+
+# Vous devriez maintenant voir :
+# 0x7ff7bfeff2ec: ff 00 00 00 64 00 00 00  ........d...
+#                 ^^
+#                 255 en décimal (0xFF en hexa)
+
+# Retournez au Terminal 1 pour voir gold = 255 !
+
+
+# ÉTAPE 6 : Autres expérimentations
+# ----------------------------------
+
+# Mettre une grande valeur (par exemple 1024 = 0x400)
+(lldb) memory write <ADRESSE> 0x00 0x04 0x00 0x00
+
+# Note : Sur Mac (little-endian), les octets sont inversés
+# 1024 décimal = 0x00000400 en big-endian
+#              = 0x00 0x04 0x00 0x00 en little-endian
+
+# Mettre gold à -1 (complément à 2 sur 32 bits = 0xFFFFFFFF)
+(lldb) memory write <ADRESSE> 0xFF 0xFF 0xFF 0xFF
+
+
+# ÉTAPE 7 : Quitter lldb
+# -----------------------
+(lldb) quit
+
+
+# ==========================================
+# ASTUCES POUR LA DÉMONSTRATION
+# ==========================================
+
+# 1. Préparez les commandes à l'avance dans un fichier texte
+#    pour copier-coller rapidement
+
+# 2. Augmentez la taille de la police du terminal pour que
+#    l'audience voie bien
+
+# 3. Commencez par des valeurs simples :
+#    - 0xFF (255)
+#    - 0x00 (0)
+#    - 0x64 (100)
+
+# 4. Montrez la correspondance :
+#    Décimal | Hexa | Binaire
+#    10      | 0x0A | 00001010
+#    255     | 0xFF | 11111111
+#    127     | 0x7F | 01111111
+#    -1      | 0xFFFFFFFF | 11111111...
+
+# 5. Expliquez le little-endian si vous avez le temps

@@ -1,0 +1,26 @@
+\frametitle{Art ASCII (pour le plaisir !)}
+
+  \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+ ________      ___   __       ______     ______       ______      ______       ____
+/_______/\    /__/\ /__/\    /_____/\   /_____/\     /_____/\    /_____/\     /___/\
+\__.::._\/    \::\_\\  \ \   \::::_\/_  \:::_ \ \    \::::_\/_   \:::_ \ \    \_::\ \
+   \::\ \      \:. `-\  \ \   \:\/___/\  \:\ \ \ \    \:\/___/\   \:\ \ \ \     \::\ \
+   _\::\ \__    \:. _    \ \   \:::._\/   \:\ \ \ \    \_::._\:\   \:\ \ \ \    _\: \ \__
+  /__\::\__/\    \. \`-\  \ \   \:\ \      \:\_\ \ \    /_____\/    \:\_\ \ \  /__\: \__/\
+  \________\/     \__\/ \__\/    \_\/       \_____\/    \_____/      \_____\/  \________\/
+  \end{lstlisting}
+
+  \vspace{0.3cm}
+
+  \begin{center}
+    Chaque caractère est codé en ASCII ! \\
+    Art créé uniquement avec des caractères imprimables.
+  \end{center}
+
+  \vspace{0.5cm}
+
+  \begin{exampleblock}{Anecdote}
+    L'art ASCII était populaire dans les années 80-90 avant l'arrivée des interfaces graphiques.
+    On le retrouve encore dans les \texttt{README}, bannières de logiciels CLI, etc.
+  \end{exampleblock}
+

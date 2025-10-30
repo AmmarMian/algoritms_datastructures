@@ -1,0 +1,128 @@
+\documentclass[aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{sansmathfonts}
+\usepackage[T1]{fontenc}
+
+\usepackage[natbib=true,style=numeric,sorting=none]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath,amssymb,amsfonts}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{tikzmark}
+\usetikzlibrary{backgrounds,calc,positioning}
+
+\usetheme{main}
+
+\captionsetup{font=scriptsize,labelfont=scriptsize}
+
+\title[Course Title]{Course Title}
+
+\date[]{}
+\author[AM]{\textbf{Ammar Mian} \\ \footnotesize Associate professor, LISTIC, Université Savoie Mont Blanc}
+
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+%\input{macros.tex}
+
+\AtBeginBibliography{\scriptsize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                     END OF PREAMBLE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+%%%%%%%%%%%%%%%
+
+\begin{frame}[noframenumbering,plain]
+\titlepage
+\end{frame}
+
+\begingroup
+\setbeamercolor{background canvas}{bg=main}
+\setbeamercolor{titlelike}{fg=text-light, bg=light}
+\begin{frame}[noframenumbering,plain]{Outline}
+    \tableofcontents[]
+\end{frame}
+\endgroup
+
+\AtBeginSection[]{
+    \setbeamercolor{background canvas}{bg=main}
+    \begin{frame}[plain, noframenumbering]
+        \tableofcontents[currentsection]
+    \end{frame}
+    \setbeamercolor{background canvas}{bg=light}
+}
+
+\AtBeginSubsection[]
+{
+    \setbeamercolor{background canvas}{bg=main}
+    \begin{frame}[noframenumbering, plain, label=]
+        \tableofcontents[currentsection,currentsubsection]
+    \end{frame}
+    \setbeamercolor{background canvas}{bg=light}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{First Section}
+
+\subsection{First Subsection}
+
+\begin{frame}{Example Slide with Itemize}
+  \begin{itemize}
+    \item First item
+    \item Second item
+    \item Third item
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Example Slide with Block}
+  \begin{block}{Block Title}
+    This is a standard block with some content.
+  \end{block}
+
+  \begin{alertblock}{Alert Block Title}
+    This is an alert block to highlight important information.
+  \end{alertblock}
+
+  \begin{exampleblock}{Example Block Title}
+    This is an example block to show examples.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Example Slide with Columns}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Left Column}
+      \begin{itemize}
+        \item Point 1
+        \item Point 2
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Right Column}
+      \begin{itemize}
+        \item Point A
+        \item Point B
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Second Section}
+
+\subsection{Second Subsection}
+
+\begin{frame}{Another Example Slide}
+  Content for the second section.
+\end{frame}
+
+\end{document}

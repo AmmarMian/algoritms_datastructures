@@ -1,0 +1,102 @@
+\documentclass[aspectratio=1610]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{sansmathfonts}
+\usepackage[T1]{fontenc}
+
+\usepackage[natbib=true,style=numeric,sorting=none]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath,amssymb,amsfonts}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{tikzmark}
+\usetikzlibrary{backgrounds,calc,positioning}
+\usetikzlibrary{shapes,decorations.pathreplacing}
+
+\usepackage{listings}
+
+\usetheme{main}
+
+\captionsetup{font=scriptsize,labelfont=scriptsize}
+
+\title[CM2 - Représentation d'informations]{CM2 - Représentation d'informations dans un ordinateur}
+
+\date[]{}
+\author[AM]{\textbf{Ammar Mian} \\ \footnotesize Associate professor, LISTIC, Université Savoie Mont Blanc \\ POLYTECH Annecy-Chambéry}
+
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+\input{../template/macros.tex}
+
+\AtBeginBibliography{\scriptsize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                     END OF PREAMBLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%%%%%%%%%%%%%%%
+% TITLE PAGE
+%%%%%%%%%%%%%%%
+\begin{frame}[noframenumbering,plain]
+\titlepage
+\end{frame}
+
+\begingroup
+\setbeamercolor{background canvas}{bg=main}
+\setbeamercolor{titlelike}{fg=text-light, bg=light}
+\begin{frame}[noframenumbering,plain]{Plan du cours}
+    \tableofcontents[]
+\end{frame}
+\endgroup
+
+\AtBeginSection[]{
+    \setbeamercolor{background canvas}{bg=main}
+    \begin{frame}[plain, noframenumbering]
+        \tableofcontents[currentsection]
+    \end{frame}
+    \setbeamercolor{background canvas}{bg=light}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                     CONTENT STARTS HERE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+% SLIDE 2: Objectifs
+%%%%%%%%%%%%%%%
+\begin{frame}{Objectifs de ce cours}
+
+  À l'issue de ce CM, vous serez capable de :
+
+  \begin{itemize}
+    \item Comprendre le principe du codage binaire
+    \item Convertir des nombres entre différentes bases (2, 8, 10, 16)
+    \item Représenter des entiers signés avec le complément à 2
+    \item Comprendre la représentation des nombres flottants (IEEE 754)
+    \item Connaître les principaux codages de caractères (ASCII, Unicode)
+    \item Identifier les limites et pièges de ces représentations
+  \end{itemize}
+
+  \vspace{1em}
+
+  \begin{alertblock}{Important}
+    Ce cours nécessite un travail personnel pour approfondir les notions.
+  \end{alertblock}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Notion de Codage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%
+% SLIDE 3: Qu'est-ce qu'un codage
+egin{document}egin{frame}{Test}nd{frame}
+\end{document}

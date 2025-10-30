@@ -9,6 +9,11 @@
     
 
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+        Chart.defaults.font.family = "ET Book";
+        Chart.defaults.font.size = 16;
+        </script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
@@ -69,10 +74,15 @@
         <li><a href="#hello world">Premier programme : Hello World</a></li>
         <li><a href="#terminal-triangle">Exercice 1: Un triangle dans le terminal</a></li>
         <li><a href="#fonction-somme-prod">Exercice 2 : Des sommes et des produits</a></li>
-        <li><a href="#fonction-sinus">Exercice 3 : Le sinus d'un angle</a></li>
-        <li><a href="#fonction-pgcd">Exercice 4 : Calcul du PGCD et PPCM de deux entiers</a></li>
+        <li><a href="#fonction-syracuse">Exercice 3 : Suite de Syracuse (Bonus)</a></li>
       </ul>
 
+      </section>
+
+      <section>
+        <div class="highlight-box">
+          <p><i class="fa-solid fa-computer fa-lg fa-fw"></i> <strong>Travailler à la maison :</strong> Pour configurer votre environnement de développement C sur votre ordinateur personnel (installation de gcc, VS Code, etc.), consultez notre <a href="../environnement-travail/index.html">guide d'environnement de travail</a>. Vous y trouverez toutes les instructions détaillées pour Windows, macOS et Linux.</p>
+        </div>
       </section>
 
       <section>
@@ -169,8 +179,20 @@
         <h3>3. Éditer des fichiers texte</h3>
         <p>Pour écrire du code C, vous devez éditer des fichiers. Vous avez plusieurs options :</p>
 
-        <h4>Option 1 : Éditeur externe (recommandé pour débuter)</h4>
-        <p>Utilisez un éditeur graphique comme <strong>gedit</strong>, <strong>Kate</strong> ou <strong>VS Code</strong>. Créez votre fichier avec <code>touch</code>, puis ouvrez-le depuis le gestionnaire de fichiers.</p>
+        <h4>Option 1 : VS Code (recommandé)</h4>
+        <p>À la faculté, utilisez <strong>VS Code</strong> (Visual Studio Code) qui est installé sur toutes les machines. Sur votre ordinateur personnel, vous pouvez utiliser <strong>gedit</strong> (Linux/GNOME) ou <strong>Kate</strong> (Linux/KDE), mais nous recommandons <strong>VS Code</strong> pour sa cohérence avec l'environnement de la fac (voir le <a href="../environnement-travail/index.html">guide d'installation</a>).</p>
+
+        <p>Pour utiliser VS Code :</p>
+        <ul>
+          <li>Lancez VS Code depuis le menu d'applications ou tapez <code>code</code> dans le terminal</li>
+          <li>Ouvrez votre dossier de travail : File → Open Folder ou <code>code .</code> depuis le terminal</li>
+          <li>Créez un nouveau fichier : File → New File, puis sauvegardez-le avec l'extension <code>.c</code></li>
+          <li>Utilisez le terminal intégré : <code>Ctrl+`</code> pour compiler et exécuter</li>
+        </ul>
+
+        <span class="highlight-box">
+          <p><i class="fa-solid fa-triangle-exclamation fa-lg fa-fw"></i> <strong>Important :</strong> VS Code est utilisé <strong>uniquement comme éditeur de texte</strong>. Nous compilerons <strong>TOUJOURS manuellement</strong> dans le terminal avec la commande <code>gcc</code>. N'utilisez pas les fonctionnalités de compilation automatique de VS Code. Le but de ce cours est de comprendre le processus de compilation, pas de l'automatiser.</p>
+        </span>
 
         <h4>Option 2 : nano (simple et guidé)</h4>
         <p><strong>nano</strong> est un éditeur de texte simple dans le terminal. Les commandes sont affichées en bas de l'écran :</p>
@@ -215,7 +237,7 @@
         </ul>
 
         <span class="highlight-box">
-          <p><i class="fa-solid fa-lightbulb fa-lg fa-fw"></i> <strong>Notre recommandation :</strong> Utilisez <strong>nano</strong> pour débuter. Une fois à l'aise avec Linux, vous pourrez explorer <strong>vim</strong> qui est très puissant pour l'édition de code.</p>
+          <p><i class="fa-solid fa-lightbulb fa-lg fa-fw"></i> <strong>Notre recommandation :</strong> Utilisez <strong>VS Code</strong> pour profiter d'une interface graphique moderne avec coloration syntaxique et autocomplétion. Si vous préférez travailler entièrement dans le terminal, <strong>nano</strong> est parfait pour débuter. Une fois à l'aise avec Linux, vous pourrez explorer <strong>vim</strong> qui est très puissant pour l'édition de code.</p>
         </span>
 
         <h3>4. Exercice pratique : Préparer votre espace de travail</h3>
@@ -431,6 +453,275 @@ pour i allant de 1 à n faire:</br>
   </details>
 
         </section>
+
+        <section>
+        <h3 id="somme-carres">2.2 - Somme des carrés des \(n\) premiers entiers</h3>
+          <p>On souhaite maintenant écrire un programme qui calcule la somme des carrés des \(n\) premiers entiers:
+        $$
+          \sum_{i=1}^{n} i^2 = 1^2 + 2^2 + 3^2 + \ldots + n^2.
+        $$
+        </p>
+
+        <p>Écrire un programme qui demande à l'utilisateur de rentrer un entier \(n\) et qui affiche la somme des carrés des \(n\) premiers entiers. On utilisera une boucle <code>for</code> pour effectuer la somme.</p>
+
+        <p>Testez votre programme avec \(n = 5\) : vous devriez obtenir \(1 + 4 + 9 + 16 + 25 = 55\).</p>
+
+        </section>
+
+        <section>
+        <h3 id="somme-seuil">2.3 - Somme jusqu'à dépasser un seuil</h3>
+          <p>On souhaite maintenant résoudre le problème suivant : étant donné un seuil \(S\), trouver le plus petit entier \(k\) tel que la somme des \(k\) premiers entiers dépasse \(S\).</p>
+
+          <p>Mathématiquement, on cherche le plus petit \(k\) tel que :
+        $$
+          \sum_{i=1}^{k} i > S
+        $$
+        </p>
+
+        <p>Par exemple, si \(S = 100\), on cherche le plus petit \(k\) tel que \(1 + 2 + 3 + \ldots + k > 100\).</p>
+
+        <p>Écrire un programme qui :</p>
+        <ol>
+          <li>Demande à l'utilisateur de rentrer un seuil \(S\)</li>
+          <li>Calcule la somme des entiers en incrémentant \(k\) jusqu'à ce que la somme dépasse \(S\)</li>
+          <li>Affiche la valeur de \(k\) trouvée et la somme obtenue</li>
+        </ol>
+
+        <p>Testez votre programme avec \(S = 100\) : vous devriez trouver \(k = 14\) car \(1 + 2 + \ldots + 14 = 105 > 100\) mais \(1 + 2 + \ldots + 13 = 91 \leq 100\).</p>
+
+<details>
+          <summary style="font-size: larger;"><b>Aide</b></summary>
+          <p>Utilisez une boucle <code>while</code> qui continue tant que la somme est inférieure ou égale au seuil :</p>
+
+  <code>
+            somme <- 0</br>
+k <- 0</br>
+tant que somme &lt;= S faire:</br>
+&nbsp; &nbsp; k <- k + 1</br>
+&nbsp; &nbsp; somme <- somme + k</br>
+</code>
+  </details>
+
+        </section>
+
+  <section>
+    <h2 id="fonction-syracuse">Exercice 3 : Suite de Syracuse (BONUS)</h2>
+
+    <span class="highlight-box">
+      <p><i class="fa-solid fa-star fa-lg fa-fw"></i> <strong>Exercice bonus :</strong> Cet exercice est plus difficile et nécessite de combiner plusieurs concepts vus précédemment. Il est facultatif mais fortement recommandé pour approfondir votre maîtrise du langage C.</p>
+    </span>
+
+    <h3>Contexte : La conjecture de Collatz</h3>
+
+    <p>La <strong>suite de Syracuse</strong>, aussi appelée <strong>conjecture de Collatz</strong>, est l'un des problèmes non résolus les plus célèbres des mathématiques. Bien que très simple à énoncer, personne n'a encore réussi à prouver ou réfuter cette conjecture depuis qu'elle a été formulée en 1937.</p>
+
+    <p>La suite est définie de la manière suivante : partant d'un entier positif \(u_0\), on construit la suite \((u_n)\) selon la règle :</p>
+
+    <p>
+    $$
+    u_{n+1} = \begin{cases}
+      \dfrac{u_n}{2} & \text{si } u_n \text{ est pair} \\[0.5em]
+      3u_n + 1 & \text{si } u_n \text{ est impair}
+    \end{cases}
+    $$
+    </p>
+
+    <p>La suite s'arrête lorsqu'on atteint la valeur 1. La <strong>conjecture de Collatz</strong> affirme que, quel que soit l'entier positif de départ \(u_0\), la suite finit toujours par atteindre 1.</p>
+
+    <p><strong>Exemple avec \(u_0 = 13\) :</strong></p>
+    <p>13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1</p>
+
+    <h3>Définitions</h3>
+    <ul>
+      <li><strong>Temps de vol</strong> : C'est le nombre d'étapes nécessaires pour atteindre 1 à partir de \(u_0\). Dans l'exemple ci-dessus avec \(u_0 = 13\), le temps de vol est 9.</li>
+      <li><strong>Altitude maximale</strong> : C'est la valeur maximale atteinte par la suite. Dans l'exemple avec \(u_0 = 13\), l'altitude maximale est 40.</li>
+    </ul>
+
+    <h3>Visualisation interactive de la suite de Syracuse</h3>
+    <p>Utilisez le curseur ci-dessous pour explorer la suite de Syracuse pour différentes valeurs initiales \(u_0\). Observez comment le temps de vol et l'altitude maximale varient :</p>
+
+    <div class="hight-light-box-margin" style="text-align: center;">
+      <label for="u0Slider" style="font-weight: bold;">Valeur initiale u₀ : <span id="u0Value">27</span></label><br>
+      <input type="range" id="u0Slider" min="1" max="100" value="27" style="width: 90%; margin: 10px 0;"><br>
+      <p style="margin: 5px 0;">Temps de vol : <strong><span id="tempsVol">111</span></strong></p>
+      <p style="margin: 5px 0;">Altitude maximale : <strong><span id="altitudeMax">9232</span></strong></p>
+    </div>
+
+    <p><canvas id="syracuseChart" width="600" height="400"></canvas></p>
+
+    <script>
+        // Fonction pour calculer la suite de Syracuse
+        function calculerSyracuse(u0) {
+            const suite = [u0];
+            let u = u0;
+            let maxIterations = 10000; // Protection contre les boucles infinies
+            let iterations = 0;
+
+            while (u !== 1 && iterations < maxIterations) {
+                if (u % 2 === 0) {
+                    u = u / 2;
+                } else {
+                    u = 3 * u + 1;
+                }
+                suite.push(u);
+                iterations++;
+            }
+
+            return suite;
+        }
+
+        // Fonction pour calculer les statistiques
+        function calculerStats(suite) {
+            const tempsVol = suite.length - 1;
+            const altitudeMax = Math.max(...suite);
+            return { tempsVol, altitudeMax };
+        }
+
+        const ctxSyracuse = document.getElementById('syracuseChart').getContext('2d');
+        let syracuseChart = null;
+
+        // Fonction pour mettre à jour le graphique
+        function updateChart(u0) {
+            const syracuseData = calculerSyracuse(u0);
+            const stats = calculerStats(syracuseData);
+            const syracuseLabels = syracuseData.map((_, index) => index);
+
+            // Mise à jour des affichages
+            document.getElementById('u0Value').textContent = u0;
+            document.getElementById('tempsVol').textContent = stats.tempsVol;
+            document.getElementById('altitudeMax').textContent = stats.altitudeMax;
+
+            const dataSyracuse = {
+                labels: syracuseLabels,
+                datasets: [
+                    {
+                        label: 'Valeur de u_n',
+                        data: syracuseData,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.1,
+                        pointRadius: syracuseData.length > 100 ? 1 : 2,
+                        pointHoverRadius: 5
+                    }
+                ]
+            };
+
+            const configSyracuse = {
+                type: 'line',
+                data: dataSyracuse,
+                options: {
+                    responsive: true,
+                    animation: {
+                        duration: 800,
+                        easing: 'easeInOutQuart'
+                    },
+                    transitions: {
+                        active: {
+                            animation: {
+                                duration: 400
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: `Suite de Syracuse pour u₀ = ${u0} (Temps de vol: ${stats.tempsVol}, Altitude max: ${stats.altitudeMax})`
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Étape n'
+                            },
+                            min: 0,
+                            max: 300
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Valeur u_n'
+                            },
+                            beginAtZero: true,
+                        }
+                    }
+                }
+            };
+
+            // Si le graphique existe déjà, on met à jour les données (plus fluide)
+            if (syracuseChart) {
+                syracuseChart.data = dataSyracuse;
+                syracuseChart.options.plugins.title.text = `Suite de Syracuse pour u₀ = ${u0} (Temps de vol: ${stats.tempsVol}, Altitude max: ${stats.altitudeMax})`;
+                syracuseChart.update('active');
+            } else {
+                // Créer le nouveau graphique
+                syracuseChart = new Chart(ctxSyracuse, configSyracuse);
+            }
+        }
+
+        // Initialisation avec u_0 = 27
+        updateChart(27);
+
+        // Event listener pour le slider
+        document.getElementById('u0Slider').addEventListener('input', function(e) {
+            const u0 = parseInt(e.target.value);
+            updateChart(u0);
+        });
+    </script>
+
+    <h3>Travail à réaliser</h3>
+
+    <p>Écrire un programme en C qui étudie la suite de Syracuse pour un entier \(u_0\) donné par l'utilisateur.</p>
+
+    <h4>3.1 - Affichage de la suite complète</h4>
+    <p>Écrire un programme qui demande à l'utilisateur de rentrer un entier \(u_0\) et qui affiche toute la suite de Syracuse jusqu'à atteindre 1.</p>
+
+    <p>Vous devez créer une fonction <code>int syracuse_suivant(int u)</code> qui prend un terme de la suite et retourne le terme suivant selon la règle de Syracuse.</p>
+
+    <p><strong>Exemple de sortie pour \(u_0 = 13\) :</strong></p>
+    <pre><code>Entrez un entier positif : 13
+Suite de Syracuse :
+13 40 20 10 5 16 8 4 2 1</code></pre>
+
+    <h4>3.2 - Calcul du temps de vol</h4>
+    <p>Modifier votre programme pour qu'il calcule et affiche le temps de vol (nombre d'étapes pour atteindre 1).</p>
+
+    <p>Créez une fonction <code>int temps_vol(int u0)</code> qui prend la valeur initiale et retourne le temps de vol.</p>
+
+    <p><strong>Exemple de sortie pour \(u_0 = 13\) :</strong></p>
+    <pre><code>Entrez un entier positif : 13
+Suite de Syracuse :
+13 40 20 10 5 16 8 4 2 1
+Temps de vol : 9</code></pre>
+
+    <h4>3.3 - Calcul de l'altitude maximale</h4>
+    <p>Modifier votre programme pour qu'il calcule et affiche l'altitude maximale atteinte par la suite.</p>
+
+    <p>Créez une fonction <code>int altitude_max(int u0)</code> qui prend la valeur initiale et retourne l'altitude maximale atteinte.</p>
+
+    <p><strong>Exemple de sortie pour \(u_0 = 13\) :</strong></p>
+    <pre><code>Entrez un entier positif : 13
+Suite de Syracuse :
+13 40 20 10 5 16 8 4 2 1
+Temps de vol : 9
+Altitude maximale : 40</code></pre>
+
+    <h4>3.4 - Bonus : Étude pour plusieurs valeurs (optionnel)</h4>
+    <p>Modifier votre programme pour qu'il demande à l'utilisateur s'il souhaite tester une autre valeur. Si oui, le programme recommence, sinon il s'arrête.</p>
+
+    <p>Vous pouvez également créer un tableau récapitulatif qui affiche pour les entiers de 1 à \(N\) (avec \(N\) choisi par l'utilisateur) :</p>
+    <ul>
+      <li>La valeur de \(u_0\)</li>
+      <li>Le temps de vol</li>
+      <li>L'altitude maximale</li>
+    </ul>
+
+  </section>
 
 
 

@@ -1,0 +1,30 @@
+%%%%% BASIC MATH DEFINITIONS %%%%%
+
+\usepackage{amsmath,amsfonts,bm}
+
+% Figure references
+\def\figref#1{figure~\ref{#1}}
+\def\Figref#1{Figure~\ref{#1}}
+
+% Section references
+\def\secref#1{section~\ref{#1}}
+\def\Secref#1{Section~\ref{#1}}
+
+% Algorithm references
+\def\algref#1{algorithm~\ref{#1}}
+\def\Algref#1{Algorithm~\ref{#1}}
+
+% Common mathematical sets
+\def\R{{\mathbb{R}}}
+\def\N{{\mathbb{N}}}
+\def\Z{{\mathbb{Z}}}
+\def\C{{\mathbb{C}}}
+
+% Common operations
+\DeclareMathOperator{\Tr}{Tr}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\argmin}[1]{\underset{#1}{\operatorname{argmin}}}
+\newcommand{\argmax}[1]{\underset{#1}{\operatorname{argmax}}}
+
+% Highlight new terms
+\newcommand{\newterm}[1]{{\bf #1}}
